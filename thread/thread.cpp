@@ -1,7 +1,7 @@
  
 /**
  * @file thread.cpp
- * @author wangxiaofeng04(com@baidu.com)
+ * @author kymowind@gmail.com
  * @date 2016/10/09 14:05:45
  * @brief 
  *  
