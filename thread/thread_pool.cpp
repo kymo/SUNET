@@ -12,14 +12,17 @@
 namespace sub_framework {
     
 
-SubThreadPool::SubThreadPool(int threads_cnt) {
-    _threads_cnt = threads_cnt;
+SubThreadPool::SubThreadPool() {
     _stoped = false;
+    _threads_cnt = 0;
 }
-
 
 SubThreadPool::~SubThreadPool() {
     
+}
+
+void SubThreadPool::_init() {
+    _threads_cnt = SubConfig::_get_instance()->_get_thread_cnt();
 }
 
 void SubThreadPool::_set_thread_cnt(int thread_cnt) {

@@ -19,16 +19,12 @@
 #include <string>
 #include <string.h>
 #include "thread.h"
-
+#include "config.h"
 
 namespace sub_framework {
 class SubThreadPool {
 
 public:
-    /**
-     * 构造函数
-     */
-    SubThreadPool(int threads_cnt = 1);
 
     /**
      * 析构函数
@@ -55,11 +51,27 @@ public:
      */
     void _wait();
 
+    /**
+     * get instalce
+     */
+    static SubThreadPool* _get_instance() {
+        if (NULL == _sub_thread_pool_instance) {
+            _sub_thread_pool_instance = new SubThreadPool();
+        }
+        return _sub_thread_pool_instance;
+    }
+
+    /**
+     * init the data
+     */
+    void _init();
+
 private:
+    SubThreadPool();
     std::vector<SubThread*> _threads;
+    static SubThreadPool* _sub_thread_pool_instance;
     int _threads_cnt;
     bool _stoped;
-
 
 };
 

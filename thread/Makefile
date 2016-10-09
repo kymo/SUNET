@@ -2,11 +2,13 @@ MACRO=DEBUGALL
 CFLAGS+=-g -w -D$(MACRO) -lpthread
 SRCPATH=.
 INCLUDEPATH=.
+INCLUDEPATH+=../config
 TARGET=sub
 SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 
 #OBJS := $(patsubst %.cpp, %.o,$(SOURCES))
 OBJS=$(SOURCES:.cpp=.o)
+OBJS+=../config/config.o
 CFLAGS+=$(foreach dir, $(INCLUDEPATH), -I$(dir))
 
 all: build
