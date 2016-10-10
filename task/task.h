@@ -24,19 +24,15 @@ class SubTask {
 
 private:
     std::string _task_name;
+    void* _task_data;
 
 public:
-    SubTask();
-    virtual ~SubTask();
+    SubTask() {}
+    virtual ~SubTask() {}
     virtual int _run() = 0;
     virtual int _call_back() = 0;
 
-
 }
-
-
-
-
 
 }
 
