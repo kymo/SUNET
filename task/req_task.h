@@ -14,18 +14,19 @@
 #define  __REQ_TASK_H_
 
 #include "task.h"
+#include "task_mgr.h"
 
 namespace sub_framework {
 
-class ReqTask : public Task {
-    
+class ReqTask : public SubTask {
+
 public:
     ReqTask(const std::string& task_name);
     ~ReqTask();
-    virtual void _run();
-    virtual void _call_back();
+    virtual int _run();
+    virtual int _call_back();
   
-}
+};
 
 }
 

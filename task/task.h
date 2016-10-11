@@ -22,17 +22,17 @@ namespace sub_framework {
 
 class SubTask {
 
-private:
-    std::string _task_name;
-    void* _task_data;
-
 public:
     SubTask() {}
     virtual ~SubTask() {}
+    
+    void* _task_data;
+    void* _task_ret;
+    std::string _task_name;
     virtual int _run() = 0;
     virtual int _call_back() = 0;
 
-}
+};
 
 }
 

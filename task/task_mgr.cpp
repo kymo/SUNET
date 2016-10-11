@@ -7,32 +7,39 @@
  *  
  **/
 
+#include "task_mgr.h"
+
 
 namespace sub_framework {
 
-TaskMgr::TaskMgr() {
+SubTaskMgr* SubTaskMgr::_task_mgr_instance = NULL;
+
+SubTaskMgr::SubTaskMgr() {
 
 }
 
-TaskMgr::~TaskMgr() {
+SubTaskMgr::~SubTaskMgr() {
     // empty the task query
     _clear_task_queue();
     pthread_mutex_destroy(&_add_mutex);
     pthread_mutex_destroy(&_get_mutex);
 }
 
-void TaskMgr::_init() {
+void SubTaskMgr::_init() {
    pthread_mutex_init(&_add_mutex, NULL);
    pthread_mutex_init(&_get_mutex, NULL);
 }
 
-void TaskMgr::_get_call_back_proc(const std::string& _task_name) {
-
+CALL_BACK_PROC SubTaskMgr::_get_call_back_proc(const std::string& _task_name) {
+    if (_task_call_back_proc_dict.find(_task_name) == _task_call_back_proc_dict.end()) {
+        return NULL;
+    }
+    return _task_call_back_proc_dict[_task_name];
 }
 
-void TaskMgr::_clear_task_queue() {
+void SubTaskMgr::_clear_task_queue() {
     while (! _task_queue.empty()) {
-        Task* task = _task_queue.front();
+        SubTask* task = _task_queue.front();
         _task_queue.pop();
         if (task != NULL) {
             delete task;
@@ -41,8 +48,7 @@ void TaskMgr::_clear_task_queue() {
     }
 }
 
-void TaskMgr::_add_task(Task* task) {
-    
+void SubTaskMgr::_add_task(SubTask* task) {    
     if (task == NULL) {
         return ;
     }
@@ -51,12 +57,16 @@ void TaskMgr::_add_task(Task* task) {
     pthread_mutex_unlock(&_add_mutex);
 }
 
-Task* TaskMgr::_get_task() {
-
+SubTask* SubTaskMgr::_get_task() {
     if (_task_queue.empty()) {
         return NULL;
     }
-
+    SubTask *ret_task = NULL;
+    pthread_mutex_lock(&_get_mutex);
+    ret_task = _task_queue.front();
+    _task_queue.pop();
+    pthread_mutex_unlock(&_get_mutex);
+    return ret_task;
 }
 
 }

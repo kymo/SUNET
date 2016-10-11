@@ -19,16 +19,17 @@ ReqTask::~ReqTask() {
 
 }
 
-void ReqTask::_run() {
-    CALL_BACK_PROC* call_back_proc = TaskMgr::_get_instance()->_get_call_back_proc(_task_name);
+int ReqTask::_run() {
+    
+    CALL_BACK_PROC call_back_proc = SubTaskMgr::_get_instance()->_get_call_back_proc(_task_name);
     if (NULL == call_back_proc) {
-        return ;
+        return 0;
     }
     return (*call_back_proc)(_task_data, _task_ret);
 }
 
-void ReqTask::_call_back() {
-
+int ReqTask::_call_back() {
+    std::cout << "this is thre call back function for task " << _task_name << std::endl;
 }
 
 }

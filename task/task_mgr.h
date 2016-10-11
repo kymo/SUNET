@@ -15,38 +15,42 @@
 
 #include <iostream>
 #include <string>
-
+#include <map>
+#include <queue>
+#include <algorithm>
+#include "task.h"
 
 namespace sub_framework {
 
 typedef int (*CALL_BACK_PROC)(void*, void*);
 
-class TaskMgr {
+class SubTaskMgr {
     
 private:
-    TaskMgr();
-    static TaskMgr* _task_mgr_instance;
+    SubTaskMgr();
+    static SubTaskMgr* _task_mgr_instance;
     std::map<std::string, CALL_BACK_PROC> _task_call_back_proc_dict;
-    std::queue<Task*> _task_queue;
+    std::queue<SubTask*> _task_queue;
     int _max_task_cnt;
     int _task_query_size;
     pthread_mutex_t _add_mutex;
     pthread_mutex_t _get_mutex;
     pthread_cond_t _cond;
 public:
-    ~TaskMgr();
-    static TaskMgr* _get_instance() {
+    ~SubTaskMgr();
+    static SubTaskMgr* _get_instance() {
         if (NULL == _task_mgr_instance) {
-            _task_mgr_instance = new TaskMgr();
+            _task_mgr_instance = new SubTaskMgr();
         }
         return _task_mgr_instance;
     }
     void _init();
     void _clear_task_queue();
-    void _get_call_back_proc(const std::string& _task_name);
-    void _add_task();
-    Task* _get_task();
-}
+    CALL_BACK_PROC _get_call_back_proc(const std::string& _task_name);
+    void _add_task(SubTask* task);
+    SubTask* _get_task();
+};
+
 }
 
 
