@@ -57,15 +57,11 @@ void test_mul_thread() {
 
 
 int req_call_back(void *a, void *b) {
-    if (NULL == b) {
-        std::cout << "NULLLLLLLL" << std::endl;
-    } else {
-        std::cout << "NOT NULLLLLL" << std::endl;
-    }
     int *aa = (int*)a;
     *aa += 10000;
     std::cout << "THIS IS " <<  *aa << std::endl;
-    b = (void*)(aa);
+    int*bb = (int*)b;
+    *bb = *aa;
     std::cout << *(int*)b << std::endl;
     //std::cout << "i am callback!" << std::endl;
 }
