@@ -36,6 +36,7 @@ private:
     pthread_mutex_t _add_mutex;
     pthread_mutex_t _get_mutex;
     pthread_cond_t _cond;
+
 public:
     ~SubTaskMgr();
     static SubTaskMgr* _get_instance() {
@@ -47,6 +48,7 @@ public:
     void _init();
     void _clear_task_queue();
     CALL_BACK_PROC _get_call_back_proc(const std::string& _task_name);
+    void _set_call_back_proc(const std::string& _task_name, CALL_BACK_PROC call_back_proc);
     void _add_task(SubTask* task);
     SubTask* _get_task();
 };

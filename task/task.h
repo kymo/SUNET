@@ -31,7 +31,7 @@ public:
     std::string _task_name;
     virtual int _run() = 0;
     virtual int _call_back() = 0;
-
+    virtual void _set_task_data(void *task_data) = 0;
 };
 
 }

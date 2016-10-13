@@ -25,7 +25,7 @@ public:
     ~ReqTask();
     virtual int _run();
     virtual int _call_back();
-  
+    virtual void _set_task_data(void* task_data);
 };
 
 }

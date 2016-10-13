@@ -19,6 +19,7 @@
 #include <string>
 #include <string.h>
 #include "thread.h"
+#include "task_mgr.h"
 #include "config.h"
 
 namespace sub_framework {

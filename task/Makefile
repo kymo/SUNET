@@ -1,5 +1,5 @@
 MACRO=DEBUGALL
-CFLAGS+=-g -w -D$(MACRO) -lpthread
+CFLAGS+=-g -w -D$(MACRO)
 SRCPATH=.
 INCLUDEPATH=.
 INCLUDEPATH+=../config
@@ -20,5 +20,5 @@ clean:
 
 build:
 	g++ -c ${CFLAGS} ${SOURCES}
-	g++ ${CFLAGS} -o ${TARGET} ${OBJS}
+	#g++ ${CFLAGS} -o ${TARGET} ${OBJS}
 

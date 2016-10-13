@@ -1,4 +1,4 @@
- 
+    
 /**
  * @file req_task.cpp
  * @author kymowind@gmail.com
@@ -19,17 +19,28 @@ ReqTask::~ReqTask() {
 
 }
 
+void ReqTask::_set_task_data(void *task_data) {
+    _task_data = task_data;
+}
+
+
 int ReqTask::_run() {
     
     CALL_BACK_PROC call_back_proc = SubTaskMgr::_get_instance()->_get_call_back_proc(_task_name);
     if (NULL == call_back_proc) {
         return 0;
     }
+    _task_ret = (void*)(malloc(sizeof(int)));
     return (*call_back_proc)(_task_data, _task_ret);
 }
 
 int ReqTask::_call_back() {
-    std::cout << "this is thre call back function for task " << _task_name << std::endl;
+    if (NULL == _task_ret) {
+        return -1;
+    }
+    int v = *((int*)_task_ret);
+    std::cout << v << "this is thre c" << v << " all back function for task " << _task_name << std::endl;
+    return 0;
 }
 
 }

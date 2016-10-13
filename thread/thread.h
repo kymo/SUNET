@@ -38,7 +38,7 @@ public:
     void _stop() {
         _stoped = true;
     }
-private:
+public:
     bool _stoped;
 };
 

@@ -11,9 +11,9 @@
 
 #ifndef  __TASK_HANDLER_H_
 #define  __TASK_HANDLER_H_
-#include "thread_handler.h"
 #include "thread.h"
-#include "task_mrg.h"
+#include "task_mgr.h"
+#include <time.h>
 
 namespace sub_framework {
 
@@ -21,14 +21,16 @@ class SubTaskHandler : public SubThreadHandler {
 public:
     virtual int _thread_proc_handler(void *args) {
         while (! _stoped) {
-            Task* task = TaskMgr::_get_instance()->_get_task();
+            SubTask* task = SubTaskMgr::_get_instance()->_get_task();
             if (NULL != task) {
+                std::cout << "deal with task " << task->_task_name << std::endl;
                 task->_run();
                 task->_call_back();
             }
         }
     }
-}
+};
+
 }
 
 

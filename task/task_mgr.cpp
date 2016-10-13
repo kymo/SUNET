@@ -26,8 +26,14 @@ SubTaskMgr::~SubTaskMgr() {
 }
 
 void SubTaskMgr::_init() {
-   pthread_mutex_init(&_add_mutex, NULL);
-   pthread_mutex_init(&_get_mutex, NULL);
+    std::cout << "init mutex" << std::endl;
+    pthread_mutex_init(&_add_mutex, NULL);
+    pthread_mutex_init(&_get_mutex, NULL);
+    std::cout << "~" << std::endl;
+}
+
+void SubTaskMgr::_set_call_back_proc(const std::string& _task_name, CALL_BACK_PROC call_back_proc) {
+    _task_call_back_proc_dict[_task_name] = call_back_proc;
 }
 
 CALL_BACK_PROC SubTaskMgr::_get_call_back_proc(const std::string& _task_name) {
@@ -58,13 +64,17 @@ void SubTaskMgr::_add_task(SubTask* task) {
 }
 
 SubTask* SubTaskMgr::_get_task() {
+
     if (_task_queue.empty()) {
         return NULL;
     }
+
     SubTask *ret_task = NULL;
     pthread_mutex_lock(&_get_mutex);
-    ret_task = _task_queue.front();
-    _task_queue.pop();
+    if (! _task_queue.empty()) {
+        ret_task = _task_queue.front();
+        _task_queue.pop();
+    }
     pthread_mutex_unlock(&_get_mutex);
     return ret_task;
 }
