@@ -1,5 +1,5 @@
 MACRO=DEBUGALL
-CFLAGS+=-g -w -D$(MACRO) -lpthread
+CFLAGS+=-g -w -D$(MACRO) 
 SRCPATH=.
 INCLUDEPATH=.
 TARGET=event

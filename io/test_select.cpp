@@ -80,6 +80,11 @@ void SubServer::_init_sock(int port) {
         std::cout << "Listen Error!" << std::endl;
         exit(1);
     }
+    int yes = 1;
+    if (setsockopt(_svr_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
+        perror("setsockopt");
+        exit(1);
+    }
 }
 
 void SubServer::_init_evt(int evt_type) {
@@ -124,7 +129,9 @@ void SubServer::_run() {
     
     std::cout << _svr_fd << std::endl;
     _event->_event_init(_svr_fd);
-     // set call_back func
+    
+    // set call_back func
+    _event->_event_add(_svr_fd, 0); 
     _event->_set_read_callback_proc(on_read);
     _event->_set_accept_callback_proc(on_accept);
     _event->_event_loop();
