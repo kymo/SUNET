@@ -104,18 +104,23 @@ int on_accept(int svr_fd) {
 
 
 int on_read(int clt_fd) {
-
+    std::cout << "on read callback proc!" << std::endl;
     char buf[65536];
+    buf[0] = '\0';
     char recv_buf[1024];
     int ret = 0;
     int ret_tot = 0;
     while (ret >= 0) {
         ret = recv(clt_fd, recv_buf, sizeof(recv_buf), 0);
+        std::cout << ret << std::endl;
         if (ret <= 0) {
             break;
         } {
             memcpy(buf, recv_buf, sizeof(recv_buf));
             ret_tot += ret;
+            if (ret < 1024) {
+                break;
+            }
         }
     }
     std::cout << "Get it from client:%s" << buf << std::endl;

@@ -21,7 +21,9 @@ SubThread::SubThread(SubThreadHandler* handler, void* args) {
 
 void* thread_proc(void *args) {
     SubThread* sub_thread = (SubThread*) args;
-    std::cout << "this is thread:" << *((int*)(sub_thread->_args)) << std::endl;
+    if (sub_thread->_args != NULL) {
+        std::cout << "this is thread:" << *((int*)(sub_thread->_args)) << std::endl;
+    }
     if (NULL != sub_thread) {
         sub_thread->_run();
     }

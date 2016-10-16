@@ -24,8 +24,8 @@ void SubSelectEvent::_event_init(int srv_fd) {
 }
 
 void SubSelectEvent::_event_loop() {
-    struct timeval tv = {5, 0};
     while (true) {
+        struct timeval tv = {5, 0};
         FD_ZERO(&fd[1]);
         fd[1] = fd[0];
         int ret = select(_max_sock_fd + 1, &fd[1], NULL, NULL, &tv);
@@ -40,6 +40,7 @@ void SubSelectEvent::_event_loop() {
                 if (-1 == new_fd) {
                     std::cout << "Select Accpet Error!" << std::endl;
                 } else {
+                    std::cout << "Accept from client, sock fd:" << new_fd << std::endl;
                     _event_add(new_fd, EVT_READ);
                     _max_sock_fd = std::max(_max_sock_fd, new_fd); 
                     _clt_sock_vec.push_back(new_fd);
@@ -51,7 +52,11 @@ void SubSelectEvent::_event_loop() {
                 if (_clt_sock_vec[i] != -1 && FD_ISSET(_clt_sock_vec[i], &fd[1])) {
                     int recv_ret = _event_read_callback_proc(_clt_sock_vec[i]);
                     if (recv_ret <= 0) {
-                        std::cout << "Select Recv Error!" << std::endl;
+                        if (recv_ret == 0) {
+                            std::cout << "Client Closed!" << std::endl;
+                        } else {
+                            std::cout << "Select Recv Error!" << std::endl;
+                        }
                         FD_CLR(_clt_sock_vec[i], &fd[0]);
                         close(_clt_sock_vec[i]);
                         _clt_sock_vec.erase(_clt_sock_vec.begin() + i);
@@ -61,7 +66,6 @@ void SubSelectEvent::_event_loop() {
                     // TODO add write _event into another fd set
                     char write_buf[32] = "Hello from svr!";
                     if (send(_clt_sock_vec[i], write_buf, sizeof(write_buf), 0) <= 0) {
-                        std::cout << "Select Write Error!" << std::endl;
                         FD_CLR(_clt_sock_vec[i], &fd[0]);
                         close(_clt_sock_vec[i]);
                         _clt_sock_vec.erase(_clt_sock_vec.begin() + i);
