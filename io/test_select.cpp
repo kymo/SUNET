@@ -20,6 +20,7 @@
 #include  <arpa/inet.h>
 #include "select.h"
 #include "event.h"
+#include <fcntl.h>
 
 using namespace sub_framework;
 enum {
@@ -56,8 +57,10 @@ public:
     void _run();
     void _init_sock(int port);
     void _init_evt(int evt_type);
-    int _on_read(int clt_fd);
-    int _on_accept(int svr_fd);
+
+    static int _on_read(int clt_fd);
+    static int _on_accept(int svr_fd);
+    static void _set_nonblocking(int sock_fd);
 
 };
 
@@ -85,6 +88,10 @@ void SubServer::_init_sock(int port) {
         perror("setsockopt");
         exit(1);
     }
+
+    _set_nonblocking(_svr_fd);
+
+    // 设置为非阻塞
 }
 
 void SubServer::_init_evt(int evt_type) {
@@ -93,52 +100,87 @@ void SubServer::_init_evt(int evt_type) {
     }
 }
 
-int on_accept(int svr_fd) {
+
+void SubServer::_set_nonblocking(int sock_fd) {
+    int opts = fcntl(sock_fd, F_GETFL);  
+    opts = (opts | O_NONBLOCK); 
+    int ret = fcntl(sock_fd, F_SETFL, opts) ;
+    std::cout << "set nonblocking:" << ret << std::endl;
+}
+
+int SubServer::_on_accept(int svr_fd) {
     struct sockaddr_in client_addr;
     memset(&client_addr, 0, sizeof(client_addr));
     socklen_t clit_len = sizeof(struct sockaddr);
     int new_sock = accept(svr_fd, (struct sockaddr*)&client_addr, &clit_len);
     // TODO set nonblocking
+    _set_nonblocking(new_sock);
     return new_sock;
 }
 
-
-int on_read(int clt_fd) {
+int SubServer::_on_read(int clt_fd) {
     std::cout << "on read callback proc!" << std::endl;
     char buf[65536];
     buf[0] = '\0';
-    char recv_buf[1024];
+    char recv_buf[65536];
     int ret = 0;
     int ret_tot = 0;
+    std::cout << "Begin to recv:" << std::endl;
+    int buf_index = 0;
+    int buf_left = 65536;
+    do {
+        while ((ret = recv(clt_fd, recv_buf + buf_index, buf_left, 0)) > 0) {
+            buf_index += ret;
+            buf_left -= ret;
+            if (0 == buf_left) {
+                break;
+            }
+        }
+        if (0 == ret) {
+            // client close socket
+            close(clt_fd);
+            return 0;
+        }
+        if (-1 == ret && errno != EAGAIN) {
+            // read error!
+            std::cout << "read erro!" << std::endl;
+            return 0;
+        }
+        if (errno == EAGAIN) {
+            break;
+        }
+    } while(true);
+
+
+    /*
     while (ret >= 0) {
         ret = recv(clt_fd, recv_buf, sizeof(recv_buf), 0);
-        std::cout << ret << std::endl;
+        std::cout << "Recv " << ret<< std::endl;
         if (ret <= 0) {
-            break;
-        } {
+            return ret;
+        } else {
             memcpy(buf, recv_buf, sizeof(recv_buf));
             ret_tot += ret;
             if (ret < 1024) {
                 break;
             }
         }
-    }
-    std::cout << "Get it from client:%s" << buf << std::endl;
+    }   
+    */
+    std::cout << "Get it from client:%s" << recv_buf << std::endl;
     // read wanle
-    return ret_tot;
+    return 1;
 }
 
 void SubServer::_run() {
     _init_sock(8888);
     _init_evt(SELECT);
-    
-    std::cout << _svr_fd << std::endl;
     _event->_event_init(_svr_fd);
-    
-    // set call_back func
     _event->_event_add(_svr_fd, 0); 
-    _event->_set_read_callback_proc(on_read);
-    _event->_set_accept_callback_proc(on_accept);
+    // set call_back func
+    _event->_set_read_callback_proc(&SubServer::_on_read);
+    _event->_set_accept_callback_proc(&SubServer::_on_accept);
+    // event loop
     _event->_event_loop();
 }
 

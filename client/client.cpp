@@ -47,9 +47,12 @@ void Client::_connect_svr() {
 	}
 	char buf[1024];
 	std::cout << "send data from client!" << std::endl;
-	send(_clt_sock_fd, "Hello World!", strlen("Hello World"), 0);
-	std::cout << "receiver from server:" ;
 	
+
+	send(_clt_sock_fd, "Hello World!", strlen("Hello World!"), 0);
+	std::cout << "receiver from server:" ;
+	while (1);
+	/*
 	recv(_clt_sock_fd, buf, 1024, 0);
 	std::cout << buf << std::endl;
 	if (strcmp(buf, "Hello from svr!") == 0) {
@@ -57,6 +60,7 @@ void Client::_connect_svr() {
 	} else {
 		std::cout << "WRONG!" << std::endl;
 	}
+	*/
 }
 
 
@@ -82,10 +86,13 @@ int main(int argc, char* argv[]) {
 		std::cout << i << std::endl;
 		SubThread* sub_thread = new SubThread(client_handler, NULL);
 		sub_thread->_start();
-		threads.push_back(sub_thread);
+		// sub_thread->_join();
+		// threads.push_back(sub_thread);
 	}
+	std::cout <<"nihao"<<std::endl;
+	/*
 	for (int i = 0; i < thread_num; i++) {
 		threads[i]->_join();
-	}
+	}*/
 	return 0;
 }

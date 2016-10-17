@@ -34,6 +34,7 @@ public:
     virtual void _event_init(int src_fd) = 0;
     virtual void _event_loop() = 0;
     virtual void _event_add(int evt_fd, int evt_type) = 0;
+
 };
 
 }

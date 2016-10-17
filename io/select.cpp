@@ -17,7 +17,6 @@ void SubSelectEvent::_event_add(int evt_fd, int evt_type)  {
 }
 
 void SubSelectEvent::_event_init(int srv_fd) {
-    std::cout << "nihao" << std::endl;
     FD_ZERO(&fd[0]);
     _svr_fd = srv_fd;
     _max_sock_fd = srv_fd;
@@ -29,6 +28,7 @@ void SubSelectEvent::_event_loop() {
         FD_ZERO(&fd[1]);
         fd[1] = fd[0];
         int ret = select(_max_sock_fd + 1, &fd[1], NULL, NULL, &tv);
+        std::cout << "Select Result:" << ret << std::endl;
         if (-1 == ret) {
             std::cout << "Select Error!" << std::endl;
         } else if (0 == ret) {
@@ -49,19 +49,18 @@ void SubSelectEvent::_event_loop() {
 
             // 
             for (int i = 0; i < _clt_sock_vec.size(); i++) {
+                std::cout << _clt_sock_vec[i] << " ..." << std::endl;
                 if (_clt_sock_vec[i] != -1 && FD_ISSET(_clt_sock_vec[i], &fd[1])) {
+                    std::cout << "RECV ONE!" << std::endl;
                     int recv_ret = _event_read_callback_proc(_clt_sock_vec[i]);
-                    if (recv_ret <= 0) {
-                        if (recv_ret == 0) {
-                            std::cout << "Client Closed!" << std::endl;
-                        } else {
-                            std::cout << "Select Recv Error!" << std::endl;
-                        }
+                    if (recv_ret == 0) {
                         FD_CLR(_clt_sock_vec[i], &fd[0]);
                         close(_clt_sock_vec[i]);
                         _clt_sock_vec.erase(_clt_sock_vec.begin() + i);
                         continue;
                     }
+
+                    /*
                     // write back 
                     // TODO add write _event into another fd set
                     char write_buf[32] = "Hello from svr!";
@@ -70,7 +69,7 @@ void SubSelectEvent::_event_loop() {
                         close(_clt_sock_vec[i]);
                         _clt_sock_vec.erase(_clt_sock_vec.begin() + i);
                         continue;
-                    }
+                    }*/
                 }
             }
         }
