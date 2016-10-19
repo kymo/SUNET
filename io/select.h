@@ -36,6 +36,7 @@ private:
     int _svr_fd;
     std::vector<int> _clt_sock_vec;
     int _max_sock_fd;
+
 public:
     
     virtual void _event_init(int srv_fd);

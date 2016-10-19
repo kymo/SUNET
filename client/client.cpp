@@ -87,12 +87,12 @@ int main(int argc, char* argv[]) {
 		SubThread* sub_thread = new SubThread(client_handler, NULL);
 		sub_thread->_start();
 		// sub_thread->_join();
-		// threads.push_back(sub_thread);
+		threads.push_back(sub_thread);
 	}
 	std::cout <<"nihao"<<std::endl;
-	/*
+	
 	for (int i = 0; i < thread_num; i++) {
 		threads[i]->_join();
-	}*/
+	}
 	return 0;
 }
