@@ -77,6 +77,7 @@ int SubServer::_on_read(int clt_fd) {
     std::cout << "Begin to recv:" << std::endl;
     int buf_index = 0;
     int buf_left = 65536;
+    
     do {
         while ((ret = recv(clt_fd, recv_buf + buf_index, buf_left, 0)) > 0) {
             buf_index += ret;
@@ -85,6 +86,11 @@ int SubServer::_on_read(int clt_fd) {
                 break;
             }
         }
+        
+        if (errno == EWOULDBLOCK) {
+            std::cout << "READ NONBLOCKING" << std::endl;
+        }
+        std::cout << "READ ret " << ret << std::endl;
         if (0 == ret) {
             // client close socket
             close(clt_fd);
@@ -96,6 +102,7 @@ int SubServer::_on_read(int clt_fd) {
             return 0;
         }
         if (errno == EAGAIN) {
+            std::cout << "read again!" << std::endl;
             break;
         }
     } while(true);
