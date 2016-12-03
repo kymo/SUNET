@@ -27,9 +27,12 @@
 using namespace sub_framework;
 
 int req_task_call_back(void *a, void *b) {
-
+    char* buf = (char*) a;
+    char *ret = (char*) b;
     
-    std::cout << "THIS IS req call baack fun!" << std::endl;
+    char write_buf[128] = "HTTP/1.1 200 OK\r\nContent-Length: 11\r\n\r\nHello World"; 
+    strcpy(ret, write_buf);
+    return 1;
 }
 
 int main() {

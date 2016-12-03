@@ -29,7 +29,7 @@ int ReqTask::_run() {
     if (NULL == call_back_proc) {
         return 0;
     }
-    _task_ret = (void*)(malloc(sizeof(int)));
+    _task_ret = (void*)(malloc(sizeof(char) * 65536));
     return (*call_back_proc)(_task_data, _task_ret);
 }
 
@@ -38,8 +38,9 @@ int ReqTask::_call_back() {
         return -1;
     } 
     char* buf = (char*) _task_data;
-    int v = *((int*)_task_ret);
-    std::cout << v << "this is thre " << v << " all back function for task " << _task_name << ":" << buf << std::endl;
+    //int v = *((int*)_task_ret);
+    char *ret = (char*) _task_ret; 
+    std::cout << ret << " all back function for task " << _task_name << ":" << buf << std::endl;
     
     return 0;
 }

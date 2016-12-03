@@ -2,7 +2,6 @@ MACRO=DEBUGALL
 CFLAGS+=-g -w -D$(MACRO)
 SRCPATH=.
 INCLUDEPATH=.
-TARGET=sub
 SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 
 #OBJS := $(patsubst %.cpp, %.o,$(SOURCES))
@@ -16,6 +15,5 @@ clean:
 	$(RM) $(OBJS) $(TARGET)
 
 build:
-	g++ -c ${CFLAGS} ${SOURCES}
-	g++ ${CFLAGS} -o ${TARGET} ${OBJS}
+	g++ -c ${CFLAGS} ${SOURCES} 
 
