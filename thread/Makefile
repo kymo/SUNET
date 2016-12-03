@@ -9,7 +9,10 @@ SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 
 #OBJS := $(patsubst %.cpp, %.o,$(SOURCES))
 OBJS=$(SOURCES:.cpp=.o)
-ALIAS_OBJS=../task/task_mgr.o ../config/config.o ../task/req_task.o
+ALIAS_OBJS=../task/task_mgr.o \
+		   ../config/config.o \
+		   ../task/req_task.o
+
 CFLAGS+=$(foreach dir, $(INCLUDEPATH), -I$(dir))
 
 all: build

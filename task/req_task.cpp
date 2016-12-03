@@ -25,7 +25,6 @@ void ReqTask::_set_task_data(void *task_data) {
 
 
 int ReqTask::_run() {
-    
     CALL_BACK_PROC call_back_proc = SubTaskMgr::_get_instance()->_get_call_back_proc(_task_name);
     if (NULL == call_back_proc) {
         return 0;
@@ -37,9 +36,11 @@ int ReqTask::_run() {
 int ReqTask::_call_back() {
     if (NULL == _task_ret) {
         return -1;
-    }
+    } 
+    char* buf = (char*) _task_data;
     int v = *((int*)_task_ret);
-    std::cout << v << "this is thre c" << v << " all back function for task " << _task_name << std::endl;
+    std::cout << v << "this is thre " << v << " all back function for task " << _task_name << ":" << buf << std::endl;
+    
     return 0;
 }
 

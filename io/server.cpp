@@ -125,19 +125,30 @@ int SubServer::_on_read(int clt_fd) {
     */
     std::cout << "Get it from client:%s" << recv_buf << std::endl;
     // read wanle
+    // addinto task query
+    SubTask* task = new ReqTask("req_task");
+    task->_set_task_data((void*)recv_buf);
+    SubTaskMgr::_get_instance()->_add_task(task);
     return 1;
 }
 
+
+
 void SubServer::_run() {
-    _init_sock(8888);
+
+
+    // 初始化socket
+    _init_sock(9999);
+
+    // init io model
     _init_evt(SELECT);
     _event->_event_init(_svr_fd);
     _event->_event_add(_svr_fd, 0); 
-    // set call_back func
     _event->_set_read_callback_proc(&SubServer::_on_read);
     _event->_set_accept_callback_proc(&SubServer::_on_accept);
     // event loop
     _event->_event_loop();
+
 }
 
 }

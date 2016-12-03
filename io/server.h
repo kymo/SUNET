@@ -27,21 +27,31 @@
 #include "event.h"
 #include <fcntl.h>
 #include "define.h"
+#include "task.h"
+#include "req_task.h"
+#include "task_mgr.h"
+#include "thread_pool.h"
 
 namespace sub_framework {
 
-enum {
+enum IOTYPE {
     SELECT = 0,
     EPOLL
 };
 
+enum TASKTYPE {
+};
+
+#define REQ_TASK "req_task"
+#define PARSER_TASK "parser_task"
 
 class SubServer {
    
 SINGLETN(Server);
 
 private:
-    struct sockaddr_in _svr_addr;
+    
+	struct sockaddr_in _svr_addr;
     int _svr_fd;
     std::vector<int> _clt_sock_vec;
     SubEvent* _event;

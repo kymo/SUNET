@@ -67,19 +67,27 @@ int req_call_back(void *a, void *b) {
 }
 
 void test_thread_pool() {
+    // add req_call_back
     sub_framework::SubTaskMgr::_get_instance()->_init();
+
+    sub_framework::SubTaskMgr::_get_instance()->_set_call_back_proc("req_task", req_call_back);
+    // add task
+    sub_framework::SubTask* req_task = new sub_framework::ReqTask("req_task");
+    sub_framework::SubTaskMgr::_get_instance()->_add_task(req_task);
+
+    // 
     sub_framework::SubThreadPool* thread_pool = sub_framework::SubThreadPool::_get_instance();
     thread_pool->_init();
-    thread_pool->_set_thread_cnt(30);
+    thread_pool->_set_thread_cnt(3);
     thread_pool->_start();
 
-    // add req_call_back
-    sub_framework::SubTaskMgr::_get_instance()->_set_call_back_proc("req_task", req_call_back);
+    /*
     sub_framework::SubThreadHandler* req_handler = new ReqTaskHandler();
     int fucn = 1000;
     sub_framework::SubThread* sub_thread = new sub_framework::SubThread(req_handler, (void*)(&fucn));
     sub_thread->_start();
     sub_thread->_join();
+    */
     while (1);
 }
 

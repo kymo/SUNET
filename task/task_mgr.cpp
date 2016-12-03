@@ -68,7 +68,6 @@ SubTask* SubTaskMgr::_get_task() {
     if (_task_queue.empty()) {
         return NULL;
     }
-
     SubTask *ret_task = NULL;
     pthread_mutex_lock(&_get_mutex);
     if (! _task_queue.empty()) {

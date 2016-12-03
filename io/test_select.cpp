@@ -25,7 +25,25 @@
 #include "server.h"
 
 using namespace sub_framework;
+
+int req_task_call_back(void *a, void *b) {
+
+    
+    std::cout << "THIS IS req call baack fun!" << std::endl;
+}
+
 int main() {
+    // init task_mgr
+    SubTaskMgr::_get_instance()->_init();
+   
+    // 设置核心逻辑的回调函数
+    SubTaskMgr::_get_instance()->_set_call_back_proc(REQ_TASK, req_task_call_back);
+    
+    // 启动线程池
+    SubThreadPool::_get_instance()->_init();
+    SubThreadPool::_get_instance()->_set_thread_cnt(3);
+    SubThreadPool::_get_instance()->_start();
+   
     SubServer*svr = SubServer::_get_instance();
     svr->_run();
     return 0;

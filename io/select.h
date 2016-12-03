@@ -24,15 +24,11 @@ namespace sub_framework {
 
 #define MAX_CLT_CNT 1024
 
-enum EVENT_TYPE {
-    EVT_READ = 0,
-    EVT_WRITE = 1
-};
-
 class SubSelectEvent : public SubEvent {
 
 private:
-    fd_set fd[2];
+    fd_set _read_set;
+    fd_set _write_set;
     int _svr_fd;
     std::vector<int> _clt_sock_vec;
     int _max_sock_fd;

@@ -16,6 +16,12 @@
 namespace sub_framework {
 
 typedef int (*EVENT_CALL_BACK_PROC)(int);
+
+enum EVENT_TYPE {
+    EVT_READ = 0,
+    EVT_WRITE = 1
+};
+
 class SubEvent {
     
 private:
