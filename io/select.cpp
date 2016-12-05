@@ -22,6 +22,7 @@ void SubSelectEvent::_event_add(int evt_fd, int evt_type)  {
 
 void SubSelectEvent::_event_init(int srv_fd) {
     FD_ZERO(&_read_set);
+    FD_ZERO(&_write_set);
     _svr_fd = srv_fd;
     _max_sock_fd = srv_fd;
 }
@@ -60,29 +61,20 @@ void SubSelectEvent::_event_loop() {
                 }
                 // 当前client fd 是否可读
                 if (FD_ISSET(_clt_sock_vec[i], &_copy_read_set)) {
-                    std::cout << "RECV ONE!" << std::endl;
                     // 读函数
                     int recv_ret = _event_read_callback_proc(_clt_sock_vec[i]);
                     if (recv_ret == 0) {
-                        std::cout << "HEHHE" << std::endl;
                         FD_CLR(_clt_sock_vec[i], &_read_set);
                         FD_CLR(_clt_sock_vec[i], &_write_set);
                         close(_clt_sock_vec[i]);
                         _clt_sock_vec.erase(_clt_sock_vec.begin() + i);
                         continue;
                     }
-
-                    // FD_CLR(_clt_sock_vec[i], &_read_set);
                     _event_add(_clt_sock_vec[i], EVT_WRITE);
-                    // write back 
-                    // TODO add write _event into another fd set
-                    //
                 // 当前client socket fd 是否可写
-                } 
-                if (FD_ISSET(_clt_sock_vec[i], &_copy_write_set)) {
+                } else if (FD_ISSET(_clt_sock_vec[i], &_copy_write_set)) {
                     char write_buf[128] = "HTTP/1.1 200 OK\r\nContent-Length: 11\r\n\r\nHello World";
                     if (send(_clt_sock_vec[i], write_buf, sizeof(write_buf), 0) <= 0) {
-                        std::cout << "send data error!" << std::endl;
                         FD_CLR(_clt_sock_vec[i], &_write_set);
                         FD_CLR(_clt_sock_vec[i], &_read_set);
                         close(_clt_sock_vec[i]);
