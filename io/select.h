@@ -19,6 +19,7 @@
 #include  <netinet/in.h>
 #include  <arpa/inet.h>
 #include "event.h"
+#include "errno.h"
 
 namespace sub_framework {
 
@@ -29,6 +30,8 @@ class SubSelectEvent : public SubEvent {
 private:
     fd_set _read_set;
     fd_set _write_set;
+    fd_set _copy_read_set;
+    fd_set _copy_write_set;
     int _svr_fd;
     std::vector<int> _clt_sock_vec;
     int _max_sock_fd;

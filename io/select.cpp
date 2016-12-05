@@ -30,16 +30,19 @@ void SubSelectEvent::_event_loop() {
     
     while (true) {
         struct timeval tv = {5, 0};
-        FD_ZERO(&_write_set);
-        _write_set = _read_set;
-        int ret = select(_max_sock_fd + 1, &_write_set, NULL, NULL, &tv);
+        FD_ZERO(&_copy_read_set);
+        FD_ZERO(&_copy_write_set);
+        _copy_write_set = _write_set;
+        _copy_read_set = _read_set;
+        int ret = select(_max_sock_fd + 1, &_copy_read_set, &_copy_write_set, NULL, &tv);
         if (-1 == ret) {
+            std::cout << errno << std::endl;
             std::cout << "Select Error!" << std::endl;
         } else if (0 == ret) {
             std::cout << "Select Time Out!" << std::endl;
         } else {
             // ACCEPT
-            if (FD_ISSET(_svr_fd, &_write_set)) { // accpet {
+            if (FD_ISSET(_svr_fd, &_copy_read_set)) { // accpet {
                 int new_fd = _event_accept_callback_proc(_svr_fd);
                 if (-1 == new_fd) {
                     std::cout << "Select Accpet Error!" << std::endl;
@@ -50,29 +53,40 @@ void SubSelectEvent::_event_loop() {
                     _clt_sock_vec.push_back(new_fd);
                 }
             }
-
             // 
             for (int i = 0; i < _clt_sock_vec.size(); i++) {
-                std::cout << _clt_sock_vec[i] << " ..." << std::endl;
-                if (_clt_sock_vec[i] != -1 && FD_ISSET(_clt_sock_vec[i], &_write_set)) {
+                if (-1 == _clt_sock_vec[i]) {
+                    continue;
+                }
+                // 当前client fd 是否可读
+                if (FD_ISSET(_clt_sock_vec[i], &_copy_read_set)) {
                     std::cout << "RECV ONE!" << std::endl;
+                    // 读函数
                     int recv_ret = _event_read_callback_proc(_clt_sock_vec[i]);
                     if (recv_ret == 0) {
+                        std::cout << "HEHHE" << std::endl;
                         FD_CLR(_clt_sock_vec[i], &_read_set);
+                        FD_CLR(_clt_sock_vec[i], &_write_set);
                         close(_clt_sock_vec[i]);
                         _clt_sock_vec.erase(_clt_sock_vec.begin() + i);
                         continue;
                     }
 
+                    // FD_CLR(_clt_sock_vec[i], &_read_set);
+                    _event_add(_clt_sock_vec[i], EVT_WRITE);
                     // write back 
                     // TODO add write _event into another fd set
                     //
+                // 当前client socket fd 是否可写
+                } 
+                if (FD_ISSET(_clt_sock_vec[i], &_copy_write_set)) {
                     char write_buf[128] = "HTTP/1.1 200 OK\r\nContent-Length: 11\r\n\r\nHello World";
                     if (send(_clt_sock_vec[i], write_buf, sizeof(write_buf), 0) <= 0) {
+                        std::cout << "send data error!" << std::endl;
+                        FD_CLR(_clt_sock_vec[i], &_write_set);
                         FD_CLR(_clt_sock_vec[i], &_read_set);
                         close(_clt_sock_vec[i]);
                         _clt_sock_vec.erase(_clt_sock_vec.begin() + i);
-                        continue;
                     }
                 }
             }

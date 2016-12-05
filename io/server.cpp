@@ -129,6 +129,7 @@ int SubServer::_on_read(int clt_fd) {
     SubTask* task = new ReqTask("req_task");
     task->_set_task_data((void*)recv_buf);
     SubTaskMgr::_get_instance()->_add_task(task);
+    
     return 1;
 }
 
