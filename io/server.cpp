@@ -49,7 +49,6 @@ void SubServer::_init_evt(int evt_type) {
     }
 }
 
-
 void SubServer::_set_nonblocking(int sock_fd) {
     int opts = fcntl(sock_fd, F_GETFL);  
     opts = (opts | O_NONBLOCK); 
