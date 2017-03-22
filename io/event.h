@@ -1,4 +1,3 @@
- 
 /**
  * @file event.h
  * @author kymowind@gmail.com
@@ -6,9 +5,6 @@
  * @brief 
  *  
  **/
-
-
-
 
 #ifndef  __EVENT_H_
 #define  __EVENT_H_
@@ -26,13 +22,17 @@ class SubEvent {
     
 private:
     int _ev_fd;
+
 public:
     EVENT_CALL_BACK_PROC _event_read_callback_proc;
     EVENT_CALL_BACK_PROC _event_accept_callback_proc;
     
+    // read 回调函数
     void _set_read_callback_proc(EVENT_CALL_BACK_PROC event_read_callback_proc) {
         _event_read_callback_proc = event_read_callback_proc;
     }
+
+    // accept 回调函数
     void _set_accept_callback_proc(EVENT_CALL_BACK_PROC event_accept_callback_proc) {
         _event_accept_callback_proc = event_accept_callback_proc;
     }

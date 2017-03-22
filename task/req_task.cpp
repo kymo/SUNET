@@ -40,6 +40,9 @@ int ReqTask::_call_back() {
     //int v = *((int*)_task_ret);
     char *ret = (char*) _task_ret; 
     std::cout << ret << " all back function for task " << _task_name << ":" << buf << std::endl;
+    
+    /*解析html请求*/
+
     return 0;
 }
 

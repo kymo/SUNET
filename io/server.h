@@ -25,6 +25,7 @@
 #include <arpa/inet.h>
 #include "select.h"
 #include "event.h"
+#include "epoll.h"
 #include <fcntl.h>
 #include "define.h"
 #include "task.h"

@@ -15,6 +15,8 @@
 #include <vector>
 #include <map>
 #include <pthread.h>
+#include "task.h"
+#include "task_mgr.h"
 
 namespace sub_framework {
 
@@ -24,14 +26,27 @@ enum {
     THREAD_EXIT = -1
 };
 
-// thread handler
+// SubThreadHandler -- 每一个线程的处理单元
 class SubThreadHandler {
 public:
     SubThreadHandler () {
         _stoped = false;
     }
     ~SubThreadHandler() {}
-    virtual int _thread_proc_handler(void* args) = 0;
+    
+    int _thread_proc_handler(void* args) {
+        // 线程从task 队列中获取一个task,如果获取成功，则执行该task
+        // 每一个task都有对应的回调函数
+        while (! _stoped) {
+            SubTask* task = SubTaskMgr::_get_instance()->_get_task();
+            if (NULL != task) {
+                std::cout << "deal with task " << task->_task_name << std::endl;
+                task->_run();
+                task->_call_back();
+            }
+        }
+    }
+    
     bool _is_stop() {
         return _stoped;
     }

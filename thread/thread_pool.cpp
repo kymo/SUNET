@@ -8,7 +8,6 @@
  **/
 
 #include "thread_pool.h"
-#include "task_handler.h"
 
 namespace sub_framework {
     
@@ -44,8 +43,8 @@ int SubThreadPool::_start() {
         return 0;
     }
     for (int i = 0; i < _threads_cnt; i++) {
-        SubThreadHandler* sub_task_handler = new SubTaskHandler();
-        SubThread* sub_thread = new SubThread(sub_task_handler, (void*)&i);
+        SubThreadHandler* sub_thread_handler = new SubThreadHandler();
+        SubThread* sub_thread = new SubThread(sub_thread_handler, (void*)&i);
         sub_thread->_start();
         _threads.push_back(sub_thread);
     }

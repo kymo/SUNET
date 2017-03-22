@@ -46,6 +46,8 @@ void SubServer::_init_sock(int port) {
 void SubServer::_init_evt(int evt_type) {
     if (evt_type == SELECT) {
         _event = new SubSelectEvent();
+    } else if (evt_type == EPOLL) {
+        _event = new SubEpollEvent();
     }
 }
 
@@ -89,9 +91,11 @@ int SubServer::_on_read(int clt_fd) {
         if (errno == EWOULDBLOCK) {
             std::cout << "READ NONBLOCKING" << std::endl;
         }
+
         std::cout << "READ ret " << ret << std::endl;
         if (0 == ret) {
             // client close socket
+            std::cout << "client close socket!" << std::endl;
             close(clt_fd);
             return 0;
         }
@@ -106,44 +110,22 @@ int SubServer::_on_read(int clt_fd) {
         }
     } while(true);
 
-
-    /*
-    while (ret >= 0) {
-        ret = recv(clt_fd, recv_buf, sizeof(recv_buf), 0);
-        std::cout << "Recv " << ret<< std::endl;
-        if (ret <= 0) {
-            return ret;
-        } else {
-            memcpy(buf, recv_buf, sizeof(recv_buf));
-            ret_tot += ret;
-            if (ret < 1024) {
-                break;
-            }
-        }
-    }   
-    */
     std::cout << "Get it from client:%s" << recv_buf << std::endl;
     // read wanle
     // addinto task query
     SubTask* task = new ReqTask("req_task");
     task->_set_task_data((void*)recv_buf);
     SubTaskMgr::_get_instance()->_add_task(task);
-    
     return 1;
 }
 
-
-
 void SubServer::_run() {
-
-
     // 初始化socket
     _init_sock(9999);
-
     // init io model
-    _init_evt(SELECT);
+    // _init_evt(SELECT);
+    _init_evt(EPOLL);
     _event->_event_init(_svr_fd);
-    _event->_event_add(_svr_fd, 0); 
     _event->_set_read_callback_proc(&SubServer::_on_read);
     _event->_set_accept_callback_proc(&SubServer::_on_accept);
     // event loop

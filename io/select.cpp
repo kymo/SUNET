@@ -25,6 +25,7 @@ void SubSelectEvent::_event_init(int srv_fd) {
     FD_ZERO(&_write_set);
     _svr_fd = srv_fd;
     _max_sock_fd = srv_fd;
+    _event_add(srv_fd, EVT_READ);
 }
 
 void SubSelectEvent::_event_loop() {
@@ -59,11 +60,13 @@ void SubSelectEvent::_event_loop() {
                 if (-1 == _clt_sock_vec[i]) {
                     continue;
                 }
+                
                 // 当前client fd 是否可读
                 if (FD_ISSET(_clt_sock_vec[i], &_copy_read_set)) {
                     // 读函数
                     int recv_ret = _event_read_callback_proc(_clt_sock_vec[i]);
                     if (recv_ret == 0) {
+                        // 从读写集合中剔除该client socket
                         FD_CLR(_clt_sock_vec[i], &_read_set);
                         FD_CLR(_clt_sock_vec[i], &_write_set);
                         close(_clt_sock_vec[i]);
