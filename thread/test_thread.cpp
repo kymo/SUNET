@@ -1,7 +1,7 @@
  
 /**
  * @file main.cpp
- * @author wangxiaofeng04(com@baidu.com)
+ * @author 
  * @date 2016/10/08 22:19:53
  * @brief 
  *  

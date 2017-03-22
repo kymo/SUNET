@@ -1,7 +1,7 @@
  
 /**
  * @file define.h
- * @author wangxiaofeng04(com@baidu.com)
+ * @author wangxi
  * @date 2016/10/17 10:06:03
  * @brief 
  *  
