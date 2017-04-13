@@ -63,7 +63,8 @@ int SubServer::_on_accept(int svr_fd) {
     memset(&client_addr, 0, sizeof(client_addr));
     socklen_t clit_len = sizeof(struct sockaddr);
     int new_sock = accept(svr_fd, (struct sockaddr*)&client_addr, &clit_len);
-    // TODO set nonblocking
+    std::cout << "accept " << new_sock << std::endl;
+	// TODO set nonblocking
     _set_nonblocking(new_sock);
     return new_sock;
 }
@@ -87,31 +88,34 @@ int SubServer::_on_read(int clt_fd) {
                 break;
             }
         }
-        
-        if (errno == EWOULDBLOCK) {
-            std::cout << "READ NONBLOCKING" << std::endl;
-        }
-
+        // ret = recv(clt_fd, recv_buf + buf_index, buf_left, 0);
         std::cout << "READ ret " << ret << std::endl;
-        if (0 == ret) {
+        if (-1 == ret) {
+            if (errno != EAGAIN) {
+                // read error!
+                std::cout << "read erro!" << std::endl;
+                return 0;
+            } else {
+                break;
+            }
+        } else if (ret == 0) {
             // client close socket
             std::cout << "client close socket!" << std::endl;
             close(clt_fd);
             return 0;
+        } else { 
+            buf_index += ret;
+            buf_left -= ret;
+            if (0 == buf_left) {
+                break;
+            }
         }
-        if (-1 == ret && errno != EAGAIN) {
-            // read error!
-            std::cout << "read erro!" << std::endl;
-            return 0;
-        }
-        if (errno == EAGAIN) {
-            std::cout << "read again!" << std::endl;
-            break;
-        }
+        // std::cout << recv_buf << std::endl;
     } while(true);
-
-    std::cout << "Get it from client:%s" << recv_buf << std::endl;
-    // read wanle
+	if (strlen(recv_buf) == 0) {
+		return 0;
+	}
+	// read wanle
     // addinto task query
     SubTask* task = new ReqTask("req_task");
     task->_set_task_data((void*)recv_buf);
@@ -121,7 +125,7 @@ int SubServer::_on_read(int clt_fd) {
 
 void SubServer::_run() {
     // 初始化socket
-    _init_sock(9999);
+    _init_sock(9000);
     // init io model
     // _init_evt(SELECT);
     _init_evt(EPOLL);
@@ -130,7 +134,6 @@ void SubServer::_run() {
     _event->_set_accept_callback_proc(&SubServer::_on_accept);
     // event loop
     _event->_event_loop();
-
 }
 
 }

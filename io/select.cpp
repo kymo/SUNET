@@ -57,6 +57,7 @@ void SubSelectEvent::_event_loop() {
             }
             // 
             for (int i = 0; i < _clt_sock_vec.size(); i++) {
+                // std::cout << "click socket fd " << _clt_sock_vec[i] << std::endl;
                 if (-1 == _clt_sock_vec[i]) {
                     continue;
                 }
@@ -64,6 +65,7 @@ void SubSelectEvent::_event_loop() {
                 // 当前client fd 是否可读
                 if (FD_ISSET(_clt_sock_vec[i], &_copy_read_set)) {
                     // 读函数
+                    // std::cout << "sock " << _clt_sock_vec[i] << " read" << std::endl;
                     int recv_ret = _event_read_callback_proc(_clt_sock_vec[i]);
                     if (recv_ret == 0) {
                         // 从读写集合中剔除该client socket
@@ -76,6 +78,7 @@ void SubSelectEvent::_event_loop() {
                     _event_add(_clt_sock_vec[i], EVT_WRITE);
                 // 当前client socket fd 是否可写
                 } else if (FD_ISSET(_clt_sock_vec[i], &_copy_write_set)) {
+                    // std::cout << "sock " << _clt_sock_vec[i] << " read" << std::endl;
                     char write_buf[128] = "HTTP/1.1 200 OK\r\nContent-Length: 11\r\n\r\nHello World";
                     if (send(_clt_sock_vec[i], write_buf, sizeof(write_buf), 0) <= 0) {
                         FD_CLR(_clt_sock_vec[i], &_write_set);

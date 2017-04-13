@@ -44,7 +44,7 @@ int main() {
     
     // 启动线程池
     SubThreadPool::_get_instance()->_init();
-    SubThreadPool::_get_instance()->_set_thread_cnt(3);
+    SubThreadPool::_get_instance()->_set_thread_cnt(10);
     SubThreadPool::_get_instance()->_start();
     // 启动服务
     SubServer*svr = SubServer::_get_instance();

@@ -8,6 +8,7 @@
  **/
 
 #include "req_task.h"
+#include "http_parse.h"
 
 namespace sub_framework {
 
@@ -39,11 +40,11 @@ int ReqTask::_call_back() {
     char* buf = (char*) _task_data;
     //int v = *((int*)_task_ret);
     char *ret = (char*) _task_ret; 
-    std::cout << ret << " all back function for task " << _task_name << ":" << buf << std::endl;
-    
     /*解析html请求*/
-
-    return 0;
+	Request request;
+    HttpParser httpp;
+    httpp._parse(buf, request);
+	return 0;
 }
 
 }

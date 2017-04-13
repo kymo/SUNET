@@ -21,6 +21,8 @@
 #include <arpa/inet.h>
 #include "event.h"
 #include "errno.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 namespace sub_framework {
 
