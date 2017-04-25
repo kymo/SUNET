@@ -65,7 +65,11 @@ int SubServer::_on_accept(int svr_fd) {
 	struct sockaddr_in _client_addr;
 	memset(&_client_addr, 0, sizeof(_client_addr));
     socklen_t clit_len = sizeof(struct sockaddr);
+<<<<<<< HEAD
     int new_sock = accept(svr_fd, (struct sockaddr*)&_client_addr, &clit_len);
+=======
+    int new_sock = accept(svr_fd, (struct sockaddr*)&client_addr, &clit_len);
+>>>>>>> 19e8e5c482f9d54b2584340924037c4e31f486c6
     std::cout << "accept " << new_sock << std::endl;
 	// TODO set nonblocking
     _set_nonblocking(new_sock);
@@ -94,7 +98,6 @@ int SubServer::_on_read(int clt_fd) {
         }*/
         ret = recv(clt_fd, recv_buf + buf_index, buf_left, 0);
         std::cout << "READ ret " << ret << std::endl;
-        // std::cout << recv_buf << std::endl;
         if (-1 == ret) {
             if (errno != EAGAIN) {
                 // read error!
@@ -115,8 +118,13 @@ int SubServer::_on_read(int clt_fd) {
                 break;
             }
         }
+<<<<<<< HEAD
     } while(true);
 
+=======
+        // std::cout << recv_buf << std::endl;
+    } while(true);
+>>>>>>> 19e8e5c482f9d54b2584340924037c4e31f486c6
 	if (strlen(recv_buf) == 0) {
 		return 0;
 	}

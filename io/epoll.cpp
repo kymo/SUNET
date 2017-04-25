@@ -33,6 +33,7 @@ void SubEpollEvent::_event_loop() {
             std::cout << "[Error] epoll loop error!" << std::endl;
             return ;
         }
+        std::cout << "mid" << std::endl;
         for (int fd = 0; fd < max_fd; ++fd) {
             int handler_fd = _epl_evt_set[fd].data.fd;
             // std::cout << handler_fd << " " << _svr_fd << " " << (_epl_evt_set[fd].events & EPOLLIN) <<  std::endl;
@@ -86,6 +87,7 @@ void SubEpollEvent::_event_loop() {
                 // 
 			}
         }
+        std::cout << "end" << std::endl;
     }
 }
 

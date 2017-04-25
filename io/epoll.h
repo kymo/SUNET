@@ -12,6 +12,7 @@
 #include <iostream>
 #include <vector>
 #include "event.h"
+#include "errno.h"
 #include <stdio.h>
 #include <stdlib.h>
 
