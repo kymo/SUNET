@@ -37,10 +37,13 @@ private:
     int _max_sock_fd;
 
 public:
-    
+    SubSelectEvent() {
+        _type = SELECT;
+    }
     virtual void _event_init(int srv_fd);
     virtual void _event_loop();
     virtual void _event_add(int evt_fd, int evt_type);
+    virtual int _event_mod(int evt_fd, int evt_type);
 
 };
 

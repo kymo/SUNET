@@ -7,9 +7,6 @@
  *  
  **/
 
-
-
-
 #ifndef  __SERVER_H_
 #define  __SERVER_H_
 #include <stdio.h>
@@ -35,27 +32,22 @@
 
 namespace sub_framework {
 
-enum IOTYPE {
-    SELECT = 0,
-    EPOLL
-};
-
 enum TASKTYPE {
 };
 
 #define REQ_TASK "req_task"
 #define PARSER_TASK "parser_task"
 
+static SubEvent* _event;
+
 class SubServer {
    
 SINGLETN(Server);
 
 private:
-    
 	struct sockaddr_in _svr_addr;
     int _svr_fd;
     std::vector<int> _clt_sock_vec;
-    SubEvent* _event;
 
 public:
     void _run();
@@ -67,6 +59,7 @@ public:
     static void _set_nonblocking(int sock_fd);
 
 };
+
 }
 
 #endif 

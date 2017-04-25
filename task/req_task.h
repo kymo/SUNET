@@ -15,8 +15,21 @@
 
 #include "task.h"
 #include "task_mgr.h"
+#include "event.h"
 
 namespace sub_framework {
+
+typedef struct req_task_data {
+    int _fd;
+    char *_data;
+    SubEvent* _evt;
+    req_task_data() {}
+    req_task_data(int fd, char* data, SubEvent* evt) {
+        _fd = fd;
+        _data = data;
+        _evt = evt;
+    }
+} REQ_TASK_DATA;
 
 class ReqTask : public SubTask {
 

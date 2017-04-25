@@ -28,6 +28,9 @@ void SubSelectEvent::_event_init(int srv_fd) {
     _event_add(srv_fd, EVT_READ);
 }
 
+int SubSelectEvent::_event_mod(int evt_fd, int evt_type) {
+}
+
 void SubSelectEvent::_event_loop() {
     
     while (true) {
@@ -38,7 +41,6 @@ void SubSelectEvent::_event_loop() {
         _copy_read_set = _read_set;
         int ret = select(_max_sock_fd + 1, &_copy_read_set, &_copy_write_set, NULL, &tv);
         if (-1 == ret) {
-            std::cout << errno << std::endl;
             std::cout << "Select Error!" << std::endl;
         } else if (0 == ret) {
             std::cout << "Select Time Out!" << std::endl;
@@ -49,7 +51,6 @@ void SubSelectEvent::_event_loop() {
                 if (-1 == new_fd) {
                     std::cout << "Select Accpet Error!" << std::endl;
                 } else {
-                    std::cout << "Accept from client, sock fd:" << new_fd << std::endl;
                     _event_add(new_fd, EVT_READ);
                     _max_sock_fd = std::max(_max_sock_fd, new_fd); 
                     _clt_sock_vec.push_back(new_fd);
@@ -57,13 +58,14 @@ void SubSelectEvent::_event_loop() {
             }
             // 
             for (int i = 0; i < _clt_sock_vec.size(); i++) {
+                // std::cout << "click socket fd " << _clt_sock_vec[i] << std::endl;
                 if (-1 == _clt_sock_vec[i]) {
                     continue;
                 }
-                
                 // 当前client fd 是否可读
                 if (FD_ISSET(_clt_sock_vec[i], &_copy_read_set)) {
                     // 读函数
+                    // std::cout << "sock " << _clt_sock_vec[i] << " read" << std::endl;
                     int recv_ret = _event_read_callback_proc(_clt_sock_vec[i]);
                     if (recv_ret == 0) {
                         // 从读写集合中剔除该client socket
@@ -76,6 +78,7 @@ void SubSelectEvent::_event_loop() {
                     _event_add(_clt_sock_vec[i], EVT_WRITE);
                 // 当前client socket fd 是否可写
                 } else if (FD_ISSET(_clt_sock_vec[i], &_copy_write_set)) {
+                    // std::cout << "sock " << _clt_sock_vec[i] << " read" << std::endl;
                     char write_buf[128] = "HTTP/1.1 200 OK\r\nContent-Length: 11\r\n\r\nHello World";
                     if (send(_clt_sock_vec[i], write_buf, sizeof(write_buf), 0) <= 0) {
                         FD_CLR(_clt_sock_vec[i], &_write_set);
@@ -89,24 +92,6 @@ void SubSelectEvent::_event_loop() {
     }
 }
 
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* vim: set expandtab ts=4 sw=4 sts=4 tw=100: */

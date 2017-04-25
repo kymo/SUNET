@@ -25,7 +25,6 @@ SubThreadPool::~SubThreadPool() {
 
 void SubThreadPool::_init() {
     _threads_cnt = SubConfig::_get_instance()->_get_thread_cnt();
-    std::cout << "thread cnt:" << _threads_cnt << std::endl;
 }
 
 void SubThreadPool::_set_thread_cnt(int thread_cnt) {

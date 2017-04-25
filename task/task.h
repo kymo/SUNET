@@ -19,7 +19,6 @@
 
 namespace sub_framework {
 
-
 class SubTask {
 
 public:

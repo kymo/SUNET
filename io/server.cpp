@@ -14,6 +14,7 @@
 namespace sub_framework {
 
 INIT_SINGLE(Server);
+INIT_SINGLE(EventQueue);
 
 void SubServer::_init_sock(int port) {
     memset(&_svr_addr, 0, sizeof(&_svr_addr));
@@ -41,6 +42,7 @@ void SubServer::_init_sock(int port) {
     }
     // 设置为非阻塞
     _set_nonblocking(_svr_fd);
+    
 }
 
 void SubServer::_init_evt(int evt_type) {
@@ -59,11 +61,13 @@ void SubServer::_set_nonblocking(int sock_fd) {
 }
 
 int SubServer::_on_accept(int svr_fd) {
-    struct sockaddr_in client_addr;
-    memset(&client_addr, 0, sizeof(client_addr));
+	
+	struct sockaddr_in _client_addr;
+	memset(&_client_addr, 0, sizeof(_client_addr));
     socklen_t clit_len = sizeof(struct sockaddr);
-    int new_sock = accept(svr_fd, (struct sockaddr*)&client_addr, &clit_len);
-    // TODO set nonblocking
+    int new_sock = accept(svr_fd, (struct sockaddr*)&_client_addr, &clit_len);
+    std::cout << "accept " << new_sock << std::endl;
+	// TODO set nonblocking
     _set_nonblocking(new_sock);
     return new_sock;
 }
@@ -72,56 +76,62 @@ int SubServer::_on_read(int clt_fd) {
     std::cout << "on read callback proc!" << std::endl;
     char buf[65536];
     buf[0] = '\0';
-    char recv_buf[65536];
+
+    char* recv_buf = new char[65536 * 10];
     int ret = 0;
     int ret_tot = 0;
     std::cout << "Begin to recv:" << std::endl;
     int buf_index = 0;
-    int buf_left = 65536;
+    int buf_left = 65536 * 10;
     
     do {
-        while ((ret = recv(clt_fd, recv_buf + buf_index, buf_left, 0)) > 0) {
+        /*while ((ret = recv(clt_fd, recv_buf + buf_index, buf_left, 0)) > 0) {
+            buf_index += ret;
+            buf_left -= ret;
+            if (0 == buf_left) {
+                break;
+            }
+        }*/
+        ret = recv(clt_fd, recv_buf + buf_index, buf_left, 0);
+        std::cout << "READ ret " << ret << std::endl;
+        // std::cout << recv_buf << std::endl;
+        if (-1 == ret) {
+            if (errno != EAGAIN) {
+                // read error!
+                std::cout << "read erro!" << std::endl;
+                return 0;
+            } else {
+                break;
+            }
+        } else if (ret == 0) {
+            // client close socket
+            std::cout << "client close socket!" << std::endl;
+            close(clt_fd);
+            return 0;
+        } else { 
             buf_index += ret;
             buf_left -= ret;
             if (0 == buf_left) {
                 break;
             }
         }
-        
-        if (errno == EWOULDBLOCK) {
-            std::cout << "READ NONBLOCKING" << std::endl;
-        }
-
-        std::cout << "READ ret " << ret << std::endl;
-        if (0 == ret) {
-            // client close socket
-            std::cout << "client close socket!" << std::endl;
-            close(clt_fd);
-            return 0;
-        }
-        if (-1 == ret && errno != EAGAIN) {
-            // read error!
-            std::cout << "read erro!" << std::endl;
-            return 0;
-        }
-        if (errno == EAGAIN) {
-            std::cout << "read again!" << std::endl;
-            break;
-        }
     } while(true);
 
-    std::cout << "Get it from client:%s" << recv_buf << std::endl;
-    // read wanle
+	if (strlen(recv_buf) == 0) {
+		return 0;
+	}
+	// read wanle
     // addinto task query
     SubTask* task = new ReqTask("req_task");
-    task->_set_task_data((void*)recv_buf);
+    REQ_TASK_DATA* req_task_data = new REQ_TASK_DATA(clt_fd, recv_buf, _event);
+    task->_set_task_data((void*)(req_task_data));
     SubTaskMgr::_get_instance()->_add_task(task);
     return 1;
 }
 
 void SubServer::_run() {
     // 初始化socket
-    _init_sock(9999);
+    _init_sock(9000);
     // init io model
     // _init_evt(SELECT);
     _init_evt(EPOLL);
@@ -130,7 +140,6 @@ void SubServer::_run() {
     _event->_set_accept_callback_proc(&SubServer::_on_accept);
     // event loop
     _event->_event_loop();
-
 }
 
 }

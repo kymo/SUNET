@@ -3,7 +3,7 @@ CFLAGS+=-g -w -D$(MACRO) -lpthread
 SRCPATH=.
 INCLUDEPATH=.
 INCLUDEPATH+=../config
-INCLUDEPATH+=../task
+INCLUDEPATH+=../task ../io
 TARGET=sub
 SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 
@@ -24,4 +24,4 @@ clean:
 
 build:
 	g++ -c ${CFLAGS} ${SOURCES} 
-	g++ ${CFLAGS} -o ${TARGET} ${OBJS} ${ALIAS_OBJS}
+	#g++ ${CFLAGS} -o ${TARGET} ${OBJS} ${ALIAS_OBJS}

@@ -1,9 +1,9 @@
 MACRO=DEBUGALL
-CFLAGS+=-g -w -D$(MACRO) -lpthread
+CFLAGS+=-g -w -D$(MACRO) -lpthread -O2
 SRCPATH=.
 INCLUDEPATH=.
-INCLUDEPATH+=../util ../task ../thread ../config
-TARGET=event
+INCLUDEPATH+=../util ../task ../thread ../config ../http
+TARGET=sub
 SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 
 #OBJS := $(patsubst %.cpp, %.o,$(SOURCES))
@@ -12,7 +12,8 @@ ALIAS_OBJS=../task/task_mgr.o \
 		   ../config/config.o \
 		   ../task/req_task.o \
 		   ../thread/thread_pool.o \
-		   ../thread/thread.o
+		   ../thread/thread.o \
+		   ../http/http_parse.o
 
 CFLAGS+=$(foreach dir, $(INCLUDEPATH), -I$(dir))
 

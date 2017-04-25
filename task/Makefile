@@ -2,14 +2,14 @@ MACRO=DEBUGALL
 CFLAGS+=-g -w -D$(MACRO)
 SRCPATH=.
 INCLUDEPATH=.
-INCLUDEPATH+=../config
-INCLUDEPATH+=../thread
+INCLUDEPATH+=../config ../thread ../http ../io ../util
 TARGET=sub
 SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 
 #OBJS := $(patsubst %.cpp, %.o,$(SOURCES))
 OBJS=$(SOURCES:.cpp=.o)
-OBJS+=../config/config.o
+OBJS+=../config/config.o ../http/http_parse.o
+
 CFLAGS+=$(foreach dir, $(INCLUDEPATH), -I$(dir))
 
 all: build

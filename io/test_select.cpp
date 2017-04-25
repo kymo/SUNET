@@ -7,7 +7,6 @@
  *  
  **/
 
-
 #include  <stdio.h>
 #include  <iostream>
 #include  <unistd.h>
@@ -27,10 +26,12 @@
 using namespace sub_framework;
 
 // 逻辑回调函数
+
 int req_task_call_back(void *a, void *b) {
     char* buf = (char*) a;
     char *ret = (char*) b; 
     char write_buf[128] = "HTTP/1.1 200 OK\r\nContent-Length: 11\r\n\r\nHello World"; 
+    std::cout << "ret" << write_buf << std::endl;
     strcpy(ret, write_buf);
     return 1;
 }
@@ -38,13 +39,11 @@ int req_task_call_back(void *a, void *b) {
 int main() {
     // init task_mgr
     SubTaskMgr::_get_instance()->_init();
-   
     // 设置核心逻辑的回调函数
     SubTaskMgr::_get_instance()->_set_call_back_proc(REQ_TASK, req_task_call_back);
-    
     // 启动线程池
     SubThreadPool::_get_instance()->_init();
-    SubThreadPool::_get_instance()->_set_thread_cnt(3);
+    SubThreadPool::_get_instance()->_set_thread_cnt(1);
     SubThreadPool::_get_instance()->_start();
     // 启动服务
     SubServer*svr = SubServer::_get_instance();
