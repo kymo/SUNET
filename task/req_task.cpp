@@ -35,20 +35,19 @@ int ReqTask::_run() {
     }
 	// 解析http
 	Request request;
-    HttpParser httpp;
+    HttpParser http;
     //char* buf = (char*) _task_data;
     REQ_TASK_DATA *req_task_data = (REQ_TASK_DATA *)_task_data;
     if (req_task_data == NULL) {
         return 0;
     }
     char *buf = req_task_data->_data;
-    // std::cout << "task data" << buf << std::endl;
     int fd = req_task_data->_fd;
-    // httpp._parse(buf, request);
-	// std::cout << " ----------------------------------- " << std::endl;
-	// std::cout << "Request result:" << std::endl;
+    http._parse(buf, request);
 	/*
-	 * std::cout << request.url << std::endl;
+    std::cout << " ----------------------------------- " << std::endl;
+	std::cout << "Request result:" << std::endl;
+	std::cout << request.url << std::endl;
 	std::cout << request.method << std::endl;
 	std::cout << request.version << std::endl;
 	for (std::map<std::string, std::string>::iterator it = request.headers.begin(); it != request.headers.end(); it++) {
@@ -57,20 +56,19 @@ int ReqTask::_run() {
 	for (std::map<std::string, std::string>::iterator it = request.params.begin(); it != request.params.end(); it++) {
 		std::cout << it->first << ":" << it->second << std::endl;
 	}
-	*/
+    */
 	// std::cout << "fuck" << " " << fd << std::endl;
 	// 判断http 的url
-	// if (strcmp(http.url, "/get") == 0) {
-		 
-	// }
-	
+	if (strcmp(request.url, "/get") == 0) {
+
+    }
+
     _task_ret = (void*)(malloc(sizeof(char) * 65536));
     int ret = (*call_back_proc)(_task_data, _task_ret);
     SubEventQueue::_get_instance()->_set_evt_data(fd, (char*)_task_ret);
     if (req_task_data->_evt->_type == SELECT) {
-        //req_task_data->_evt->_event_add(fd, EVT_WRITE);
+        req_task_data->_evt->_event_add(fd, EVT_WRITE);
     } else if (req_task_data->_evt->_type == EPOLL) {
-        //std::cout << "mod event" << std::endl;
         req_task_data->_evt->_event_mod(fd, EPOLLOUT | EPOLLET);
     }
     return ret;
@@ -85,8 +83,8 @@ int ReqTask::_call_back() {
     char *ret = (char*) _task_ret; 
     /*解析html请求*/
 	/*Request request;
-    HttpParser httpp;
-    httpp._parse(buf, request);
+    HttpParser http;
+    http._parse(buf, request);
 	*/
 	return 0;
 }

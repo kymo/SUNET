@@ -33,16 +33,15 @@ void SubEpollEvent::_event_loop() {
             std::cout << "[Error] epoll loop error!" << std::endl;
             return ;
         }
-        std::cout << "mid" << std::endl;
         for (int fd = 0; fd < max_fd; ++fd) {
             int handler_fd = _epl_evt_set[fd].data.fd;
             // std::cout << handler_fd << " " << _svr_fd << " " << (_epl_evt_set[fd].events & EPOLLIN) <<  std::endl;
             if (handler_fd == _svr_fd) {
                 int new_fd = _event_accept_callback_proc(_svr_fd);
                 std::cout << "ACCEPT CLIENT " << new_fd << std::endl;
-                if (-1 != new_fd) {
-				    _event_add(new_fd, EPOLLIN | EPOLLET);
-				}
+                //if (-1 != new_fd) {
+				//    _event_add(new_fd, EPOLLIN | EPOLLET);
+				//}
             	continue;
 			} 
 			if (_epl_evt_set[fd].events & EPOLLIN) {
@@ -82,12 +81,11 @@ void SubEpollEvent::_event_loop() {
                 //std::cout << "send okay!" << std::endl;
                 //_event_del(handler_fd, EPOLLOUT);
 				_event_mod(handler_fd, EPOLLIN | EPOLLET);
-				close(handler_fd);
+				// close(handler_fd);
                 // 
                 // 
 			}
         }
-        std::cout << "end" << std::endl;
     }
 }
 

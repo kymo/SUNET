@@ -40,17 +40,30 @@ class SubEventQueue {
 SINGLETN(EventQueue);    
 
 private:
+    pthread_mutex_t _set_mutex;
+    pthread_mutex_t _get_mutex;
     std::map<int, std::vector<char*> > _data_buf;
 
 public:
-    
+    void _init() {
+        
+        pthread_mutex_init(&_set_mutex, NULL);
+        pthread_mutex_init(&_get_mutex, NULL);
+    }
+
     void _set_evt_data(int fd, char* buf_ptr) {
+
         std::cout << "set " << fd << buf_ptr << std::endl;
+        
+        pthread_mutex_lock(&_set_mutex);
         if (_data_buf.find(fd) == _data_buf.end()) {
             _data_buf[fd] = std::vector<char*>();
         }
+
         std::cout << "set okay!" << std::endl;
         _data_buf[fd].push_back(buf_ptr);
+        pthread_mutex_unlock(&_set_mutex);
+        
     }
     
     void _get_evt_data(int fd, std::vector<char*>& ret) {

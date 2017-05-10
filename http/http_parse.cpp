@@ -14,7 +14,6 @@ void HttpParser::_parse(char* recv_buf, Request& request) {
     if (-1 == len) {
 		return ;
 	}
-	//_parse_headers(recv_buf + len, request);
     _parse_headers(recv_buf + len, request);
 }
 
@@ -47,20 +46,23 @@ int HttpParser::_parse_desc(char* recv_buf, Request& request) {
             request.url[strlen(p)] = '\0';
 			char* val = NULL;
 			char* ky = NULL;
-			if (s != NULL) {
+
+            if (s != NULL) {
 				char *outer_ptr=NULL;  
 				char *inner_ptr=NULL;
 				while ((val = strtok_r(s, "&", &outer_ptr)) != NULL) {
 					s = val;
+                    std::cout << val << std::endl;
 					ky = strtok_r(s, "=", &inner_ptr);
 					val = strtok_r(NULL, "=", &inner_ptr);
 					if (ky != NULL && val != NULL) {
 						request.params[std::string(ky)] = std::string(val);
+                        std::cout << "Key[" << ky << "][" << val << "]" << std::endl;
 					}
 					s = NULL;
 				}
 			}
-			std::cout << "Key[" << ky << "][" << val << "]" << std::endl;
+            //std::cout << ky << "." << val << std::endl;
 			//strncpy(request.url, recv_buf + strlen(request.method) + 1, parse_len);
             parse_len = 0;
             req_part = VER;
@@ -93,9 +95,9 @@ int HttpParser::_parse_desc(char* recv_buf, Request& request) {
 }
 
 int HttpParser::_parse_headers(char* recv_buf, Request& request) {
-    
     char *p = recv_buf;
-    char *key, *value;
+    char key[1024];
+    char value[10 * 1024];
     int i = 0;
     int parse_len = 0;
     while (1) {
@@ -107,8 +109,8 @@ int HttpParser::_parse_headers(char* recv_buf, Request& request) {
             i++;
             parse_len++;
         }
+
         if (*p == ':') {
-            key = (char*) malloc (sizeof(char) * (1 + parse_len));
             memset(key, 0, sizeof(key));
             strncpy(key, recv_buf + i - parse_len, parse_len);
             key[parse_len] = '\0';
@@ -116,10 +118,9 @@ int HttpParser::_parse_headers(char* recv_buf, Request& request) {
             p++;
             i++;
         }
-        while (*p != ' ') {
+        while (*p == ' ') {
             p ++;
             i ++;
-            parse_len ++;
         }
         while (*p != '\r') {
             p++;
@@ -127,7 +128,6 @@ int HttpParser::_parse_headers(char* recv_buf, Request& request) {
             parse_len++;
         }
         if (*p == '\r') {
-            value = (char*) malloc (sizeof(char) * (parse_len + 1));
             memset(value, 0, sizeof(value));
             strncpy(value, recv_buf + i - parse_len, parse_len);
             value[parse_len] = '\0';
@@ -136,14 +136,6 @@ int HttpParser::_parse_headers(char* recv_buf, Request& request) {
             i++;
         }
         request.headers[std::string(key)] = std::string(value);
-        if (key != NULL) {
-			free(key);
-			key = NULL;
-		}
-		if (value != NULL) {
-			free(value);
-			value = NULL;
-		}
 		i++;
         p++;
     }
