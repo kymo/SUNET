@@ -17,14 +17,19 @@ ReqTask::ReqTask(const std::string& task_name) {
 }
 
 ReqTask::~ReqTask() {
+	std::cout << "delete req task!" << std::endl;
 	if (NULL != _task_ret) {
 		free(_task_ret);
 		_task_ret = NULL;
+	}
+	if (NULL != _task_data) {
+		_task_data = NULL;
 	}
 }
 
 void ReqTask::_set_task_data(void *task_data) {
     _task_data = task_data;
+    _task_ret = (void*)(malloc(sizeof(char) * 65536));
 }
 
 int ReqTask::_run() {
@@ -41,11 +46,10 @@ int ReqTask::_run() {
     if (req_task_data == NULL) {
         return 0;
     }
-    char *buf = req_task_data->_data;
+    char *buf = req_task_data->_data->buf;
     int fd = req_task_data->_fd;
     http._parse(buf, request);
-	/*
-    std::cout << " ----------------------------------- " << std::endl;
+    /*
 	std::cout << "Request result:" << std::endl;
 	std::cout << request.url << std::endl;
 	std::cout << request.method << std::endl;
@@ -56,14 +60,13 @@ int ReqTask::_run() {
 	for (std::map<std::string, std::string>::iterator it = request.params.begin(); it != request.params.end(); it++) {
 		std::cout << it->first << ":" << it->second << std::endl;
 	}
-    */
 	// std::cout << "fuck" << " " << fd << std::endl;
 	// 判断http 的url
+	*/
 	if (strcmp(request.url, "/get") == 0) {
 
     }
 
-    _task_ret = (void*)(malloc(sizeof(char) * 65536));
     int ret = (*call_back_proc)(_task_data, _task_ret);
     SubEventQueue::_get_instance()->_set_evt_data(fd, (char*)_task_ret);
     if (req_task_data->_evt->_type == SELECT) {
@@ -71,6 +74,10 @@ int ReqTask::_run() {
     } else if (req_task_data->_evt->_type == EPOLL) {
         req_task_data->_evt->_event_mod(fd, EPOLLOUT | EPOLLET);
     }
+	if (NULL != req_task_data) {
+		delete req_task_data;
+		req_task_data = NULL;
+	}
     return ret;
 }
 

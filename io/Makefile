@@ -1,5 +1,5 @@
 MACRO=DEBUGALL
-CFLAGS+=-g -w -D$(MACRO) -lpthread -O2
+CFLAGS+=-g -w -D$(MACRO) -lpthread -O2 -pg
 SRCPATH=.
 INCLUDEPATH=.
 INCLUDEPATH+=../util ../task ../thread ../config ../http
@@ -25,3 +25,4 @@ clean:
 build:
 	g++ -c ${CFLAGS} ${SOURCES} 
 	g++ ${CFLAGS} -o ${TARGET} ${OBJS} ${ALIAS_OBJS}
+	#g++ ${CFLAGS} -o -pg ${TARGET} ${OBJS} ${ALIAS_OBJS}

@@ -1,5 +1,5 @@
 MACRO=DEBUGALL
-CFLAGS+=-g -w -D$(MACRO)
+CFLAGS+=-g -w -D$(MACRO) -pg
 SRCPATH=.
 INCLUDEPATH=.
 INCLUDEPATH+=../config ../thread ../http ../io ../util

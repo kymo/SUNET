@@ -40,10 +40,14 @@ public:
         while (! _stoped) {
             SubTask* task = SubTaskMgr::_get_instance()->_get_task();
             if (NULL != task) {
-                std::cout << "deal with task " << task->_task_name << std::endl;
+                std::cout << "deal with task[ " << task->_task_name << " ]" << std::endl;
                 task->_run();
                 task->_call_back();
-            }
+				std::cout << "delete task 2" << std::endl;
+            	delete task;
+				task = NULL;
+				std::cout << "delete task 21" << std::endl;
+			}
         }
     }
     

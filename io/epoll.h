@@ -15,7 +15,7 @@
 #include "errno.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
 namespace sub_framework {
 
 #define MAX_CLT_CNT 1024

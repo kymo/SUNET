@@ -20,6 +20,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "define.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 namespace sub_framework {
 
@@ -34,6 +37,31 @@ enum IOTYPE {
     SELECT = 0,
     EPOLL
 };
+
+typedef struct recv_buf {
+	char *buf;
+	int buf_len;
+	int buf_cap;
+	recv_buf() {
+		buf = new char[2048];
+		buf_len = 0;
+		buf_cap = 2048;
+	}
+	~recv_buf() {
+		std::cout << "delte recv buf !" << std::endl;
+		if (NULL != buf) {
+			delete buf;
+			buf = NULL;
+		}
+	}
+	void resize() {
+		char* new_buf = new char[buf_cap * 2];
+		memcpy(new_buf, buf, buf_len);
+		buf_cap *= 2;
+		delete buf;
+		buf = new_buf;
+	}
+} RECV_DATA;
 
 class SubEventQueue {
     
@@ -52,26 +80,18 @@ public:
     }
 
     void _set_evt_data(int fd, char* buf_ptr) {
-
-        std::cout << "set " << fd << buf_ptr << std::endl;
-        
         pthread_mutex_lock(&_set_mutex);
         if (_data_buf.find(fd) == _data_buf.end()) {
             _data_buf[fd] = std::vector<char*>();
         }
-
-        std::cout << "set okay!" << std::endl;
         _data_buf[fd].push_back(buf_ptr);
         pthread_mutex_unlock(&_set_mutex);
-        
     }
     
     void _get_evt_data(int fd, std::vector<char*>& ret) {
-        std::cout << fd << " " << _data_buf.size() << std::endl;
         if (_data_buf.find(fd) == _data_buf.end()) {
             return ;
         }
-        std::cout << "gete" << std::endl;
         ret = _data_buf[fd];
     }
 

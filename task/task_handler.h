@@ -23,27 +23,17 @@ public:
         while (! _stoped) {
             SubTask* task = SubTaskMgr::_get_instance()->_get_task();
             if (NULL != task) {
-                std::cout << "deal with task " << task->_task_name << std::endl;
+                std::cout << "d deal with task " << task->_task_name << std::endl;
                 task->_run();
                 task->_call_back();
+				delete task;
+				task = NULL;
             }
         }
     }
 };
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif  //__TASK_HANDLER_H_
 

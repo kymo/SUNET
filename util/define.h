@@ -28,6 +28,8 @@
 #define INIT_SINGLE(_class) \
     Sub##_class* Sub##_class::_sub_##_class##_instance = NULL; 
 
+#define SUB_OK 1
+#define SUB_FAIL 0
 
 #endif  //__DEFINE_H_
 

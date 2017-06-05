@@ -21,21 +21,29 @@ namespace sub_framework {
 
 typedef struct req_task_data {
     int _fd;
-    char *_data;
+    RECV_DATA *_data;
     SubEvent* _evt;
     req_task_data() {}
-    req_task_data(int fd, char* data, SubEvent* evt) {
+    req_task_data(int fd, RECV_DATA* recv_data, SubEvent* evt) {
         _fd = fd;
-        _data = data;
+        _data = recv_data;
         _evt = evt;
     }
+ 	~req_task_data() {
+		std::cout << "delete req task data!" << std::endl;
+		if (NULL != _data) {
+			delete _data;
+			_data = NULL;
+		}
+	}
+
 } REQ_TASK_DATA;
 
 class ReqTask : public SubTask {
 
 public:
     ReqTask(const std::string& task_name);
-    ~ReqTask();
+    virtual ~ReqTask();
     virtual int _run();
     virtual int _call_back();
     virtual void _set_task_data(void* task_data);

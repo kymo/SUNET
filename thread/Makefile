@@ -1,9 +1,9 @@
 MACRO=DEBUGALL
-CFLAGS+=-g -w -D$(MACRO) -lpthread
+CFLAGS+=-g -w -D$(MACRO) -lpthread -pg
 SRCPATH=.
 INCLUDEPATH=.
 INCLUDEPATH+=../config
-INCLUDEPATH+=../task ../io
+INCLUDEPATH+=../task ../io ../util
 TARGET=sub
 SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 

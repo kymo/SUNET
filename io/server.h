@@ -39,6 +39,7 @@ enum TASKTYPE {
 #define PARSER_TASK "parser_task"
 
 static SubEvent* _event;
+static std::map<int, RECV_DATA*> _read_buf_map;
 
 class SubServer {
    
@@ -53,8 +54,8 @@ public:
     void _run();
     void _init_sock(int port);
     void _init_evt(int evt_type);
-
-    static int _on_read(int clt_fd);
+    static int _on_http_read(int clt_fd);	// http protocal
+    static int _on_stp_read(int clt_fd); // search transfer protocal
     static int _on_accept(int svr_fd);
     static void _set_nonblocking(int sock_fd);
 
