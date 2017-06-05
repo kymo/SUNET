@@ -11,15 +11,15 @@
 namespace sub_framework {
 
 TextStrategy::TextStrategy() {
+	_init();
 }
 
 TextStrategy::~TextStrategy() {
 }
 
-int TextStrategy::_process(const HttpRequest& req, std::string& ret_json, const int& level) {
-	ret_json += "{\"ws\":\"你好\001我好\"}";
+int TextStrategy::_process(const Request& req, Json::Value& root, const int& level) {
+	root["text"] = "yes";
 	return SUB_OK;
-
 }
 
 int TextStrategy::_init() {

@@ -9,17 +9,35 @@
 #ifndef  __STRATEGY_H_
 #define  __STRATEGY_H_
 
-#define SUB_OK 1
-#define SUB_FAIL 0
+#include <iostream>
+#include <map>
+#include <vector>
+#include <string>
+#include "define.h"
+#include "strategy_conf.h"
+#include "istrategy.h"
 
 namespace sub_framework {
+
+#define STRATEGY_MAP std::map<std::string, std::vector<STRATEGYTYPE> >
+
+
+typedef struct strategy_type_mgr {
+	IStrategy* _sub_strategy;
+	int _strategy_level;
+	strategy_type_mgr() {}
+	strategy_type_mgr(IStrategy* sub_strategy, int strategy_level) {
+		_sub_strategy = sub_strategy;
+		_strategy_level = strategy_level;
+	}
+} STRATEGY_TYPE_MGR;
 
 class SubStrategyMgr {
 
 private:
-	SubStrategyMgr();
+	SubStrategyMgr() {}
 	static SubStrategyMgr* _strategy_mgr_instance;
-	std::map<std::string, std::vector<SubStrategy*> > _url_strategies_map;
+	std::map<std::string, std::vector<STRATEGY_TYPE_MGR> > _uri_strategies_map;
 
 public:
 	~SubStrategyMgr();
@@ -31,18 +49,21 @@ public:
 	}
 
 	/*
+	 * @brief produce the strategy according to name
+	 * @return
+	 */
+	IStrategy* _produce(const std::string& strategy_name);
+
+	/*
 	 * @brief init the strategies accroding to the strategy conf
 	 * @return
 	 * 		SUB_OK init ok
 	 * 		SUB_FAIL init failure
 	 *
 	 */
-	int _init_strategies(SubStrategyConf* sub_conf);
-
-
+	int _init_strategies();
 	
 	// SubStrategy* _get_strategy_instance(const std::string stragey_name);
-
 	
 	/*
 	 * @brief run the strategy binded to the uri
@@ -50,9 +71,8 @@ public:
 	 * 		SUB_OK run ok
 	 * 		SUB_FAIL run failue
 	 */
-	int _run_uri(const std::string uri, const HttpRequest& req, std::string& ret_json);	
-
-
+	int _run_uri(const std::string& uri, const Request& req, Json::Value& root);	
+	
 };
 
 

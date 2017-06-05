@@ -1,13 +1,13 @@
 /**
- * @file text_strategy.h
+ * @file rewrite_strategy.h
  * @author kymowind@gmail.com
  * @date 2017/02/14 20:17:42
  * @brief abstract class of strategy 
  *  
  **/
 
-#ifndef _TEXT_STRTEGY_H_
-#define _TEXT_STRTEGY_H_
+#ifndef _REWRITE_STRTEGY_H_
+#define _REWRITE_STRTEGY_H_
 
 #include <map>
 #include <iostream>
@@ -20,11 +20,11 @@
 
 namespace sub_framework {
 	
-class TextStrategy : public IStrategy {
+class RewriteStrategy : public IStrategy {
 // wordseg , normalization, and number normalized
 public:
-	TextStrategy();
-	virtual ~TextStrategy();
+	RewriteStrategy();
+	virtual ~RewriteStrategy();
 
 	int _process(const Request& req, Json::Value& root, const int& level);
 	int _init();

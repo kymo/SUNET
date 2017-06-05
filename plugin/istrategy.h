@@ -10,6 +10,9 @@
 #define _ISTRATEGY_H_
 
 #include <iostream>
+#include "http_parse.h"
+#include "json/json.h"
+#include <map>
 
 namespace sub_framework {
 	
@@ -20,9 +23,10 @@ private:
 	int _child_stragey_cnt;		 // children strategies count
 
 public:
-	IStrategy();
-	virtual ~IStrategy();
-	virtual int _process(const HttpRequest& req, std::string& ret_json, const int& level) = 0;
+	IStrategy() {
+	}
+	virtual ~IStrategy() {}
+	virtual int _process(const Request& req, Json::Value& json_obj, const int& level) = 0;
 	virtual int _init() = 0;
 
 };
