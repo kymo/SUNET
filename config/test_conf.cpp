@@ -41,9 +41,6 @@ private:
 TEST_F(test_config_suite, test_conf) {
 	sub_config->_read_conf_file("../conf/sub.conf");
 	ASSERT_EQ(sub_config->_get_thread_cnt(), 10);
-}
-
-TEST_F(test_config_suite, test_config_conf) {
 	sub_strategy_config->_read_conf_file("../conf/strategy.conf");
 }
 

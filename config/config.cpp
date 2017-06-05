@@ -53,7 +53,6 @@ int SubConfig::_read_conf_file(const std::string& file_name) {
 		}
 		val = str;
 		_conf_dict[key] = val;
-		std::cout << key << "-" << val << std::endl;
 	}
 	return SUB_OK;
 }

@@ -21,11 +21,19 @@ int SubStrategyConfig::_read_conf_file(const std::string& file_name) {
 	}
 	std::string line = "";
 	std::string cur_uri = "";
-	std::vector<std::pair<std::string, int> > uri_strategy_vec;
+	std::vector<STRATEGYTYPE> uri_strategy_vec;
+	uri_strategy_vec.clear();
+	std::map<std::string, std::string> _map;
 	while (getline(fis, line)) {
+		std::cout << line << std::endl;
+		std::cout << _strategy_conf_dict.size() << std::endl;
+		std::cout << uri_strategy_vec.size() << std::endl;
 		if (line.find("[") == 0) {
 			if (uri_strategy_vec.size() != 0) {
-				_conf_dict[cur_uri] = uri_strategy_vec;
+				_map["nihao"] = "wohenhao ";
+				// _strategy_conf_dict["niaho"] = uri_strategy_vec;
+				// _strategy_conf_dict[cur_uri] = uri_strategy_vec;
+				_strategy_conf_dict.insert(std::pair<std::string, std::vector<STRATEGYTYPE> >(cur_uri, uri_strategy_vec));
 			}
 			cur_uri = line.substr(1, line.length() - 2);	
 			uri_strategy_vec.clear();
@@ -43,27 +51,20 @@ int SubStrategyConfig::_read_conf_file(const std::string& file_name) {
 				}
 			}
 			val = str;
-			uri_strategy_vec.push_back(std::make_pair<std::string, int>(key, atoi(val.c_str())));
+			uri_strategy_vec.push_back(STRATEGYTYPE(key, atoi(val.c_str())));
 		}
 	}
 	if (uri_strategy_vec.size() != 0) {
-		_conf_dict[cur_uri] = uri_strategy_vec;
-	}
-	for (std::map<std::string, std::vector<std::pair<std::string, int> > >::iterator it = _conf_dict.begin();
-			it != _conf_dict.end(); it++) {
-		std::cout << it->first << ":";
-		for (int i = 0; i < it->second.size(); i++) {
-			std::cout << "|" << it->second[i].first << ":" << it->second[i].second << "|" << std::endl;
-		}
+		_strategy_conf_dict[cur_uri] = uri_strategy_vec;
 	}
 }
 
 int SubStrategyConfig::_get_uri_strategies(const std::string& uri,
-	std::vector<std::pair<std::string, int> >& uri_strategy_vec) {
-	if (_conf_dict.find(uri) == _conf_dict.end()) {
+	std::vector<STRATEGYTYPE>& uri_strategy_vec) {
+	if (_strategy_conf_dict.find(uri) == _strategy_conf_dict.end()) {
 		return SUB_FAIL;
 	}
-	uri_strategy_vec = _conf_dict[uri];
+	uri_strategy_vec = _strategy_conf_dict[uri];
 	return SUB_OK;
 }
 

@@ -1,5 +1,5 @@
-MACRO=DEBUGALL
-CFLAGS+=-g -w -D$(MACRO) -pg -lpthread
+MACRO=DEBUG
+CFLAGS+=-g -w -D$(MACRO) -pg -lpthread -O2 
 SRCPATH=.
 INCLUDEPATH=../util ../gtest/include
 LIB=../gtest

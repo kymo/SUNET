@@ -21,14 +21,26 @@
 
 namespace sub_framework {
 
+typedef struct strategy_conf {
+	std::string _strategy_name;
+	int _strategy_level;
+
+	strategy_conf();
+	strategy_conf(const std::string& strategy_name,
+		const int& strategy_level) {
+		_strategy_name = strategy_name;
+		_strategy_level = strategy_level;
+	}
+
+} STRATEGYTYPE;
+
 class SubStrategyConfig {
 
 private:
 	SubStrategyConfig() {}
     
-	std::map<std::string, std::vector<std::pair<std::string, int> > > _conf_dict;
-    
 	static SubStrategyConfig* _sub_strategy_config_instance;
+	std::map<std::string, std::vector<STRATEGYTYPE> > _strategy_conf_dict;
 
 public:
     ~SubStrategyConfig() {}
@@ -52,7 +64,7 @@ public:
 
 	
 	int _get_uri_strategies(const std::string& uri, 
-		std::vector<std::pair<std::string, int> >& uri_strategy_map);
+		std::vector<STRATEGYTYPE>& uri_strategy_vec);
 
 };
 
