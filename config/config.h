@@ -14,7 +14,11 @@
 #include <iostream>
 #include <string>
 #include <map>
-
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <fstream>
+#include "define.h"
 
 namespace sub_framework {
 

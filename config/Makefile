@@ -1,9 +1,10 @@
 MACRO=DEBUGALL
-CFLAGS+=-g -w -D$(MACRO)
+CFLAGS+=-g -w -D$(MACRO) -pg -lpthread
 SRCPATH=.
-INCLUDEPATH=.
+INCLUDEPATH=../util ../gtest/include
+LIB=../gtest
 SOURCES=$(wildcard $(SRCPATH)/*.cpp)
-
+TARGET=test_config
 #OBJS := $(patsubst %.cpp, %.o,$(SOURCES))
 OBJS=$(SOURCES:.cpp=.o)
 CFLAGS+=$(foreach dir, $(INCLUDEPATH), -I$(dir))
@@ -15,5 +16,5 @@ clean:
 	$(RM) $(OBJS) $(TARGET)
 
 build:
-	g++ -c ${CFLAGS} ${SOURCES} 
-
+	g++ -c ${CFLAGS} ${SOURCES} -L${LIB} -lgtest
+	g++ ${CFLAGS} -o ${TARGET} ${OBJS} -L${LIB} -lgtest

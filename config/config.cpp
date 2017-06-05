@@ -31,6 +31,31 @@ void SubConfig::_get_conf_val(const std::string& key, std::string& conf_val) {
 }
 
 int SubConfig::_read_conf_file(const std::string& file_name) {
+	std::ifstream fis(file_name.c_str());
+	if (! fis) {
+		return SUB_FAIL;
+	}
+	std::string line;
+	std::string key = "";
+	std::string val = "";
+	while (getline(fis, line)) {
+		key = "";
+		val = "";
+		std::string str = "";
+		for (int i = 0; i < line.length(); i++) {
+			if (line[i] == ' ') continue;
+			if (line[i] == ':') {
+				key = str;
+				str = "";
+			} else {
+				str += line[i];
+			}
+		}
+		val = str;
+		_conf_dict[key] = val;
+		std::cout << key << "-" << val << std::endl;
+	}
+	return SUB_OK;
 }
 
 int SubConfig::_get_thread_cnt() {
