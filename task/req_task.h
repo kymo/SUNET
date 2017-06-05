@@ -16,6 +16,7 @@
 #include "task.h"
 #include "task_mgr.h"
 #include "event.h"
+#include "strategy_mgr.h"
 
 namespace sub_framework {
 

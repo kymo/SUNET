@@ -40,6 +40,10 @@ int req_task_call_back(void *a, void *b) {
 }
 
 int main() {
+
+	SubStrategyConfig::_get_instance()->_read_conf_file("../conf/strategy.conf");
+	// init strategies
+	SubStrategyMgr::_get_instance()->_init_strategies();
     // init task_mgr
     SubTaskMgr::_get_instance()->_init();
     // 设置核心逻辑的回调函数

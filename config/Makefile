@@ -1,8 +1,8 @@
 MACRO=DEBUG
 CFLAGS+=-g -w -D$(MACRO) -pg -lpthread -O2 
 SRCPATH=.
-INCLUDEPATH=../util ../gtest/include
-LIB=../gtest
+INCLUDEPATH=../util ../alias/gtest/include
+LIB=../alias/gtest
 SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 TARGET=test_config
 #OBJS := $(patsubst %.cpp, %.o,$(SOURCES))

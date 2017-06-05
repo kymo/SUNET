@@ -25,9 +25,6 @@ int SubStrategyConfig::_read_conf_file(const std::string& file_name) {
 	uri_strategy_vec.clear();
 	std::map<std::string, std::string> _map;
 	while (getline(fis, line)) {
-		std::cout << line << std::endl;
-		std::cout << _strategy_conf_dict.size() << std::endl;
-		std::cout << uri_strategy_vec.size() << std::endl;
 		if (line.find("[") == 0) {
 			if (uri_strategy_vec.size() != 0) {
 				_map["nihao"] = "wohenhao ";

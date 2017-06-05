@@ -9,7 +9,7 @@
 
 #include "req_task.h"
 #include "http_parse.h"
-
+#include "json/json.h"
 namespace sub_framework {
 
 ReqTask::ReqTask(const std::string& task_name) {
@@ -49,25 +49,9 @@ int ReqTask::_run() {
     char *buf = req_task_data->_data->buf;
     int fd = req_task_data->_fd;
     http._parse(buf, request);
-    /*
-	std::cout << "Request result:" << std::endl;
-	std::cout << request.url << std::endl;
-	std::cout << request.method << std::endl;
-	std::cout << request.version << std::endl;
-	for (std::map<std::string, std::string>::iterator it = request.headers.begin(); it != request.headers.end(); it++) {
-		std::cout << it->first << ":" << it->second << std::endl;
-	}
-	for (std::map<std::string, std::string>::iterator it = request.params.begin(); it != request.params.end(); it++) {
-		std::cout << it->first << ":" << it->second << std::endl;
-	}
-	// std::cout << "fuck" << " " << fd << std::endl;
-	// 判断http 的url
-	*/
-	if (strcmp(request.url, "/get") == 0) {
-
-    }
-
-    int ret = (*call_back_proc)(_task_data, _task_ret);
+	Json::Value root;
+	SubStrategyMgr::_get_instance()->_run_uri(request.url, request, root);
+	int ret = (*call_back_proc)(_task_data, _task_ret);
     SubEventQueue::_get_instance()->_set_evt_data(fd, (char*)_task_ret);
     if (req_task_data->_evt->_type == SELECT) {
         req_task_data->_evt->_event_add(fd, EVT_WRITE);

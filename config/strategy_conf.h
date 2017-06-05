@@ -40,11 +40,16 @@ private:
 	SubStrategyConfig() {}
     
 	static SubStrategyConfig* _sub_strategy_config_instance;
+	
 	std::map<std::string, std::vector<STRATEGYTYPE> > _strategy_conf_dict;
 
 public:
     ~SubStrategyConfig() {}
-    
+
+	const std::map<std::string, std::vector<STRATEGYTYPE> >& _get_strategytype_map() const {
+		return _strategy_conf_dict;
+	}
+
     static SubStrategyConfig* _get_instance() {
         
 		if (NULL == _sub_strategy_config_instance) {

@@ -3,7 +3,7 @@ CFLAGS+=-g -w -D$(MACRO) -lpthread -pg
 SRCPATH=.
 INCLUDEPATH=.
 INCLUDEPATH+=../config
-INCLUDEPATH+=../task ../io ../util
+INCLUDEPATH+=../task ../io ../util ../plugin ../alias/jsoncpp/include ../http
 TARGET=sub
 SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 
@@ -12,7 +12,6 @@ OBJS=$(SOURCES:.cpp=.o)
 ALIAS_OBJS=../task/task_mgr.o \
 		   ../config/config.o \
 		   ../task/req_task.o
-
 CFLAGS+=$(foreach dir, $(INCLUDEPATH), -I$(dir))
 
 all: build

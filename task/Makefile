@@ -2,7 +2,7 @@ MACRO=DEBUGALL
 CFLAGS+=-g -w -D$(MACRO) -pg
 SRCPATH=.
 INCLUDEPATH=.
-INCLUDEPATH+=../config ../thread ../http ../io ../util
+INCLUDEPATH+=../config ../thread ../http ../io ../util ../alias/jsoncpp/include ../plugin
 TARGET=sub
 SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 
@@ -18,6 +18,6 @@ clean:
 	$(RM) $(OBJS) $(TARGET)
 
 build:
-	g++ -c ${CFLAGS} ${SOURCES}
+	g++ -c ${CFLAGS} ${SOURCES} ../alias/jsoncpp/lib/libjson_linux-gcc-4.4.7_libmt.a 
 	#g++ ${CFLAGS} -o ${TARGET} ${OBJS}
 
