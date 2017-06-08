@@ -56,7 +56,10 @@ int ReqTask::_run() {
 	int ret = (*call_back_proc)(_task_data, _task_ret);
     std::cout << "finish call back proc" << std::endl;
     std::cout << (char*) _task_ret << std::endl;
-    SubEventQueue::_get_instance()->_set_evt_data(fd, (char*)_task_ret);
+    char *write_buf = new char[64];
+    char *json = "hello";
+    sprintf(write_buf, "HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\n%s", strlen(json), json); 
+    SubEventQueue::_get_instance()->_set_evt_data(fd, write_buf);
     std::cout << "finish call back proc!" << std::endl;
     if (req_task_data->_evt->_type == SELECT) {
         req_task_data->_evt->_event_add(fd, EVT_WRITE);

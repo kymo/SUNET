@@ -12,7 +12,7 @@ namespace sub_framework {
 void HttpParser::_parse(char* recv_buf, Request& request) {
     std::cout << "recv buf: " << std::endl;
     std::cout << recv_buf << std::endl;
-
+    std::cout << "end" << std::endl;
     int len = _parse_desc(recv_buf, request);
     if (-1 == len) {
 		return ;
@@ -21,8 +21,7 @@ void HttpParser::_parse(char* recv_buf, Request& request) {
 }
 
 int HttpParser::_parse_desc(char* recv_buf, Request& request) {
-    
-    char*p = recv_buf;
+    char *p = recv_buf;
     int i = 0;
     enum {METHOD, URL, VER} req_part = METHOD;
     int parse_len = 0;
@@ -38,10 +37,17 @@ int HttpParser::_parse_desc(char* recv_buf, Request& request) {
             parse_len = 0;
             req_part = URL;
         } else if (req_part == URL) {
-            char* url = (char*) malloc ((parse_len + 1) * sizeof(char));
+            //char* url = (char*) malloc ((parse_len + 1) * sizeof(char));
+            char url[64];
+            std::cout << "bef" << std::endl;
+            std::cout << recv_buf + strlen(request.method) + 1 << std::endl;
             strncpy(url, recv_buf + strlen(request.method) + 1, parse_len);
+            url[parse_len] = '\0';
+            std::cout << "[" << url << "]" << parse_len << std::endl;
+
 			char*p = strtok(url, "?");
 			char*s = strtok(NULL, "?");
+            std::cout << "P :" << p << std::endl;
 			strncpy(request.url, p, strlen(p));
             request.url[strlen(p)] = '\0';
 			char* val = NULL;

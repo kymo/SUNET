@@ -88,10 +88,7 @@ public:
         if (_data_buf.find(fd) == _data_buf.end()) {
             _data_buf[fd] = std::vector<char*>();
         }
-        char *write_buf = new char[64];
-	    char *json = "hello";
-        sprintf(write_buf, "HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\n%s", strlen(json), json); 
-        _data_buf[fd].push_back(write_buf);
+        _data_buf[fd].push_back(buf_ptr);
         pthread_mutex_unlock(&_set_mutex);
         std::cout << "----------End" << std::endl;
     }

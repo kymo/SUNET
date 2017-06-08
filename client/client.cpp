@@ -68,7 +68,7 @@ class ClientHandler : public SubThreadHandler {
 public:
 	int _thread_proc_handler(void *args) {
 		Client* client = new Client();
-		client->_init_svr_param("127.0.0.1", 9003);
+		client->_init_svr_param("127.0.0.1", 9000);
 		client->_connect_svr();
 	}
 };
