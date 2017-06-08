@@ -31,16 +31,17 @@ void SubEpollEvent::_event_loop() {
 		int max_fd = epoll_wait(_epl_fd, _epl_evt_set, _max_evt_cnt, 1000);
         if (-1 == max_fd) {
             std::cout << "[Error] epoll loop error!" << std::endl;
-            return ;
+            continue;
         }
         for (int fd = 0; fd < max_fd; ++fd) {
             int handler_fd = _epl_evt_set[fd].data.fd;
-            // std::cout << handler_fd << " " << _svr_fd << " " << (_epl_evt_set[fd].events & EPOLLIN) <<  std::endl;
+            std::cout << handler_fd << " " << _svr_fd << std::endl;
             if (handler_fd == _svr_fd) {
-                int new_fd = _event_accept_callback_proc(_svr_fd);
+                _event_accept_callback_proc(_svr_fd);
             	continue;
 			} 
-			if (_epl_evt_set[fd].events & EPOLLIN) {
+			
+            if (_epl_evt_set[fd].events & EPOLLIN) {
 				int recv_ret = _event_read_callback_proc(handler_fd);
                 if (0 == recv_ret) {
                     // client close socket
@@ -49,24 +50,33 @@ void SubEpollEvent::_event_loop() {
                     _event_del(handler_fd, EPOLLIN);
                 } 
             } else if (_epl_evt_set[fd].events & EPOLLOUT) {
+                std::cout << "WRITE BACK!" << std::endl;
                 std::vector<char*> write_buf_vec;
                 SubEventQueue::_get_instance()->_get_evt_data(handler_fd, write_buf_vec);
                 if (write_buf_vec.size() == 0) {
 					close(handler_fd);
+                    _event_del(handler_fd, EPOLLIN);
                 	_event_del(handler_fd, EPOLLOUT);
                     continue;
                 }
-                char* write_buf = write_buf_vec[0];
-				char write_bufs[128] = "HTTP/1.1 200 OK\r\nContent-Length: 11\r\n\r\nHello World";
-				if (send(handler_fd, write_buf, strlen(write_bufs), 0) <= 0) {
-					close(handler_fd);
-                    _event_del(handler_fd, EPOLLIN);
-                	_event_del(handler_fd, EPOLLOUT);
-					continue;
+                bool tag = false;
+                std::cout << "---------begin--------" << std::endl;
+                for (int i = 0; i < write_buf_vec.size(); i++) {
+                    char* write_buf = write_buf_vec[0];
+                    std::cout << write_buf << std::endl;
+                    if (send(handler_fd, write_buf, strlen(write_buf), 0) <= 0) {
+                        tag = true;
+                        break;
+                    }
                 }
+                if (tag) {
+                    close(handler_fd);
+                    _event_del(handler_fd, EPOLLIN);
+                }
+                std::cout << " --------end --------" << std::endl;
                 _event_del(handler_fd, EPOLLOUT);
-				//_event_mod(handler_fd, EPOLLIN | EPOLLET);
-				// close(handler_fd);
+                // _event_mod(handler_fd, EPOLLIN | EPOLLET);
+			    // close(handler_fd);
 			}
         }
     }

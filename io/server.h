@@ -51,7 +51,7 @@ private:
     std::vector<int> _clt_sock_vec;
 
 public:
-    void _run();
+    void _run(int port);
     void _init_sock(int port);
     void _init_evt(int evt_type);
     static int _on_http_read(int clt_fd);	// http protocal

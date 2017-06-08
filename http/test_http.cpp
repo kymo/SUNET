@@ -10,13 +10,9 @@
 int main() {
     
     sub_framework::Request* request = new sub_framework::Request();
-
     sub_framework::HttpParser* http_parser = new sub_framework::HttpParser();
-
     char *recv_buf = "";
-
     http_parser->_parse(recv_buf, *request);
-
     return 0;
 }
 

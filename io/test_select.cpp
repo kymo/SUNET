@@ -39,8 +39,11 @@ int req_task_call_back(void *a, void *b) {
 	return 1;
 }
 
-int main() {
-
+int main(int argc, char** argv) {
+    if (argc < 2) {
+        std::cout << "./sub port" << std::endl;
+        return 0;
+    }
 	SubStrategyConfig::_get_instance()->_read_conf_file("../conf/strategy.conf");
 	// init strategies
 	SubStrategyMgr::_get_instance()->_init_strategies();
@@ -50,12 +53,12 @@ int main() {
     SubTaskMgr::_get_instance()->_set_call_back_proc(REQ_TASK, req_task_call_back);
     // 启动线程池
     SubThreadPool::_get_instance()->_init();
-    SubThreadPool::_get_instance()->_set_thread_cnt(5);
+    SubThreadPool::_get_instance()->_set_thread_cnt(1);
     SubThreadPool::_get_instance()->_start();
     SubEventQueue::_get_instance()->_init();
     // 启动服务
     SubServer*svr = SubServer::_get_instance();
-    svr->_run();
+    svr->_run(atoi(argv[1]));
     return 0;
 }
 

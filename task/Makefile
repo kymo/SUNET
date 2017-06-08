@@ -18,6 +18,6 @@ clean:
 	$(RM) $(OBJS) $(TARGET)
 
 build:
-	g++ -c ${CFLAGS} ${SOURCES} ../alias/jsoncpp/lib/libjson_linux-gcc-4.4.7_libmt.a 
+	g++ -c ${CFLAGS} ${SOURCES} ../alias/jsoncpp/lib/libjson_linux-gcc-3.4.5_libmt.a 
 	#g++ ${CFLAGS} -o ${TARGET} ${OBJS}
 

@@ -19,4 +19,4 @@ clean:
 
 build:
 	g++ -c ${CFLAGS} ${SOURCES} ${LIB} -lgtest
-	g++ ${CFLAGS} -o ${TARGET} ${OBJS} ${ALIAS_OBJS} ${LIB} -lgtest ../alias/jsoncpp/lib/libjson_linux-gcc-4.4.7_libmt.a
+	g++ ${CFLAGS} -o ${TARGET} ${OBJS} ${ALIAS_OBJS} ${LIB} -lgtest ../alias/jsoncpp/lib/libjson_linux-gcc-3.4.5_libmt.a

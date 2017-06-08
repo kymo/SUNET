@@ -10,6 +10,9 @@
 namespace sub_framework {
 
 void HttpParser::_parse(char* recv_buf, Request& request) {
+    std::cout << "recv buf: " << std::endl;
+    std::cout << recv_buf << std::endl;
+
     int len = _parse_desc(recv_buf, request);
     if (-1 == len) {
 		return ;
@@ -30,14 +33,11 @@ int HttpParser::_parse_desc(char* recv_buf, Request& request) {
             }
             parse_len ++;
         } else if (req_part == METHOD) {
-            request.method = (char*) malloc ((parse_len + 1) * sizeof(char));
-            memset(request.method, 0, strlen(request.method));
             strncpy(request.method, recv_buf, parse_len);
             request.method[parse_len] = '\0';
             parse_len = 0;
             req_part = URL;
         } else if (req_part == URL) {
-            request.url = (char*) malloc ((parse_len + 1) * sizeof(char));
             char* url = (char*) malloc ((parse_len + 1) * sizeof(char));
             strncpy(url, recv_buf + strlen(request.method) + 1, parse_len);
 			char*p = strtok(url, "?");
@@ -72,8 +72,6 @@ int HttpParser::_parse_desc(char* recv_buf, Request& request) {
     }
     if (req_part == URL) {
         if (parse_len != 0) {
-            request.url = (char*) malloc ((1 + parse_len) * sizeof(char));
-            memset(request.url, 0, sizeof(request.url));
             strncpy(request.url, recv_buf + strlen(request.method) + 1, parse_len);
             request.url[parse_len] = '\0';
             parse_len = 0;
@@ -82,12 +80,8 @@ int HttpParser::_parse_desc(char* recv_buf, Request& request) {
         }
     }
     if (parse_len == 0) {
-        request.version = (char *)malloc(8 * sizeof(char));
-        memset(request.version, 0, 8 * sizeof(char));
         strcpy(request.version, "HTTP/1.1");
     } else {
-        request.version = (char*) malloc ((1 + parse_len) * sizeof(char));
-        memset(request.version, 0, sizeof(request.version));
         strncpy(request.version, recv_buf + strlen(request.method) + strlen(request.url) + 2, parse_len);
         request.version[parse_len] = '\0';
     }

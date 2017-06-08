@@ -17,7 +17,7 @@ ReqTask::ReqTask(const std::string& task_name) {
 }
 
 ReqTask::~ReqTask() {
-	std::cout << "delete req task!" << std::endl;
+	// std::cout << "delete req task!" << std::endl;
 	if (NULL != _task_ret) {
 		free(_task_ret);
 		_task_ret = NULL;
@@ -49,10 +49,15 @@ int ReqTask::_run() {
     char *buf = req_task_data->_data->buf;
     int fd = req_task_data->_fd;
     http._parse(buf, request);
+    std::cout << request.to_str() << std::endl;
 	Json::Value root;
 	SubStrategyMgr::_get_instance()->_run_uri(request.url, request, root);
+    std::cout << root.toStyledString() << std::endl;
 	int ret = (*call_back_proc)(_task_data, _task_ret);
+    std::cout << "finish call back proc" << std::endl;
+    std::cout << (char*) _task_ret << std::endl;
     SubEventQueue::_get_instance()->_set_evt_data(fd, (char*)_task_ret);
+    std::cout << "finish call back proc!" << std::endl;
     if (req_task_data->_evt->_type == SELECT) {
         req_task_data->_evt->_event_add(fd, EVT_WRITE);
     } else if (req_task_data->_evt->_type == EPOLL) {

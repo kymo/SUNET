@@ -22,31 +22,30 @@ namespace sub_framework {
 class Request {
 
 public:
-    char *url;
-    char *method;
-    char *version;
+    char url[64];
+    char method[32];
+    char version[32];
     std::map<std::string, std::string> headers;
 	std::map<std::string, std::string> params;
 	
 	Request() {
-		url = NULL;
-		method = NULL;
-		version = NULL;
 	}
 
+    std::string to_str() {
+        std::string ret = "";
+        ret += "url: ";
+        ret += url;
+        ret += ".\n";
+        ret += "method: ";
+        ret += method;
+        ret += ".\n";
+        ret += "version: ";
+        ret += version;
+        ret += ".\n";
+        return ret;
+    }
+
 	~Request() {
-		if (NULL != url) {
-			free(url);
-			url = NULL;
-		}
-		if (NULL != method) {
-			free(method);
-			method = NULL;
-		}
-		if (NULL != version) {
-			free(version);
-			version = NULL;
-		}
 	}
 };
 

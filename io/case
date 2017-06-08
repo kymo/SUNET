@@ -1,0 +1,730 @@
+TextStrategy Init!
+RewriteStrategy Init!
+init mutex
+~
+threads cnt:1
+thread 1104673120 start!
+set nonblocking:0
+event init!
+epoll wait!
+epoll wait!
+epoll wait!
+epoll wait!
+3 3
+set nonblocking:0
+New Client 5
+set nonblocking:0
+New Client 6
+set nonblocking:0
+New Client 7
+epoll wait!
+3 3
+set nonblocking:0
+New Client 8
+epoll wait!
+3 3
+set nonblocking:0
+New Client 9
+epoll wait!
+3 3
+set nonblocking:0
+New Client 10
+epoll wait!
+3 3
+set nonblocking:0
+New Client 11
+epoll wait!
+3 3
+set nonblocking:0
+New Client 12
+epoll wait!
+3 3
+set nonblocking:0
+New Client 13
+epoll wait!
+3 3
+set nonblocking:0
+New Client 14
+epoll wait!
+5 3
+FIRST
+CLIENT:5-0[]
+CLIENT:5-68[GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+]
+Add into task queue!
+-----begin------
+68
+GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+
+-----end------
+Erase IT
+epoll wait!
+6 3
+FIRST
+CLIENT:6-0[]
+CLIENT:6-68[GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+]
+finish call back procAdd into task queue!
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+----------Set fd 5; Data:
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+
+-----begin------
+68
+GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+
+-----end------
+Erase IT
+7 3
+----------EndFIRST
+CLIENT:7-0[]
+
+finish call back proc!
+CLIENT:7-68[GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+]
+Add into task queue!
+-----begin------
+68
+GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+
+finish call back proc-----end------
+
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+----------Set fd 6; Data:
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+Erase IT
+8 3
+FIRST
+CLIENT:8-0[]
+CLIENT:8-100[GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+r-Agent: http_load 09Mar2016
+
+]
+Add into task queue!
+-----begin------
+100
+GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+r-Agent: http_load 09Mar2016
+
+
+----------End
+finish call back proc!
+-----end------
+finish call back proc
+Erase ITHTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+
+9----------Set fd  73; Data:
+
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+FIRST----------End
+finish call back proc!
+
+CLIENT:9-0[]
+CLIENT:9-68[GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+]
+Add into task queue!
+-----begin------
+68
+GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+
+finish call back proc-----end------
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+----------Set fd 8; Data:
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+
+Erase IT
+----------End
+finish call back proc!
+10 3
+finish call back proc
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+FIRST----------Set fd 
+CLIENT:10-90; Data:[
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+]
+----------End
+finish call back proc!
+CLIENT:10-68[GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+]
+Add into task queue!
+-----begin------
+68
+GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+
+-----end------
+Erase IT
+11 3
+finish call back proc
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+----------Set fd 10; Data:
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+FIRST
+CLIENT:11-0[]
+----------End
+finish call back proc!
+CLIENT:11-75[GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+
+hello]
+Add into task queue!
+-----begin------
+75
+GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+
+hello
+-----end------
+Erase IT
+epoll wait!
+finish call back proc
+12HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+----------Set fd 11; Data:
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+3
+FIRST
+CLIENT:12-----------End0[]
+
+finish call back proc!
+CLIENT:12-70[GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+:]
+Add into task queue!
+-----begin------
+70
+GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+:
+-----end------
+Erase IT
+13 3
+finish call back procFIRST
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+
+CLIENT:13-0[----------Set fd 12]; Data:
+
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+CLIENT:13-68[GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+]
+Add into task queue!
+-----begin------
+68
+GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+
+-----end------
+----------End
+finish call back proc!
+Erase IT
+14 3
+finish call back proc
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+----------Set fd 13; Data:
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+FIRST
+CLIENT:14-0[]
+----------EndCLIENT:14-68
+finish call back proc!
+[GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+]
+Add into task queue!
+-----begin------
+68
+GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+
+-----end------
+Erase IT
+5 3
+WRITE BACK!
+Get fd 5; Data
+finish call back procHTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+----------Set fd 14; Data:
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+Gete End
+---------begin--------
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+----------End
+finish call back proc!
+--------end --------
+6 3
+WRITE BACK!
+Get fd 6; Data
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+Gete End
+---------begin--------
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+--------end --------
+7 3
+WRITE BACK!
+Get fd 7; Data
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+Gete End
+---------begin--------
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+--------end --------
+8 3
+WRITE BACK!
+Get fd 8; Data
+
+Gete End
+---------begin--------
+
+--------end --------
+9 3
+WRITE BACK!
+Get fd 9; Data
+
+User-Agent: http_load 09Mar2016
+
+
+Gete End
+---------begin--------
+
+User-Agent: http_load 09Mar2016
+
+
+--------end --------
+10 3
+WRITE BACK!
+Get fd 10; Data
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+Gete End
+---------begin--------
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+--------end --------
+epoll wait!
+11 3
+WRITE BACK!
+Get fd 11; Data
+?
+Gete End
+---------begin--------
+?
+--------end --------
+12 3
+WRITE BACK!
+Get fd 12; Data
+?
+Gete End
+---------begin--------
+?
+--------end --------
+13 3
+WRITE BACK!
+Get fd 13; Data
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+Gete End
+---------begin--------
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+--------end --------
+14 3
+WRITE BACK!
+Get fd 14; Data
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+Gete End
+---------begin--------
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+--------end --------
+3 3
+set nonblocking:0
+New Client 15
+set nonblocking:0
+New Client 16
+set nonblocking:0
+New Client 17
+set nonblocking:0
+New Client 18
+set nonblocking:0
+New Client 19
+set nonblocking:0
+New Client 20
+epoll wait!
+15 3
+FIRST
+CLIENT:15-0[]
+CLIENT:15-100[GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+r-Agent: http_load 09Mar2016
+
+]
+Add into task queue!
+-----begin------
+100
+GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+r-Agent: http_load 09Mar2016
+
+
+-----end------
+Erase IT
+16 3
+FIRST
+CLIENT:16-0[]
+finish call back procCLIENT:16-
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+68[----------Set fd GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+]
+Add into task queue!15
+-----begin------
+68
+GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+
+-----end------
+; Data:Erase IT
+17 3
+
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+FIRST
+----------EndCLIENT:17-0[]
+finish call back proc!
+
+CLIENT:17-68[GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+]
+Add into task queue!finish call back proc
+-----begin------
+68
+GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+
+
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+----------Set fd 16; Data:-----end------
+
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+Erase IT
+----------End18 
+finish call back proc!
+3
+FIRST
+CLIENT:18-0[]finish call back proc
+
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+CLIENT:----------Set fd 17; Data:
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+18-68[GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+]
+----------EndAdd into task queue!
+-----begin------
+68
+GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+
+
+finish call back proc!
+-----end------
+Erase IT
+finish call back proc19 3
+
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+----------Set fd 18; Data:
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+FIRST
+CLIENT:19-0[]
+----------End
+finish call back proc!
+CLIENT:19-68[GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+]
+Add into task queue!
+-----begin------
+68
+GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+
+-----end------
+Erase IT
+20 3
+FIRSTfinish call back proc
+CLIENT:20-0[]
+
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+----------Set fd 19; Data:
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+CLIENT:20-68[GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+]
+Add into task queue!----------End
+-----begin------
+68
+
+finish call back proc!
+GET / HTTP/1.0
+Host: 127.0.0.1
+User-Agent: http_load 09Mar2016
+
+
+-----end------
+Erase IT
+epoll wait!
+finish call back proc
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+----------Set fd 20; Data:
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+15 3
+WRITE BACK!
+----------EndGet fd 15; Data
+
+finish call back proc!
+HTTP/1.1 200 OK
+Content-Length: 5
+
+hello
+Gete End
+---------begin--------
+?
+--------end --------
+16 3
+WRITE BACK!
+Get fd 16; Data
+p?r:
+Gete End
+---------begin--------
+p?r:
+--------end --------
+17 3
+WRITE BACK!
+Get fd 17; Data
+?
+Gete End
+---------begin--------
+?
+--------end --------
+18 3
+WRITE BACK!
+Get fd 18; Data
+?
+Gete End
+---------begin--------
+?
+--------end --------
+19 3
+WRITE BACK!
+Get fd 19; Data
+?
+Gete End
+---------begin--------
+?
+--------end --------
+epoll wait!
+20 3
+WRITE BACK!
+Get fd 20; Data
+?
+Gete End
+---------begin--------
+?
+

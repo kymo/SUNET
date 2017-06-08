@@ -44,17 +44,19 @@ typedef struct recv_buf {
 	int buf_cap;
 	recv_buf() {
 		buf = new char[2048];
+        memset(buf, '\0', sizeof(buf));
 		buf_len = 0;
 		buf_cap = 2048;
 	}
 	~recv_buf() {
-		std::cout << "delte recv buf !" << std::endl;
+		//std::cout << "delte recv buf !" << std::endl;
 		if (NULL != buf) {
 			delete buf;
 			buf = NULL;
 		}
 	}
 	void resize() {
+        std::cout << "resize now!" << std::endl;
 		char* new_buf = new char[buf_cap * 2];
 		memcpy(new_buf, buf, buf_len);
 		buf_cap *= 2;
@@ -80,19 +82,30 @@ public:
     }
 
     void _set_evt_data(int fd, char* buf_ptr) {
+        std::cout << "----------Set fd " << fd << "; Data:" << std::endl;
+        std::cout << buf_ptr << std::endl;
         pthread_mutex_lock(&_set_mutex);
         if (_data_buf.find(fd) == _data_buf.end()) {
             _data_buf[fd] = std::vector<char*>();
         }
-        _data_buf[fd].push_back(buf_ptr);
+        char *write_buf = new char[64];
+	    char *json = "hello";
+        sprintf(write_buf, "HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\n%s", strlen(json), json); 
+        _data_buf[fd].push_back(write_buf);
         pthread_mutex_unlock(&_set_mutex);
+        std::cout << "----------End" << std::endl;
     }
     
     void _get_evt_data(int fd, std::vector<char*>& ret) {
+        std::cout << "Get fd " << fd << "; Data" << std::endl;
         if (_data_buf.find(fd) == _data_buf.end()) {
             return ;
         }
         ret = _data_buf[fd];
+        for (int i = 0; i < ret.size(); i++) {
+            std::cout << ret[i] << std::endl;
+        }
+        std::cout << "Gete End" << std::endl;
     }
 
 };

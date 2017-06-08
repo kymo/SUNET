@@ -36,7 +36,7 @@ void SubServer::_init_sock(int port) {
         exit(1);
     }
     int yes = 1;
-	int nRecvBuf= 32 * 1024; //设置为32K
+	int nRecvBuf= 128 * 1024; //设置为32K
 	if (setsockopt(_svr_fd, SOL_SOCKET, SO_RCVBUF, (const char*)&nRecvBuf, sizeof(int)) == -1) {
 		perror("set receive buf error!");
 		exit(1);
@@ -75,12 +75,12 @@ int SubServer::_on_accept(int svr_fd) {
     // new_sock = accept(svr_fd, (struct sockaddr*)&_client_addr, &clit_len);
     while ((new_sock = accept(svr_fd, (struct sockaddr*)&_client_addr, &clit_len)) > 0) {
         _set_nonblocking(new_sock);
-		int nRecvBuf= 32 * 1024; //设置为32K
+		int nRecvBuf= 128 * 1024; //设置为32K
 		if (setsockopt(new_sock, SOL_SOCKET, SO_RCVBUF, (const char*)&nRecvBuf, sizeof(int)) == -1) {
 			perror("set receive buf error!");
 			exit(1);
 		}
-
+        std::cout << "New Client " << new_sock << std::endl;
         if (_event->_type == SELECT) {
             _event->_event_add(new_sock, EVT_READ);
         } else if (_event->_type == EPOLL) {
@@ -102,15 +102,19 @@ int SubServer::_on_http_read(int clt_fd) {
 		_read_buf_map[clt_fd] = new RECV_DATA();
 	}
 	RECV_DATA* recv_data = _read_buf_map[clt_fd];
+    std::cout << "FIRST" << std::endl;
     do {
+        
+        std::cout << "CLIENT:" << clt_fd << "-" << strlen(recv_data->buf) << "[" << recv_data->buf << "]" << std::endl;
 		
-		ret = recv(clt_fd, recv_data->buf + recv_data->buf_len, buf_left, 0);
+        ret = recv(clt_fd, recv_data->buf + recv_data->buf_len, buf_left, 0);
+
+        if (recv_data->buf_len > 2 && recv_data->buf[recv_data->buf_len - 1] == '\n' && 
+            recv_data->buf[recv_data->buf_len - 2] == '\r') {
+            read_out = 1;
+            break;
+        }
 		if (-1 == ret) {
-			if (recv_data->buf_len > 2 && recv_data->buf[recv_data->buf_len - 1] == '\n' && 
-				recv_data->buf[recv_data->buf_len - 2] == '\r') {
-            	read_out = 1;
-				break;
-			}
 			if (errno == EAGAIN || errno == EWOULDBLOCK) {
 				break;
 			} else {
@@ -118,8 +122,6 @@ int SubServer::_on_http_read(int clt_fd) {
 				break;
 			}
         } else if (ret == 0) {
-            std::cout << "client close socket!" << std::endl;
-            close(clt_fd);
             return 0;
         } else {
 			recv_data->buf_len += ret;
@@ -129,29 +131,31 @@ int SubServer::_on_http_read(int clt_fd) {
 		}
     } while(true);
 	
-	if (strlen(recv_data->buf) == 0) {
-		return 0;
-	}
-
     // add into task query
 	if (read_out) {
-		std::cout << "Add into task query!" << std::endl;
-		SubTask* task = new ReqTask("req_task");
-		REQ_TASK_DATA* req_task_data = new REQ_TASK_DATA(clt_fd, recv_data, _event);
+		std::cout << "Add into task queue!" << std::endl;
+        std::cout << "-----begin------" << std::endl;
+        std::cout << strlen(recv_data->buf) << std::endl;
+        std::cout << recv_data->buf << std::endl;
+        std::cout << "-----end------" << std::endl;
+        recv_data->buf[recv_data->buf_len] = '\0';
+        SubTask* task = new ReqTask("req_task");
+		
+        REQ_TASK_DATA* req_task_data = new REQ_TASK_DATA(clt_fd, recv_data, _event);
 		task->_set_task_data((void*)(req_task_data));
 		SubTaskMgr::_get_instance()->_add_task(task);
 		std::map<int, RECV_DATA*>::iterator it = _read_buf_map.find(clt_fd);
 		if (it != _read_buf_map.end()) {
-			_read_buf_map.erase(it);
-		}
-		
+            std::cout << "Erase IT" << std::endl;
+            _read_buf_map.erase(it);
+		}	
 	}
     return 1;
 }
 
-void SubServer::_run() {
+void SubServer::_run(int port) {
     // 初始化socket
-    _init_sock(9002);
+    _init_sock(port);
     // init io model
     // _init_evt(SELECT);
     _init_evt(EPOLL);

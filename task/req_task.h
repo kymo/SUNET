@@ -31,7 +31,7 @@ typedef struct req_task_data {
         _evt = evt;
     }
  	~req_task_data() {
-		std::cout << "delete req task data!" << std::endl;
+		// std::cout << "delete req task data!" << std::endl;
 		if (NULL != _data) {
 			delete _data;
 			_data = NULL;
