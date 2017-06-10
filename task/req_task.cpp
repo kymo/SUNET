@@ -58,8 +58,8 @@ int ReqTask::_run() {
     std::cout << (char*) _task_ret << std::endl;
     char *write_buf = new char[1024];
     // char *json = "hello";
-    sprintf(write_buf, "HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\n%s", strlen(root.toStyledString().c_str()), 
-        root.toStyledString().c_str()); 
+    sprintf(write_buf, "HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\n%s", 
+			root.toStyledString().length(), root.toStyledString().c_str()); 
     SubEventQueue::_get_instance()->_set_evt_data(fd, write_buf);
     std::cout << "finish call back proc!" << std::endl;
     if (req_task_data->_evt->_type == SELECT) {
