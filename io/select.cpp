@@ -83,7 +83,7 @@ void SubSelectEvent::_event_loop() {
                 } else if (FD_ISSET(_clt_sock_vec[i], &_copy_write_set)) {
                     // std::cout << "sock " << _clt_sock_vec[i] << " read" << std::endl;
                     //char write_buf[128] = "HTTP/1.1 200 OK\r\nContent-Length: 11\r\n\r\nHello World";
-                    /*std::vector<char*> write_buf_vec;
+                    std::vector<char*> write_buf_vec;
                     SubEventQueue::_get_instance()->_get_evt_data(_clt_sock_vec[i], write_buf_vec);
                     std::cout << "WRITE CLIENT " << _clt_sock_vec[i] << std::endl;
                     //std::cout << "end it !" << std::endl;
@@ -95,10 +95,8 @@ void SubSelectEvent::_event_loop() {
                         continue;
                     }
                     char*write_buf = write_buf_vec[0];
-                    */
-                    FD_CLR(_clt_sock_vec[i], &_write_set);
-                    char write_bufs[128] = "HTTP/1.1 200 OK\r\nContent-Length: 11\r\n\r\nHello World";
-                    if (send(_clt_sock_vec[i], write_bufs, sizeof(write_bufs), 0) <= 0) {
+                    // char write_bufs[128] = "HTTP/1.1 200 OK\r\nContent-Length: 11\r\n\r\nHello World";
+                    if (send(_clt_sock_vec[i], write_buf, sizeof(write_buf), 0) <= 0) {
                         FD_CLR(_clt_sock_vec[i], &_read_set);
                         close(_clt_sock_vec[i]);
                         _clt_sock_vec.erase(_clt_sock_vec.begin() + i);

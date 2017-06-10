@@ -45,7 +45,8 @@ int main(int argc, char** argv) {
         return 0;
     }
 	SubStrategyConfig::_get_instance()->_read_conf_file("../conf/strategy.conf");
-	// init strategies
+    SubConfig::_get_instance()->_read_conf_file("../conf/sub.conf");
+    // init strategies
 	SubStrategyMgr::_get_instance()->_init_strategies();
     // init task_mgr
     SubTaskMgr::_get_instance()->_init();
@@ -53,7 +54,6 @@ int main(int argc, char** argv) {
     SubTaskMgr::_get_instance()->_set_call_back_proc(REQ_TASK, req_task_call_back);
     // 启动线程池
     SubThreadPool::_get_instance()->_init();
-    SubThreadPool::_get_instance()->_set_thread_cnt(1);
     SubThreadPool::_get_instance()->_start();
     SubEventQueue::_get_instance()->_init();
     // 启动服务

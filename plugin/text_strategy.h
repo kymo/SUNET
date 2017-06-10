@@ -22,6 +22,8 @@ namespace sub_framework {
 	
 class TextStrategy : public IStrategy {
 // wordseg , normalization, and number normalized
+
+
 public:
 	TextStrategy();
 	virtual ~TextStrategy();

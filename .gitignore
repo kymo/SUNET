@@ -1,7 +1,11 @@
 *.swp
+*.out
 *.cpp~
 *.h~
 *.bak
 *.o
+*.a
+*.so
+*.tar*
 *.swo
 *~

@@ -54,6 +54,7 @@ void SubEpollEvent::_event_loop() {
                 std::vector<char*> write_buf_vec;
                 SubEventQueue::_get_instance()->_get_evt_data(handler_fd, write_buf_vec);
                 if (write_buf_vec.size() == 0) {
+                    std::cout << "get write buf empty!" << std::endl;
 					close(handler_fd);
                     _event_del(handler_fd, EPOLLIN);
                 	_event_del(handler_fd, EPOLLOUT);

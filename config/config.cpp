@@ -58,7 +58,7 @@ int SubConfig::_read_conf_file(const std::string& file_name) {
 }
 
 int SubConfig::_get_thread_cnt() {
-    int default_val = 20;
+    int default_val = 5;
     _get_conf_int_val("thread_cnt", default_val);
     return default_val;
 }
