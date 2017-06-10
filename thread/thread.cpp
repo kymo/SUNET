@@ -27,6 +27,7 @@ void* thread_proc(void *args) {
     }*/
 
     if (NULL != sub_thread) {
+        std::cout << "thread begin run" << std::endl;
         sub_thread->_run();
     }
 }

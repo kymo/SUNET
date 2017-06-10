@@ -34,7 +34,7 @@ public:
     }
     ~SubThreadHandler() {}
     
-    int _thread_proc_handler(void* args) {
+    virtual int _thread_proc_handler(void* args) {
         // 线程从task 队列中获取一个task,如果获取成功，则执行该task
         // 每一个task都有对应的回调函数
         while (! _stoped) {

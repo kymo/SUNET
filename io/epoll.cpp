@@ -66,6 +66,7 @@ void SubEpollEvent::_event_loop() {
                     char* write_buf = write_buf_vec[0];
                     std::cout << write_buf << std::endl;
                     if (send(handler_fd, write_buf, strlen(write_buf), 0) <= 0) {
+                        std::cout << "I am end idiot!" << std::endl;
                         tag = true;
                         break;
                     }

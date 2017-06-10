@@ -48,6 +48,18 @@ void SubServer::_init_sock(int port) {
     }
     // 设置为非阻塞
     _set_nonblocking(_svr_fd);
+    // 设置信号
+    //signal(SIGPIPE, SIG_IGN);
+    struct sigaction sa;
+    sa.sa_handler = SIG_IGN;//设定接受到指定信号后的动作为忽略
+    sa.sa_flags = 0;
+    if (sigemptyset(&sa.sa_mask) == -1 ||   //初始化信号集为空
+            sigaction(SIGPIPE, &sa, 0) == -1) {   //屏蔽SIGPIPE信号
+    perror("failed to ignore SIGPIPE; sigaction");
+    exit(EXIT_FAILURE);
+    }
+
+
 }
 
 void SubServer::_init_evt(int evt_type) {

@@ -64,6 +64,11 @@ public:
     void _parse(char* recv_buf, Request& request);
     int _parse_desc(char* recv_buf, Request& request);
     int _parse_headers(char* recv_buf, Request& request);
+    short int hexChar2dec(char c);
+    char dec2hexChar(short int n);
+    void encode(const std::string&url, std::string& result);
+    void decode(const std::string&url, std::string& result);
+
 };
 
 }

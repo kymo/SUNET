@@ -47,12 +47,18 @@ void Client::_connect_svr() {
 	}
 	char buf[1024];
 	std::cout << "send data from client!" << std::endl;
-	
 
-	send(_clt_sock_fd, "Hello World!", strlen("Hello World!"), 0);
-	std::cout << "receiver from server:" ;
-	while (1);
-	/*
+    char http_body[1024];
+    std::string http_str = "";
+    http_str += "GET /?q=南京长江大桥给你 HTTP/1.0\r\n";
+    http_str += "Host: 127.0.0.1\r\n";
+    http_str += "User-Agetn: client\r\n";
+    http_str += "\r\n\r\n";
+
+	//send(_clt_sock_fd, "Hello World!", strlen("Hello World!"), 0);
+	send(_clt_sock_fd, http_str.c_str(), strlen(http_str.c_str()), 0);
+    std::cout << "receiver from server:" ;
+	//while (1);
 	recv(_clt_sock_fd, buf, 1024, 0);
 	std::cout << buf << std::endl;
 	if (strcmp(buf, "Hello from svr!") == 0) {
@@ -60,7 +66,6 @@ void Client::_connect_svr() {
 	} else {
 		std::cout << "WRONG!" << std::endl;
 	}
-	*/
 }
 
 
@@ -68,6 +73,7 @@ class ClientHandler : public SubThreadHandler {
 public:
 	int _thread_proc_handler(void *args) {
 		Client* client = new Client();
+        std::cout << "fuck " << std::endl;
 		client->_init_svr_param("127.0.0.1", 9000);
 		client->_connect_svr();
 	}
@@ -80,18 +86,19 @@ int main(int argc, char* argv[]) {
 	}
 	int thread_num = atoi(argv[1]);
 	std::cout << argv[1] << std::endl;
-	ClientHandler*client_handler = new ClientHandler();
 	std::vector<SubThread*> threads;
 	for (int i = 0; i < thread_num; i++) {
 		std::cout << i << std::endl;
+	    ClientHandler*client_handler = new ClientHandler();
 		SubThread* sub_thread = new SubThread(client_handler, NULL);
 		sub_thread->_start();
 		// sub_thread->_join();
 		threads.push_back(sub_thread);
-	}
+    }
 	std::cout <<"nihao"<<std::endl;
 	
 	for (int i = 0; i < thread_num; i++) {
+	    threads[i]->_run();
 		threads[i]->_join();
 	}
 	return 0;
