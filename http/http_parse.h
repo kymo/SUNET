@@ -29,7 +29,13 @@ public:
 	std::map<std::string, std::string> params;
 	
 	Request() {
-	}
+        params["q"] = "";
+    }
+
+    std::string get_query() const {   
+        std::map<std::string, std::string>::const_iterator it = params.find("q");
+        return it->second;
+    }
 
     std::string to_str() {
         std::string ret = "";

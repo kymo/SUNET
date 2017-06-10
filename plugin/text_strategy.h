@@ -17,12 +17,16 @@
 #include "istrategy.h"
 #include "define.h"
 #include "http_parse.h"
+#include "wordseg.h"
+#include "config.h"
 
 namespace sub_framework {
 	
 class TextStrategy : public IStrategy {
 // wordseg , normalization, and number normalized
 
+private:
+    WordSeg* wordseg;
 
 public:
 	TextStrategy();

@@ -2,7 +2,16 @@ MACRO=DEBUGALL
 CFLAGS+=-g -w -D$(MACRO) -lpthread -O2 -pg
 SRCPATH=.
 INCLUDEPATH=.
-INCLUDEPATH+=../util ../task ../thread ../config ../http ../plugin ../alias/jsoncpp/include
+INCLUDEPATH+=../util \
+		../task \
+		../thread \
+		../config \
+		../http \
+		../plugin \
+		../alias/jsoncpp/include \
+		../alias/crf/CRF++-0.53 \
+		../alias/wordseg/
+
 TARGET=sub
 SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 
@@ -17,7 +26,8 @@ ALIAS_OBJS=../task/task_mgr.o \
 		   ../plugin/strategy_mgr.o \
 		   ../plugin/text_strategy.o \
 		   ../plugin/rewrite_strategy.o \
-		   ../config/strategy_conf.o
+		   ../config/strategy_conf.o \
+		   ../alias/wordseg/wordseg.o
 
 CFLAGS+=$(foreach dir, $(INCLUDEPATH), -I$(dir))
 
@@ -28,5 +38,5 @@ clean:
 
 build:
 	g++ -c ${CFLAGS} ${SOURCES}
-	g++ ${CFLAGS} -o ${TARGET} ${OBJS} ${ALIAS_OBJS} ../alias/jsoncpp/lib/libjson_linux-gcc-3.4.5_libmt.a 
+	g++ ${CFLAGS} -o ${TARGET} ${OBJS} ${ALIAS_OBJS} ../alias/jsoncpp/lib/libjson_linux-gcc-3.4.5_libmt.a ../alias/crf/CRF++-0.53/libs/libcrfpp.a -lpthread 
 	#g++ ${CFLAGS} -o -pg ${TARGET} ${OBJS} ${ALIAS_OBJS}

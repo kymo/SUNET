@@ -41,7 +41,8 @@ TEST_F(test_strategy_suite, test_strategy) {
 	root.clear();
 	uri = "/";
 	strategy_mgr->_run_uri(uri, req, root);
-	
+    std::cout << root.toStyledString() << std::endl;
+
 	uri = "searchs";
 	root.clear();
 	Json::Value js;
