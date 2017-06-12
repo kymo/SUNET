@@ -1,3 +1,5 @@
+*.out
+sub
 *.swp
 *.out
 *.cpp~

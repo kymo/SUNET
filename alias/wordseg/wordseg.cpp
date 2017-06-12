@@ -12,6 +12,7 @@ int WordSeg::_init_tagger(const char* model_path) {
     _tagger = CRFPP::createTagger(_tagger_conf);
     pthread_mutex_init(&seg_mutex, NULL);
     if (NULL == _tagger) {
+        std::cout << "init targger failed!" << std::endl;
         return FAIL;
     }
     return OK;
@@ -53,6 +54,7 @@ int WordSeg::split_ch_words(const std::string& word, std::vector<std::string>& c
 
 int WordSeg::segment(const std::string& str, std::vector<std::string>& seg_results) {
     if (NULL == _tagger) {
+        std::cout << "tagger is NULL" << std::endl;
         return FAIL;
     }
     std::vector<std::string> words;
@@ -66,6 +68,7 @@ int WordSeg::segment(const std::string& str, std::vector<std::string>& seg_resul
     }
     if (! _tagger->parse()) {
         pthread_mutex_unlock(&seg_mutex);
+        std::cout << "targger parser error!" << std::endl;
         return FAIL;
     }
     int rows = _tagger->size();
