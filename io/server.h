@@ -29,6 +29,7 @@
 #include "req_task.h"
 #include "task_mgr.h"
 #include "thread_pool.h"
+#include "sub_log.h"
 #include <signal.h>
 
 namespace sub_framework {

@@ -70,7 +70,7 @@ void SubLogger::_write_log(int log_type, const char* format, ...) {
     }
     va_list arg_ptr;
     va_start(arg_ptr, format);
-    vsprintf(log_line + strlen(log_line), format, arg_ptr);
+    vsnprintf(log_line + strlen(log_line), MAX_LOG_LEN - strlen(log_line), format, arg_ptr);
     va_end(arg_ptr);
     if (NULL == _log_file_p) {
         _log_file_p = fopen((_log_path + _log_file_name).c_str(), "a+");

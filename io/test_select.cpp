@@ -44,8 +44,11 @@ int main(int argc, char** argv) {
         std::cout << "./sub port" << std::endl;
         return 0;
     }
+    // 配置初始化
 	SubStrategyConfig::_get_instance()->_read_conf_file("../conf/strategy.conf");
     SubConfig::_get_instance()->_read_conf_file("../conf/sub.conf");
+    // 日志初始化
+    SubLogger::_get_instance()->_init_logger();
     // init strategies
 	SubStrategyMgr::_get_instance()->_init_strategies();
     // init task_mgr

@@ -55,8 +55,8 @@ void SubServer::_init_sock(int port) {
     sa.sa_flags = 0;
     if (sigemptyset(&sa.sa_mask) == -1 ||   //初始化信号集为空
             sigaction(SIGPIPE, &sa, 0) == -1) {   //屏蔽SIGPIPE信号
-    perror("failed to ignore SIGPIPE; sigaction");
-    exit(EXIT_FAILURE);
+        FATAL_LOG("Failed to ignore SIGPIPE!");
+        exit(EXIT_FAILURE);
     }
 
 
@@ -74,7 +74,6 @@ void SubServer::_set_nonblocking(int sock_fd) {
     int opts = fcntl(sock_fd, F_GETFL);  
     opts = (opts | O_NONBLOCK); 
     int ret = fcntl(sock_fd, F_SETFL, opts) ;
-    std::cout << "set nonblocking:" << ret << std::endl;
 }
 
 int SubServer::_on_accept(int svr_fd) {
@@ -89,10 +88,10 @@ int SubServer::_on_accept(int svr_fd) {
         _set_nonblocking(new_sock);
         int nRecvBuf= 128 * 1024; //设置为32K
         if (setsockopt(new_sock, SOL_SOCKET, SO_RCVBUF, (const char*)&nRecvBuf, sizeof(int)) == -1) {
-            perror("set receive buf error!");
+            WARN_LOG("Set Receive Buf Erro!");
             exit(1);
         }
-        std::cout << "New Client " << new_sock << std::endl;
+        DEBUG_LOG("New Client Comes[%d]", new_sock);
         if (_event->_type == SELECT) {
             _event->_event_add(new_sock, EVT_READ);
         } else if (_event->_type == EPOLL) {
@@ -114,13 +113,9 @@ int SubServer::_on_http_read(int clt_fd) {
         _read_buf_map[clt_fd] = new RECV_DATA();
     }
     RECV_DATA* recv_data = _read_buf_map[clt_fd];
-    std::cout << "FIRST" << std::endl;
     do {
-        
-        std::cout << "CLIENT:" << clt_fd << "-" << strlen(recv_data->buf) << "[" << recv_data->buf << "]" << std::endl;
-        
+        DEBUG_LOG("Receive Client %d data[%d]:%s", clt_fd, strlen(recv_data->buf), recv_data->buf);
         ret = recv(clt_fd, recv_data->buf + recv_data->buf_len, buf_left, 0);
-
         if (recv_data->buf_len > 2 && recv_data->buf[recv_data->buf_len - 1] == '\n' && 
             recv_data->buf[recv_data->buf_len - 2] == '\r') {
             read_out = 1;
@@ -145,8 +140,7 @@ int SubServer::_on_http_read(int clt_fd) {
     
     // add into task query
     if (read_out) {
-        std::cout << "Add into task queue!" << std::endl;
-        std::cout << "-----begin------" << std::endl;
+        DEBUG_LOG("Add into task queue!");
         std::cout << strlen(recv_data->buf) << std::endl;
         std::cout << recv_data->buf << std::endl;
         std::cout << "-----end------" << std::endl;
@@ -158,7 +152,7 @@ int SubServer::_on_http_read(int clt_fd) {
         SubTaskMgr::_get_instance()->_add_task(task);
         std::map<int, RECV_DATA*>::iterator it = _read_buf_map.find(clt_fd);
         if (it != _read_buf_map.end()) {
-            std::cout << "Erase IT" << std::endl;
+            DEBUG_LOG("Erase it from read buf map!");
             _read_buf_map.erase(it);
         }    
     }

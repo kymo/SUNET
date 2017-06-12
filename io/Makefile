@@ -10,8 +10,8 @@ INCLUDEPATH+=../util \
 		../plugin \
 		../alias/jsoncpp/include \
 		../alias/crf/CRF++-0.53 \
-		../alias/wordseg/
-
+		../alias/wordseg/ \
+		../log/ 
 TARGET=sub
 SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 
@@ -27,7 +27,8 @@ ALIAS_OBJS=../task/task_mgr.o \
 		   ../plugin/text_strategy.o \
 		   ../plugin/rewrite_strategy.o \
 		   ../config/strategy_conf.o \
-		   ../alias/wordseg/wordseg.o
+		   ../alias/wordseg/wordseg.o \
+		   ../log/sub_log.o
 
 CFLAGS+=$(foreach dir, $(INCLUDEPATH), -I$(dir))
 
