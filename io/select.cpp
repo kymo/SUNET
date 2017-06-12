@@ -11,12 +11,10 @@
 namespace sub_framework {
 
 void SubSelectEvent::_event_add(int evt_fd, int evt_type)  {
-    // FD_ZERO(&_read_set);
     if (evt_type == EVT_READ) {
         FD_SET(evt_fd, &_read_set);
         _clt_sock_vec.push_back(evt_fd);
     } else if (evt_type == EVT_WRITE) {
-        std::cout << "Epoll Add it!" << std::endl;
         FD_SET(evt_fd, &_write_set);
     }
 }

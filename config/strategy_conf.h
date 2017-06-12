@@ -18,7 +18,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "define.h"
-
+#include "utils.h"
 namespace sub_framework {
 
 typedef struct strategy_conf {

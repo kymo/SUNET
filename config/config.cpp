@@ -22,7 +22,6 @@ void SubConfig::_get_conf_int_val(const std::string& key, int& default_val) {
     default_val = atoi(conf_val.c_str());
 }
 
-
 void SubConfig::_get_conf_val(const std::string& key, std::string& conf_val) {
     conf_val = "";
     if (_conf_dict.find(key) != _conf_dict.end()) {
@@ -36,23 +35,13 @@ int SubConfig::_read_conf_file(const std::string& file_name) {
 		return SUB_FAIL;
 	}
 	std::string line;
-	std::string key = "";
-	std::string val = "";
 	while (getline(fis, line)) {
-		key = "";
-		val = "";
-		std::string str = "";
-		for (int i = 0; i < line.length(); i++) {
-			if (line[i] == ' ') continue;
-			if (line[i] == ':') {
-				key = str;
-				str = "";
-			} else {
-				str += line[i];
-			}
-		}
-		val = str;
-		_conf_dict[key] = val;
+        std::vector<std::string> split_res;
+        StringUtil::split(line, ":", split_res); 
+		if (split_res.size() != 2) {
+            continue;
+        }
+		_conf_dict[split_res[0]] = split_res[1];
 	}
 	return SUB_OK;
 }

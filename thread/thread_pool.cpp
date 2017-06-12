@@ -29,16 +29,15 @@ void SubThreadPool::_init() {
 
 void SubThreadPool::_set_thread_cnt(int thread_cnt) {
     if (_threads.size() != 0) {
-        std::cout << "Thread Pool is running!Set thread count is not allowed!" << std::endl;
+        WARN_LOG("Thread Pool is running!Set thread count is not allowed!");
         return ;
     }
     _threads_cnt = thread_cnt;
-    std::cout << "threads cnt:" << _threads_cnt << std::endl;
 }
 
 int SubThreadPool::_start() {
     if (_threads.size() != 0 || _threads_cnt < 1) {
-        std::cout << "start failed!" << _threads.size() << "," << _threads_cnt << std::endl;
+        FATAL_LOG("Thread Pool starts failed");
         return 0;
     }
     for (int i = 0; i < _threads_cnt; i++) {

@@ -6,8 +6,8 @@
  *  
  **/
 
-#ifndef  __STRATEGY_H_
-#define  __STRATEGY_H_
+#ifndef  __STRATEGYMGR_H_
+#define  __STRATEGYMGR_H_
 
 #include <iostream>
 #include <map>

@@ -27,28 +27,14 @@ int SubStrategyConfig::_read_conf_file(const std::string& file_name) {
 	while (getline(fis, line)) {
 		if (line.find("[") == 0) {
 			if (uri_strategy_vec.size() != 0) {
-				_map["nihao"] = "wohenhao ";
-				// _strategy_conf_dict["niaho"] = uri_strategy_vec;
-				// _strategy_conf_dict[cur_uri] = uri_strategy_vec;
 				_strategy_conf_dict.insert(std::pair<std::string, std::vector<STRATEGYTYPE> >(cur_uri, uri_strategy_vec));
 			}
 			cur_uri = line.substr(1, line.length() - 2);	
 			uri_strategy_vec.clear();
 		} else {
-			std::string key = "";
-			std::string val = "";
-			std::string str = "";
-			for (int i = 0; i < line.length(); i++) {
-				if (line[i] == ' ') continue;
-				if (line[i] == ':') {
-					key = str;
-					str = "";
-				} else {
-					str += line[i];
-				}
-			}
-			val = str;
-			uri_strategy_vec.push_back(STRATEGYTYPE(key, atoi(val.c_str())));
+            std::vector<std::string> split_res;
+            StringUtil::split(line, ":", split_res);
+            uri_strategy_vec.push_back(STRATEGYTYPE(split_res[0], atoi(split_res[1].c_str())));
 		}
 	}
 	if (uri_strategy_vec.size() != 0) {

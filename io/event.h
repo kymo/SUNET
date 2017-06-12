@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "sub_log.h"
 
 namespace sub_framework {
 
@@ -49,14 +50,12 @@ typedef struct recv_buf {
 		buf_cap = 2048;
 	}
 	~recv_buf() {
-		//std::cout << "delte recv buf !" << std::endl;
 		if (NULL != buf) {
 			delete buf;
 			buf = NULL;
 		}
 	}
 	void resize() {
-        std::cout << "resize now!" << std::endl;
 		char* new_buf = new char[buf_cap * 2];
 		memcpy(new_buf, buf, buf_len);
 		buf_cap *= 2;
@@ -76,33 +75,26 @@ private:
 
 public:
     void _init() {
-        
         pthread_mutex_init(&_set_mutex, NULL);
         pthread_mutex_init(&_get_mutex, NULL);
     }
 
     void _set_evt_data(int fd, char* buf_ptr) {
-        std::cout << "----------Set fd " << fd << "; Data:" << std::endl;
-        std::cout << buf_ptr << std::endl;
-        pthread_mutex_lock(&_set_mutex);
+        DEBUG_LOG("Seg Fd[%d]", fd);
+        //pthread_mutex_lock(&_set_mutex);
         if (_data_buf.find(fd) == _data_buf.end()) {
             _data_buf[fd] = std::vector<char*>();
         }
         _data_buf[fd].push_back(buf_ptr);
-        pthread_mutex_unlock(&_set_mutex);
-        std::cout << "----------End" << std::endl;
+        //pthread_mutex_unlock(&_set_mutex);
     }
     
     void _get_evt_data(int fd, std::vector<char*>& ret) {
-        std::cout << "Get fd " << fd << "; Data" << std::endl;
+        DEBUG_LOG("Get Fd[%d]", fd);
         if (_data_buf.find(fd) == _data_buf.end()) {
             return ;
         }
         ret = _data_buf[fd];
-        for (int i = 0; i < ret.size(); i++) {
-            std::cout << ret[i] << std::endl;
-        }
-        std::cout << "Gete End" << std::endl;
     }
 
 };

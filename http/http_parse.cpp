@@ -74,9 +74,6 @@ void HttpParser::decode(const std::string &URL, std::string& result) {
 }  
 
     void HttpParser::_parse(char* recv_buf, Request& request) {
-        std::cout << "recv buf: " << std::endl;
-        std::cout << recv_buf << std::endl;
-        std::cout << "end" << std::endl;
         int len = _parse_desc(recv_buf, request);
         if (-1 == len) {
             return ;
@@ -102,40 +99,29 @@ void HttpParser::decode(const std::string &URL, std::string& result) {
                 req_part = URL;
             } else if (req_part == URL) {
                 char* url = (char*) malloc ((parse_len + 1) * sizeof(char));
-                ///char url[];
-                std::cout << "bef" << std::endl;
-                std::cout << recv_buf + strlen(request.method) + 1 << std::endl;
                 strncpy(url, recv_buf + strlen(request.method) + 1, parse_len);
                 url[parse_len] = '\0';
-                std::cout << "[" << url << "]" << parse_len << std::endl;
-
                 char*p = strtok(url, "?");
                 char*s = strtok(NULL, "?");
-                std::cout << "P :" << p << std::endl;
                 strncpy(request.url, p, strlen(p));
                 request.url[strlen(p)] = '\0';
                 char* val = NULL;
                 char* ky = NULL;
-
                 if (s != NULL) {
                     char *outer_ptr=NULL;  
                     char *inner_ptr=NULL;
                     while ((val = strtok_r(s, "&", &outer_ptr)) != NULL) {
                         s = val;
-                        std::cout << val << std::endl;
                         ky = strtok_r(s, "=", &inner_ptr);
                         val = strtok_r(NULL, "=", &inner_ptr);
                         if (ky != NULL && val != NULL) {
                             std::string decode_val = "";
                             decode(std::string(val), decode_val);
                             request.params[std::string(ky)] = decode_val; //decode(std::string(val));
-                            std::cout << "Key[" << ky << "][" << val << "]" << std::endl;
                         }
                         s = NULL;
                     }
                 }
-                //std::cout << ky << "." << val << std::endl;
-                //strncpy(request.url, recv_buf + strlen(request.method) + 1, parse_len);
                 parse_len = 0;
                 req_part = VER;
             }

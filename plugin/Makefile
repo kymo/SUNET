@@ -7,7 +7,8 @@ INCLUDEPATH=../util \
 		../config/ \
 		../alias/jsoncpp/include \
 		../alias/crf/CRF++-0.53 \
-		../alias/wordseg/
+		../alias/wordseg/ \
+		../log/ \
 
 LIB=-L../alias/gtest
 SOURCES=$(wildcard $(SRCPATH)/*.cpp)
@@ -19,7 +20,7 @@ ALIAS_OBJS=../config/strategy_conf.o \
 		   ../config/config.o \
 		   ../http/http_parse.o \
 		   ../alias/wordseg/wordseg.o \
-
+		   ../log/sub_log.o
 all: build
 	@echo "Build Done!"
 

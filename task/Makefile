@@ -2,13 +2,17 @@ MACRO=DEBUGALL
 CFLAGS+=-g -w -D$(MACRO) -pg
 SRCPATH=.
 INCLUDEPATH=.
-INCLUDEPATH+=../config ../thread ../http ../io ../util ../alias/jsoncpp/include ../plugin
+INCLUDEPATH+=../config ../thread ../http ../io ../util ../alias/jsoncpp/include \
+		../plugin \
+		../log/
 TARGET=sub
 SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 
 #OBJS := $(patsubst %.cpp, %.o,$(SOURCES))
 OBJS=$(SOURCES:.cpp=.o)
-OBJS+=../config/config.o ../http/http_parse.o
+OBJS+=../config/config.o ../http/http_parse.o \
+	../log/sub_log.o
+
 CFLAGS+=$(foreach dir, $(INCLUDEPATH), -I$(dir))
 
 all: build

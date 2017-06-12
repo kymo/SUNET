@@ -17,7 +17,6 @@ ReqTask::ReqTask(const std::string& task_name) {
 }
 
 ReqTask::~ReqTask() {
-	// std::cout << "delete req task!" << std::endl;
 	if (NULL != _task_ret) {
 		free(_task_ret);
 		_task_ret = NULL;
@@ -35,8 +34,8 @@ void ReqTask::_set_task_data(void *task_data) {
 int ReqTask::_run() {
 	CALL_BACK_PROC call_back_proc = SubTaskMgr::_get_instance()->_get_call_back_proc(_task_name);
     if (NULL == call_back_proc) {
-        std::cout << "call back proc NULL!" << std::endl;
-		return 0;
+		WARN_LOG("Call Back Proc NULL!");
+        return 0;
     }
 	// 解析http
 	Request request;
@@ -49,19 +48,14 @@ int ReqTask::_run() {
     char *buf = req_task_data->_data->buf;
     int fd = req_task_data->_fd;
     http._parse(buf, request);
-    std::cout << request.to_str() << std::endl;
 	Json::Value root;
 	SubStrategyMgr::_get_instance()->_run_uri(request.url, request, root);
-    std::cout << root.toStyledString() << std::endl;
-	int ret = (*call_back_proc)(_task_data, _task_ret);
-    std::cout << "finish call back proc" << std::endl;
-    std::cout << (char*) _task_ret << std::endl;
+	DEBUG_LOG("Strategy Return: %s", root.toStyledString().c_str());
+    int ret = (*call_back_proc)(_task_data, _task_ret);
     char *write_buf = new char[1024];
-    // char *json = "hello";
     sprintf(write_buf, "HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\n%s", 
 			root.toStyledString().length(), root.toStyledString().c_str()); 
     SubEventQueue::_get_instance()->_set_evt_data(fd, write_buf);
-    std::cout << "finish call back proc!" << std::endl;
     if (req_task_data->_evt->_type == SELECT) {
         req_task_data->_evt->_event_add(fd, EVT_WRITE);
     } else if (req_task_data->_evt->_type == EPOLL) {

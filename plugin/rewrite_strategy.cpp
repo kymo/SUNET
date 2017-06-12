@@ -6,7 +6,7 @@
  **/
 
 #include "rewrite_strategy.h"
-
+#include "sub_log.h"
 namespace sub_framework {
 
 RewriteStrategy::RewriteStrategy() {
@@ -22,8 +22,8 @@ int RewriteStrategy::_process(const Request& req, Json::Value& root, const int& 
 }
 
 int RewriteStrategy::_init() {	
-	std::cout << "RewriteStrategy Init!" << std::endl;
-	return SUB_OK;
+	DEBUG_LOG("Init RewriteStrategy Okay!");
+    return SUB_OK;
 }
 
 }

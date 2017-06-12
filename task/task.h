@@ -16,6 +16,7 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include "sub_log.h"
 
 namespace sub_framework {
 

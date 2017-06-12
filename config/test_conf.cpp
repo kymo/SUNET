@@ -41,7 +41,11 @@ private:
 TEST_F(test_config_suite, test_conf) {
 	sub_config->_read_conf_file("../conf/sub.conf");
 	ASSERT_EQ(sub_config->_get_thread_cnt(), 10);
+    int log_level = 15;
+    sub_config->_get_conf_int_val("log_level", log_level);
+    ASSERT_EQ(log_level, 8);
 	sub_strategy_config->_read_conf_file("../conf/strategy.conf");
+    
 }
 
 GTEST_API_ int main(int argc, char** argv) {

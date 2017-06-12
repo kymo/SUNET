@@ -8,7 +8,7 @@
  **/
 
 #include "task_mgr.h"
-
+#include "sub_log.h"
 
 namespace sub_framework {
 
@@ -26,10 +26,9 @@ SubTaskMgr::~SubTaskMgr() {
 }
 
 void SubTaskMgr::_init() {
-    std::cout << "init mutex" << std::endl;
     pthread_mutex_init(&_add_mutex, NULL);
     pthread_mutex_init(&_get_mutex, NULL);
-    std::cout << "~" << std::endl;
+    DEBUG_LOG("Init Mutex Ok!");
 }
 
 void SubTaskMgr::_set_call_back_proc(const std::string& _task_name, CALL_BACK_PROC call_back_proc) {

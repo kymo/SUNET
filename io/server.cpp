@@ -24,32 +24,31 @@ void SubServer::_init_sock(int port) {
 
     _svr_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (-1 == _svr_fd) {
-        std::cout << "Create Socket FD Error!" << std::endl;
+        FATAL_LOG("Create Socket FD Error!");
         exit(1);
     }
     if (bind(_svr_fd, (struct sockaddr*)&_svr_addr, sizeof(_svr_addr)) == -1) {
-        std::cout << "Bind Error!" << std::endl;
+        FATAL_LOG("Bind Error!");
         exit(1);
     }
     if (listen(_svr_fd, MAX_CLT_CNT) == -1) {
-        std::cout << "Listen Error!" << std::endl;
+        FATAL_LOG("Listen Error!");
         exit(1);
     }
     int yes = 1;
     int nRecvBuf= 128 * 1024; //设置为32K
     if (setsockopt(_svr_fd, SOL_SOCKET, SO_RCVBUF, (const char*)&nRecvBuf, sizeof(int)) == -1) {
-        perror("set receive buf error!");
+        FATAL_LOG("Set Receive Buffer Error!");
         exit(1);
     }
     
     if (setsockopt(_svr_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
-        perror("setsockopt");
+        FATAL_LOG("Set Reuseraddr Error");
         exit(1);
     }
     // 设置为非阻塞
     _set_nonblocking(_svr_fd);
-    // 设置信号
-    //signal(SIGPIPE, SIG_IGN);
+    
     struct sigaction sa;
     sa.sa_handler = SIG_IGN;//设定接受到指定信号后的动作为忽略
     sa.sa_flags = 0;
@@ -58,7 +57,6 @@ void SubServer::_init_sock(int port) {
         FATAL_LOG("Failed to ignore SIGPIPE!");
         exit(EXIT_FAILURE);
     }
-
 
 }
 
@@ -83,7 +81,6 @@ int SubServer::_on_accept(int svr_fd) {
     socklen_t clit_len = sizeof(struct sockaddr);
     int new_sock = -1;
     int mx_sock = -1;
-    // new_sock = accept(svr_fd, (struct sockaddr*)&_client_addr, &clit_len);
     while ((new_sock = accept(svr_fd, (struct sockaddr*)&_client_addr, &clit_len)) > 0) {
         _set_nonblocking(new_sock);
         int nRecvBuf= 128 * 1024; //设置为32K
@@ -141,10 +138,8 @@ int SubServer::_on_http_read(int clt_fd) {
     // add into task query
     if (read_out) {
         DEBUG_LOG("Add into task queue!");
-        std::cout << strlen(recv_data->buf) << std::endl;
-        std::cout << recv_data->buf << std::endl;
-        std::cout << "-----end------" << std::endl;
         recv_data->buf[recv_data->buf_len] = '\0';
+        DEBUG_LOG("Recv BUf%s", recv_data->buf);
         SubTask* task = new ReqTask("req_task");
         
         REQ_TASK_DATA* req_task_data = new REQ_TASK_DATA(clt_fd, recv_data, _event);

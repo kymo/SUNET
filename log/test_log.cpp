@@ -12,7 +12,6 @@ class test_log_suite : public testing::Test {
 protected:
 	test_log_suite() {
 		sub_log = SubLogger::_get_instance();
-        sub_log->_init_logger();
         sub_config = SubConfig::_get_instance();
     }
 
@@ -34,12 +33,32 @@ private:
     SubConfig* sub_config;
 };
 
+void* thread_func(void*params) {
+	std::string str = "今天天气如何";
+	std::vector<std::string> strs;
+    char buf[1024];
+    for (int i = 0; i < 1022;i ++) {
+    buf[i] = 'a';}
+    buf[1024] = '\0';
+    DEBUG_LOG("jin天塌守空房姐挼看对方接口框架啊劳动纠纷");
+    DEBUG_LOG("%s", buf);
+}
+#define NUM 10000
 TEST_F(test_log_suite, test_conf) {
 	sub_config->_read_conf_file("../conf/sub.conf");
+    sub_log->_init_logger();
     sub_log->_write_log(DEBUG, "tianqibucuo");
     DEBUG_LOG("this is a test!");
     DEBUG_LOG("heloo");
     DEBUG_LOG("%s", "woqu");
+	pthread_t threads[NUM];
+	for (int i = 0; i < NUM; i++) {
+		int tid = pthread_create(&threads[i], NULL, thread_func, NULL); 
+	}
+	for (int i = 0; i < NUM; i++) {
+		pthread_join(threads[i], NULL);
+	}
+
 }
 
 GTEST_API_ int main(int argc, char** argv) {

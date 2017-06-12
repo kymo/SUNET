@@ -1,11 +1,11 @@
 MACRO=DEBUGALL
 CFLAGS+=-pg -w -D$(MACRO)
 SRCPATH=.
-INCLUDEPATH=../gtest/include ../crf/CRF++-0.53
+INCLUDEPATH=../gtest/include ../crf/CRF++-0.53 ../../log ../../config
 LIB=../gtest 
 CRF_LIB=../crf/CRF++-0.53/libs
-
-TARGET=test_http
+ALIAS_OBJ=../../log/sub_log.o ../../config/config.o
+TARGET=test_wordseg
 SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 
 #OBJS := $(patsubst %.cpp, %.o,$(SOURCES))
@@ -20,5 +20,5 @@ clean:
 
 build:
 	g++ -c ${CFLAGS} ${SOURCES}
-	g++ ${CFLAGS} -o ${TARGET} ${OBJS} -L${LIB} -lgtest ../crf/CRF++-0.53/libs/libcrfpp.a -lpthread
+	g++ ${CFLAGS} -o ${TARGET} ${OBJS} ${ALIAS_OBJ} -L${LIB} -lgtest ../crf/CRF++-0.53/libs/libcrfpp.a -lpthread
 
