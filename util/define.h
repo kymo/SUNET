@@ -33,6 +33,9 @@
 #define READ_OK 1
 #define READ_FAIL 0
 #define READ_ERROR -1
+
+#define RESP_HEAD_LEN 40
+
 #endif  //__DEFINE_H_
 
 /* vim: set expandtab ts=4 sw=4 sts=4 tw=100: */

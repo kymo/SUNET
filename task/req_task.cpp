@@ -55,12 +55,9 @@ int ReqTask::_run() {
 	SubStrategyMgr::_get_instance()->_run_uri(request.url, request, root);
 	DEBUG_LOG("Strategy Return: %s", root.toStyledString().c_str());
     int ret = (*call_back_proc)(_task_data, _task_ret);
-    char *write_buf = new char[1024];
+    char *write_buf = new char[root.toStyledString().length() + RESP_HEAD_LEN];
     sprintf(write_buf, "HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\n%s", 
 			root.toStyledString().length(), root.toStyledString().c_str()); 
-    std::cout << "begin to set evt data" << std::endl;
-    std::cout << write_buf << " " << strlen(write_buf) << std::endl;
-    // SubEventQueue::_get_instance()->_set_evt_data(fd, write_buf);
     if (req_task_data->_evt->_type == SELECT) {
         req_task_data->_evt->_event_add(fd, EVT_WRITE);
     } else if (req_task_data->_evt->_type == EPOLL) {

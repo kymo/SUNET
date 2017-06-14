@@ -106,11 +106,7 @@ int SubServer::_on_http_read(int clt_fd) {
     int buf_index = 0;
     int buf_left = 1024;
     int read_out = 0;
-    /*
-    if (_read_buf_map.find(clt_fd) == _read_buf_map.end()) {
-        _read_buf_map[clt_fd] = new RECV_DATA();
-    }*/
-    RECV_DATA* recv_data = new RECV_DATA(); // _read_buf_map[clt_fd];
+    RECV_DATA* recv_data = new RECV_DATA();
     do {
         ret = recv(clt_fd, recv_data->buf + recv_data->buf_len, buf_left, 0);
         if (-1 == ret) {
@@ -118,7 +114,6 @@ int SubServer::_on_http_read(int clt_fd) {
                 DEBUG_LOG("Erron is EAGAIN!");
                 read_out = 1;
                 break;
-                //continue;
             } else {
                 DEBUG_LOG("Read Error !");
                 read_out = 1;
@@ -129,7 +124,7 @@ int SubServer::_on_http_read(int clt_fd) {
             return READ_FAIL;
         } else {
             recv_data->buf_len += ret;
-            DEBUG_LOG("Receive Client %d data[%d]%d:%s", clt_fd, strlen(recv_data->buf), recv_data->buf_len, recv_data->buf);
+            DEBUG_LOG("Receive Client %d data[%d]%d:[%s]", clt_fd, strlen(recv_data->buf), recv_data->buf_len, recv_data->buf);
             if (recv_data->buf_len > 4 && recv_data->buf[recv_data->buf_len - 1] == '\n' && 
                 recv_data->buf[recv_data->buf_len - 2] == '\r' && 
                 recv_data->buf[recv_data->buf_len - 3] == '\n' && 
@@ -139,6 +134,7 @@ int SubServer::_on_http_read(int clt_fd) {
                 break;
             }
             if (recv_data->buf_len + buf_left >= recv_data->buf_cap) {
+                DEBUG_LOG("Receive read out !");
                 recv_data->resize();
             }
         }
@@ -153,13 +149,6 @@ int SubServer::_on_http_read(int clt_fd) {
         REQ_TASK_DATA* req_task_data = new REQ_TASK_DATA(clt_fd, recv_data, _event);
         task->_set_task_data((void*)(req_task_data));
         SubTaskMgr::_get_instance()->_add_task(task);
-        /*
-        std::map<int, RECV_DATA*>::iterator it = _read_buf_map.find(clt_fd);
-        if (it != _read_buf_map.end()) {
-            DEBUG_LOG("Erase it from read buf map!");
-            _read_buf_map.erase(it);
-        }
-        */
         return READ_OK;
     }
     if (read_out) {
