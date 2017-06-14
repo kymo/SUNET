@@ -106,42 +106,48 @@ int SubServer::_on_http_read(int clt_fd) {
     int buf_index = 0;
     int buf_left = 1024;
     int read_out = 0;
-    RECV_DATA* recv_data = new RECV_DATA();
+    if (_read_buf_map.find(clt_fd) == _read_buf_map.end()) {
+        _read_buf_map[clt_fd] = new RECV_DATA();
+    }
+    std::map<int, RECV_DATA*>::iterator it = _read_buf_map.find(clt_fd);
+    RECV_DATA* recv_data = it->second;
     do {
-        ret = recv(clt_fd, recv_data->buf + recv_data->buf_len, buf_left, 0);
-        if (-1 == ret) {
-            if (errno == EAGAIN) {
-                DEBUG_LOG("Erron is EAGAIN!");
-                read_out = 1;
-                break;
-            } else {
-                DEBUG_LOG("Read Error !");
-                read_out = 1;
+        buf_index = 0;
+        ret = 0;
+        buf_left = 1024;
+        while ((ret = recv(clt_fd, recv_data->buf + recv_data->buf_len + buf_index, buf_left, 0)) > 0) {
+            buf_index += ret;
+            buf_left -= ret;
+            if (buf_left == 0) {
+                DEBUG_LOG(" n left ");
                 break;
             }
-        } else if (ret == 0) {
+        }
+        if (buf_index > 0) {
+            recv_data->buf_len += buf_index;
+        }
+        DEBUG_LOG("Receive Client %d data[%d]%d:[%s]", clt_fd, strlen(recv_data->buf), recv_data->buf_len, recv_data->buf);
+        if (ret == 0) {
             DEBUG_LOG("Client close socket!");
             return READ_FAIL;
-        } else {
-            recv_data->buf_len += ret;
-            DEBUG_LOG("Receive Client %d data[%d]%d:[%s]", clt_fd, strlen(recv_data->buf), recv_data->buf_len, recv_data->buf);
-            if (recv_data->buf_len > 4 && recv_data->buf[recv_data->buf_len - 1] == '\n' && 
-                recv_data->buf[recv_data->buf_len - 2] == '\r' && 
-                recv_data->buf[recv_data->buf_len - 3] == '\n' && 
-                recv_data->buf[recv_data->buf_len - 4] == '\r') {
-                DEBUG_LOG("Receive client end!");
-                read_out = 1;
-                break;
-            }
-            if (recv_data->buf_len + buf_left >= recv_data->buf_cap) {
-                DEBUG_LOG("Receive read out !");
-                recv_data->resize();
-            }
+        }
+        if (-1 == ret && errno != EAGAIN) {
+            DEBUG_LOG("Read Error !");
+            read_out = 1;
+            break;
+        } 
+        if (recv_data->buf_len + buf_index >= recv_data->buf_cap) {
+            DEBUG_LOG("Receive read out !");
+            recv_data->resize();
+        }
+        if (-1 == ret && errno == EAGAIN) {
+            DEBUG_LOG("Errno Eaina!");
+            break;
         }
     } while(true);
     
     // add into task query
-    if (read_out && recv_data->buf_len > 0) {
+    if (recv_data->buf_len > 0) {
         DEBUG_LOG("Add into task queue!");
         recv_data->buf[recv_data->buf_len] = '\0';
         DEBUG_LOG("Recv Buf[%d][%d] :%s", recv_data->buf_len, strlen(recv_data->buf), recv_data->buf);
@@ -149,6 +155,7 @@ int SubServer::_on_http_read(int clt_fd) {
         REQ_TASK_DATA* req_task_data = new REQ_TASK_DATA(clt_fd, recv_data, _event);
         task->_set_task_data((void*)(req_task_data));
         SubTaskMgr::_get_instance()->_add_task(task);
+        _read_buf_map.erase(it);
         return READ_OK;
     }
     if (read_out) {

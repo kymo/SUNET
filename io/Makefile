@@ -12,6 +12,7 @@ INCLUDEPATH+=../util \
 		../alias/crf/CRF++-0.53 \
 		../alias/wordseg/ \
 		../log/ 
+
 TARGET=sub
 SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 
