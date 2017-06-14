@@ -104,7 +104,7 @@ int SubServer::_on_http_read(int clt_fd) {
     int ret = 0;
     int ret_tot = 0;
     int buf_index = 0;
-    int buf_left = 1024;
+    int buf_left = 4096;
     int read_out = 0;
     if (_read_buf_map.find(clt_fd) == _read_buf_map.end()) {
         _read_buf_map[clt_fd] = new RECV_DATA();
@@ -114,14 +114,18 @@ int SubServer::_on_http_read(int clt_fd) {
     do {
         buf_index = 0;
         ret = 0;
-        buf_left = 1024;
+        buf_left = 4096;
         ret = recv(clt_fd, recv_data->buf + recv_data->buf_len, buf_left, 0);
         DEBUG_LOG("Receive Client %d data[%d]%d:[%s]", clt_fd, strlen(recv_data->buf), recv_data->buf_len, recv_data->buf);
-        if (-1 == ret) {
+		std::cout << ret << std::endl;
+		if (-1 == ret) {
             if (errno != EAGAIN) {
+				std::cout << "not eagain" << std::endl;
                 DEBUG_LOG("Read Error !");
                 break;
             } else {
+				std::cout << "eagain" << std::endl;
+				DEBUG_LOG("EAGAIN!");
                 break;
             }
         } else if (ret == 0) {
@@ -133,11 +137,6 @@ int SubServer::_on_http_read(int clt_fd) {
                 DEBUG_LOG("Receive read out !");
                 recv_data->resize();
             }
-            if (ret == buf_left) {
-                continue;
-            } else {
-                break;    
-            }
         }
 
     } while(true);
@@ -146,7 +145,8 @@ int SubServer::_on_http_read(int clt_fd) {
     if (recv_data->buf_len > 0) {
         DEBUG_LOG("Add into task queue!");
         recv_data->buf[recv_data->buf_len] = '\0';
-        DEBUG_LOG("Recv Buf[%d][%d] :%s", recv_data->buf_len, strlen(recv_data->buf), recv_data->buf);
+        DEBUG_LOG("Recv Buf[%d][%d] :[%s]", recv_data->buf_len, strlen(recv_data->buf), recv_data->buf);
+		std::cout << "[" << recv_data->buf << "]" << std::endl;
         SubTask* task = new ReqTask("req_task");
         REQ_TASK_DATA* req_task_data = new REQ_TASK_DATA(clt_fd, recv_data, _event);
         task->_set_task_data((void*)(req_task_data));

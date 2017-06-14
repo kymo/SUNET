@@ -78,8 +78,11 @@ void SubEpollEvent::_event_loop() {
                         n -= nwrite;
                     }
                 }
-                SubEventQueue::_get_instance()->_release(handler_fd);
                 _event_mod(out_env->_fd, EPOLLIN | EPOLLET);
+				if (out_env != NULL) {
+					delete out_env;
+					out_env = NULL;
+				}
                 DEBUG_LOG("[%d] Write Back Okay!", handler_fd);
             }
         }

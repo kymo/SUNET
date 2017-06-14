@@ -29,7 +29,7 @@ ReqTask::~ReqTask() {
 
 void ReqTask::_set_task_data(void *task_data) {
     _task_data = task_data;
-    _task_ret = (void*)(malloc(sizeof(char) * 65536));
+    // _task_ret = (void*)(malloc(sizeof(char) * 65536));
 }
 
 int ReqTask::_run() {
@@ -61,7 +61,6 @@ int ReqTask::_run() {
     if (req_task_data->_evt->_type == SELECT) {
         req_task_data->_evt->_event_add(fd, EVT_WRITE);
     } else if (req_task_data->_evt->_type == EPOLL) {
-        DEBUG_LOG("Change To Read!");
         req_task_data->_evt->_event_mod(fd, EPOLLOUT | EPOLLET, \
                 (void*)(new SUB_EPOLL_OUT_ENV(fd, write_buf)));
     }

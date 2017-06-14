@@ -47,6 +47,12 @@ typedef struct epoll_out_env {
         _fd = fd;
         _buf = buf;
     }
+	~ epoll_out_env() {
+		if (NULL != _buf) {
+			delete _buf;
+			_buf = NULL;
+		}
+	}
 } SUB_EPOLL_OUT_ENV;
 
 
@@ -55,10 +61,10 @@ typedef struct recv_buf {
 	int buf_len;
 	int buf_cap;
 	recv_buf() {
-		buf = new char[2048];
+		buf = new char[4096];
         memset(buf, '\0', sizeof(buf));
 		buf_len = 0;
-		buf_cap = 2048;
+		buf_cap = 4096;
 	}
 	~recv_buf() {
 		if (NULL != buf) {
