@@ -14,6 +14,7 @@
 
 using namespace sub_framework;
 
+int port;
 class Client {
 
 private:
@@ -48,24 +49,30 @@ void Client::_connect_svr() {
 	char buf[1024];
 	std::cout << "send data from client!" << std::endl;
 
-    char http_body[1024];
     std::string http_str = "";
     http_str += "GET /?q=南京长江大桥给你 HTTP/1.0\r\n";
     http_str += "Host: 127.0.0.1\r\n";
     http_str += "User-Agetn: client\r\n";
     http_str += "\r\n\r\n";
+    for (int i = 0; i < 1000; i ++) {
+        http_str += "fuck you";
+    }
 
 	//send(_clt_sock_fd, "Hello World!", strlen("Hello World!"), 0);
 	send(_clt_sock_fd, http_str.c_str(), strlen(http_str.c_str()), 0);
     std::cout << "receiver from server:" ;
 	//while (1);
-	recv(_clt_sock_fd, buf, 1024, 0);
-	std::cout << buf << std::endl;
-	if (strcmp(buf, "Hello from svr!") == 0) {
+    std::cout << "Wait for server:" << std::endl;
+    recv(_clt_sock_fd, buf, 1024, 0);
+	
+    std::cout << buf << std::endl;
+	
+    if (strcmp(buf, "Hello from svr!") == 0) {
 		std::cout << "WRITE!" << std::endl;
 	} else {
 		std::cout << "WRONG!" << std::endl;
 	}
+    close(_clt_sock_fd);
 }
 
 
@@ -74,17 +81,18 @@ public:
 	int _thread_proc_handler(void *args) {
 		Client* client = new Client();
         std::cout << "fuck " << std::endl;
-		client->_init_svr_param("127.0.0.1", 9000);
+		client->_init_svr_param("127.0.0.1", port);
 		client->_connect_svr();
 	}
 };
 
 int main(int argc, char* argv[]) {
-	if (argc < 2) {
+	if (argc < 3) {
 		std::cout << "Usag ./client [thread counts]" << std::endl;
 		exit(1);
 	}
 	int thread_num = atoi(argv[1]);
+    port = atoi(argv[2]);
 	std::cout << argv[1] << std::endl;
 	std::vector<SubThread*> threads;
 	for (int i = 0; i < thread_num; i++) {
@@ -97,9 +105,12 @@ int main(int argc, char* argv[]) {
     }
 	std::cout <<"nihao"<<std::endl;
 	
-	for (int i = 0; i < thread_num; i++) {
+	/*for (int i = 0; i < thread_num; i++) {
 	    threads[i]->_run();
-		threads[i]->_join();
-	}
+	}*/
+
+    for (int i = 0; i < thread_num; i++) {
+        threads[i]->_join();
+    }
 	return 0;
 }

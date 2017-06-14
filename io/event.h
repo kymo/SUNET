@@ -39,6 +39,17 @@ enum IOTYPE {
     EPOLL
 };
 
+typedef struct epoll_out_env {
+    char* _buf;
+    int _fd;
+    epoll_out_env() {}
+    epoll_out_env(int fd, char* buf) {
+        _fd = fd;
+        _buf = buf;
+    }
+} SUB_EPOLL_OUT_ENV;
+
+
 typedef struct recv_buf {
 	char *buf;
 	int buf_len;
@@ -80,21 +91,39 @@ public:
     }
 
     void _set_evt_data(int fd, char* buf_ptr) {
-        DEBUG_LOG("Seg Fd[%d]", fd);
-        //pthread_mutex_lock(&_set_mutex);
+        DEBUG_LOG("Set Fd[%d] [%s]", fd, buf_ptr);
+        pthread_mutex_lock(&_set_mutex);
         if (_data_buf.find(fd) == _data_buf.end()) {
             _data_buf[fd] = std::vector<char*>();
         }
         _data_buf[fd].push_back(buf_ptr);
-        //pthread_mutex_unlock(&_set_mutex);
+        DEBUG_LOG("Set Fd Okay[%d]", fd);
+        pthread_mutex_unlock(&_set_mutex);
     }
     
     void _get_evt_data(int fd, std::vector<char*>& ret) {
         DEBUG_LOG("Get Fd[%d]", fd);
+        if (_data_buf.find(fd) == _data_buf.end() || 
+            _data_buf[fd].size() == 0) {
+            return ;
+       }
+        ret = _data_buf[fd];
+        //std::map<int, std::vector<char*> >::iterator it = _data_buf.find(fd);
+        //_data_buf.erase(it);
+        //_data_buf[fd].clear();
+    }
+    void _release(int fd) {
         if (_data_buf.find(fd) == _data_buf.end()) {
             return ;
         }
-        ret = _data_buf[fd];
+        std::map<int, std::vector<char*> >::iterator it = _data_buf.find(fd);
+        std::vector<char*> buf_vec = it->second;
+        for (int i = 0; i < buf_vec.size(); i++) {
+            delete buf_vec[i];
+            buf_vec[i] = NULL;
+        }
+        std::vector<char*>().swap(buf_vec);
+        _data_buf.erase(it);
     }
 
 };
@@ -123,6 +152,7 @@ public:
     virtual void _event_loop() = 0;
     virtual void _event_add(int evt_fd, int evt_type) = 0;
     virtual int _event_mod(int evt_fd, int evt_type) = 0;
+    virtual int _event_mod(int evt_fd, int evt_type, void* buf) = 0;
 };
 
 }

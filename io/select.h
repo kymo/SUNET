@@ -44,7 +44,8 @@ public:
     virtual void _event_loop();
     virtual void _event_add(int evt_fd, int evt_type);
     virtual int _event_mod(int evt_fd, int evt_type);
-
+    virtual int _event_mod(int evt_fd, int evt_type, void *buf) {
+    }
 };
 
 

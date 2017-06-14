@@ -21,6 +21,7 @@ int TextStrategy::_process(const Request& req, Json::Value& root, const int& lev
 	root["text"] = "yes";
     std::string q = req.get_query();
     std::vector<std::string> seg_res;
+    DEBUG_LOG("Text Strategy %s", q.c_str());
     wordseg->segment(q, seg_res);
     std::string segstr = "";
     for (int i = 0; i < seg_res.size(); i++) {

@@ -106,29 +106,38 @@ int SubServer::_on_http_read(int clt_fd) {
     int buf_index = 0;
     int buf_left = 1024;
     int read_out = 0;
+    /*
     if (_read_buf_map.find(clt_fd) == _read_buf_map.end()) {
         _read_buf_map[clt_fd] = new RECV_DATA();
-    }
-    RECV_DATA* recv_data = _read_buf_map[clt_fd];
+    }*/
+    RECV_DATA* recv_data = new RECV_DATA(); // _read_buf_map[clt_fd];
     do {
-        DEBUG_LOG("Receive Client %d data[%d]:%s", clt_fd, strlen(recv_data->buf), recv_data->buf);
         ret = recv(clt_fd, recv_data->buf + recv_data->buf_len, buf_left, 0);
-        if (recv_data->buf_len > 2 && recv_data->buf[recv_data->buf_len - 1] == '\n' && 
-            recv_data->buf[recv_data->buf_len - 2] == '\r') {
-            read_out = 1;
-            break;
-        }
         if (-1 == ret) {
-            if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            if (errno == EAGAIN) {
+                DEBUG_LOG("Erron is EAGAIN!");
+                read_out = 1;
                 break;
+                //continue;
             } else {
+                DEBUG_LOG("Read Error !");
                 read_out = 1;
                 break;
             }
         } else if (ret == 0) {
-            return 0;
+            DEBUG_LOG("Client close socket!");
+            return READ_FAIL;
         } else {
             recv_data->buf_len += ret;
+            DEBUG_LOG("Receive Client %d data[%d]%d:%s", clt_fd, strlen(recv_data->buf), recv_data->buf_len, recv_data->buf);
+            if (recv_data->buf_len > 4 && recv_data->buf[recv_data->buf_len - 1] == '\n' && 
+                recv_data->buf[recv_data->buf_len - 2] == '\r' && 
+                recv_data->buf[recv_data->buf_len - 3] == '\n' && 
+                recv_data->buf[recv_data->buf_len - 4] == '\r') {
+                DEBUG_LOG("Receive client end!");
+                read_out = 1;
+                break;
+            }
             if (recv_data->buf_len + buf_left >= recv_data->buf_cap) {
                 recv_data->resize();
             }
@@ -136,22 +145,28 @@ int SubServer::_on_http_read(int clt_fd) {
     } while(true);
     
     // add into task query
-    if (read_out) {
+    if (read_out && recv_data->buf_len > 0) {
         DEBUG_LOG("Add into task queue!");
         recv_data->buf[recv_data->buf_len] = '\0';
-        DEBUG_LOG("Recv BUf%s", recv_data->buf);
+        DEBUG_LOG("Recv Buf[%d][%d] :%s", recv_data->buf_len, strlen(recv_data->buf), recv_data->buf);
         SubTask* task = new ReqTask("req_task");
-        
         REQ_TASK_DATA* req_task_data = new REQ_TASK_DATA(clt_fd, recv_data, _event);
         task->_set_task_data((void*)(req_task_data));
         SubTaskMgr::_get_instance()->_add_task(task);
+        /*
         std::map<int, RECV_DATA*>::iterator it = _read_buf_map.find(clt_fd);
         if (it != _read_buf_map.end()) {
             DEBUG_LOG("Erase it from read buf map!");
             _read_buf_map.erase(it);
-        }    
+        }
+        */
+        return READ_OK;
     }
-    return 1;
+    if (read_out) {
+        return READ_ERROR;
+    }
+    DEBUG_LOG("Read Okay!");
+    return READ_OK;
 }
 
 void SubServer::_run(int port) {

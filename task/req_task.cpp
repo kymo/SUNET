@@ -22,6 +22,7 @@ ReqTask::~ReqTask() {
 		_task_ret = NULL;
 	}
 	if (NULL != _task_data) {
+        delete (REQ_TASK_DATA*) _task_data;
 		_task_data = NULL;
 	}
 }
@@ -43,10 +44,12 @@ int ReqTask::_run() {
     //char* buf = (char*) _task_data;
     REQ_TASK_DATA *req_task_data = (REQ_TASK_DATA *)_task_data;
     if (req_task_data == NULL) {
+        WARN_LOG("Req Task Data is NULL!");
         return 0;
     }
     char *buf = req_task_data->_data->buf;
     int fd = req_task_data->_fd;
+    DEBUG_LOG("Begin To Parse Data[%s]", buf);
     http._parse(buf, request);
 	Json::Value root;
 	SubStrategyMgr::_get_instance()->_run_uri(request.url, request, root);
@@ -55,16 +58,16 @@ int ReqTask::_run() {
     char *write_buf = new char[1024];
     sprintf(write_buf, "HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\n%s", 
 			root.toStyledString().length(), root.toStyledString().c_str()); 
-    SubEventQueue::_get_instance()->_set_evt_data(fd, write_buf);
+    std::cout << "begin to set evt data" << std::endl;
+    std::cout << write_buf << " " << strlen(write_buf) << std::endl;
+    // SubEventQueue::_get_instance()->_set_evt_data(fd, write_buf);
     if (req_task_data->_evt->_type == SELECT) {
         req_task_data->_evt->_event_add(fd, EVT_WRITE);
     } else if (req_task_data->_evt->_type == EPOLL) {
-        req_task_data->_evt->_event_mod(fd, EPOLLOUT | EPOLLET);
+        DEBUG_LOG("Change To Read!");
+        req_task_data->_evt->_event_mod(fd, EPOLLOUT | EPOLLET, \
+                (void*)(new SUB_EPOLL_OUT_ENV(fd, write_buf)));
     }
-	if (NULL != req_task_data) {
-		delete req_task_data;
-		req_task_data = NULL;
-	}
     return ret;
 }
 

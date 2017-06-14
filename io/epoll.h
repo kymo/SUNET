@@ -29,23 +29,23 @@ private:
     int _svr_fd;
     int _max_sock_fd;
     int _epl_fd;
-    epoll_event _epl_evt;
     int _max_evt_cnt;
     struct epoll_event* _epl_evt_set;
 public:
-	SubEpollEvent() {
+    SubEpollEvent() {
         _type = EPOLL;
     }
-	~SubEpollEvent() {
-		if (_epl_evt_set != NULL) {
-			free(_epl_evt_set);
-			_epl_evt_set = NULL;
-		}
-	}
+    ~SubEpollEvent() {
+        if (_epl_evt_set != NULL) {
+            free(_epl_evt_set);
+            _epl_evt_set = NULL;
+        }
+    }
     virtual void _event_init(int srv_fd);
     virtual void _event_loop();
     virtual void _event_add(int evt_fd, int evt_type);
     virtual int _event_mod(int evt_fd, int evt_type);
+    virtual int _event_mod(int evt_fd, int evt_type, void *buf);
     int _event_del(int evt_fd, int evt_type);
 };
 
