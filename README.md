@@ -36,15 +36,29 @@ RewriteStrategy:255 </br>
 TextStrategy:255 </br>
 RewriteStrategy:255 </br>
 
-curl -s http://ip:port/q?
+sub.conf
+> crf_model:/*/SUNET/alias/wordseg/model </br>
+port:9000 </br>
+thread_cnt:10 </br>
+log_level:15 </br>
+log_path:./log/ </br>
+
+You can start the server just by run [./sub port]. then you can visit the defined uri in you strategy.conf. for exammple.
+
+> curl -s http://ip:port/?q=南京市长江大桥 
+
+the response data should be:
+
+> {  </br>
+   "rewrite" : "yes",  </br>
+   "seg" : "南京市_长江_大桥_",  </br>
+   "text" : "yes"   </br>
+}
 
 ### Make
 
 cd io
 sh make.sh
-
-## Run
-./sub port
 
 
 
