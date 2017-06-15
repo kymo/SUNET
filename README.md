@@ -2,11 +2,6 @@
 ------------------
 SUNET is a raw light strategy server framework written in C++.
 
-- Non-blocking IO model
-- multi-thread task queue
-- algorithm modules configurable
-
-
 - [Non-blocking IO model](#non-blocking-io-model)
 - [Multi-thread task queue](#multi-thread-task-queue)
 - [Algorithm modules Configurable](#algorithm-modules-configurable)
