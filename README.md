@@ -11,20 +11,26 @@ SUNET is a light strategy server framework written in C++.
 - [Multi-thread task queue](#multi-thread-task-queue)
 - [Algorithm modules Configurable](#algorithm-modules-configurable)
 
-| System | 2.7 | 3.5 |
-| --- | --- | --- |
-| Linux CPU | [![Build Status](https://travis-ci.org/pytorch/pytorch.svg?branch=master)](https://travis-ci.org/pytorch/pytorch) | [![Build Status](https://travis-ci.org/pytorch/pytorch.svg?branch=master)](https://travis-ci.org/pytorch/pytorch) |
-| Linux GPU | [![Build Status](http://build.pytorch.org:8080/buildStatus/icon?job=pytorch-master-py2-linux)](https://build.pytorch.org/job/pytorch-master-py2-linux) | [![Build Status](http://build.pytorch.org:8080/buildStatus/icon?job=pytorch-master-py3-linux)](https://build.pytorch.org/job/pytorch-master-py3-linux) |
-| macOS CPU | [![Build Status](http://build.pytorch.org:8080/buildStatus/icon?job=pytorch-master-py2-osx-cpu)](https://build.pytorch.org/job/pytorch-master-py2-osx-cpu) | [![Build Status](http://build.pytorch.org:8080/buildStatus/icon?job=pytorch-master-py3-osx-cpu)](https://build.pytorch.org/job/pytorch-master-py3-osx-cpu) |
-
-
 
 ## Non-blocking IO Model
 
-you can define epoll or select model as you want. the sockets are non-blocking and the epoll works under ET mode.
+you can define epoll or select model as you want. the sockets are non-blocking and the epoll works under ET mode. Main thread maintains the epoll loop, and if there is a new connection from client, the main thread receives the data and hand it to the work thread queue.
 
 ## Multi-thread task queue
 
+task queue are visited by thread pool through a read-write thread lock. the work thread firstly parses the received data into Request format(url, method, params etc.), and then the strategy-mgr calls the method binded to the uri, and write the return data into Json Object.
+
 ## Algorithm modules Configurable
 
-you can just add you own algorithm models by inherting  the abstact class IStrategy and implement the virtual function defined in it. and defined the uri that your algorithm modules work on.
+algorithms are exists as plugins. you can add you own add you own algorithm modules by inherting  the abstact class IStrategy and implement the virtual function defined in it. and then just defined the uri that your algorithm modules work on. 
+
+## Make
+
+cd io
+sh make.sh
+
+## Run
+./sub port
+
+
+
