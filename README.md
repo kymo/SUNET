@@ -29,12 +29,12 @@ algorithms are exists as plugins. you can add you own add you own algorithm modu
 suppose your strategy.conf and sub.conf are defined as follows:
 
 strategy.conf
-> [/] \\
-TextStrategy:255 \\
-RewriteStrategy:255 \\
-[/search] \\
-TextStrategy:255 \\ 
-RewriteStrategy:255 \\
+> [/]  </br>
+TextStrategy:255 </br>
+RewriteStrategy:255 </br>
+[/search] </br>
+TextStrategy:255 </br>
+RewriteStrategy:255 </br>
 
 curl -s http://ip:port/q?
 
