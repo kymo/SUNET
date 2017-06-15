@@ -2,7 +2,7 @@
 
 # libtool - Provide generalized library-building support services.
 # Generated automatically by config.status (CRF++) 0.53
-# Libtool was configured on host nmg02-mms-vgbi03.nmg02.baidu.com:
+# Libtool was configured on host iZ8vbhtj3lgsb972k4jwa5Z:
 # NOTE: Changes made to this file will be lost: look at ltmain.sh.
 #
 #   Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005,
@@ -86,7 +86,7 @@ NM="/usr/bin/nm -B"
 LN_S="ln -s"
 
 # What is the maximum length of a command?
-max_cmd_len=98304
+max_cmd_len=1966080
 
 # Object file suffix (normally "o").
 objext=o
@@ -234,10 +234,10 @@ finish_eval=""
 hardcode_into_libs=yes
 
 # Compile-time system search path for libraries.
-sys_lib_search_path_spec="/home/work/local/bin/libevent-2.0/lib /usr/lib/gcc/x86_64-redhat-linux/3.4.5 /usr/lib64 /lib64"
+sys_lib_search_path_spec="/usr/lib/gcc/x86_64-redhat-linux/4.4.7 /usr/lib64 /lib64"
 
 # Run-time system search path for libraries.
-sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/lib64/infiniband /usr/lib/mysql /usr/lib/mysql /usr/X11R6/lib /usr/X11R6/lib64 "
+sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/lib64/mysql "
 
 # Whether dlopen is supported.
 dlopen_support=unknown
@@ -275,7 +275,7 @@ wl="-Wl,"
 pic_flag=" -fPIC -DPIC"
 
 # Compiler flag to prevent dynamic linking.
-link_static_flag="-static"
+link_static_flag=""
 
 # Does compiler simultaneously support -c and -o options?
 compiler_c_o="yes"
@@ -667,9 +667,8 @@ func_len ()
 # Append VALUE to the end of shell variable VAR.
 func_append ()
 {
-  eval "$1=\$$1\$2"
+  eval "$1+=\$2"
 }
-
 # Generated shell functions inserted here.
 
 # Work around backward compatibility issue on IRIX 6.5. On IRIX 6.4+, sh
@@ -8937,7 +8936,7 @@ wl="-Wl,"
 pic_flag=" -fPIC -DPIC"
 
 # Compiler flag to prevent dynamic linking.
-link_static_flag="-static"
+link_static_flag=""
 
 # Does compiler simultaneously support -c and -o options?
 compiler_c_o="yes"
@@ -9047,17 +9046,17 @@ file_list_spec=""
 hardcode_action=immediate
 
 # The directories searched by this compiler when creating a shared library.
-compiler_lib_search_dirs="/home/work/local/bin/libevent-2.0/lib . /usr/lib/gcc/x86_64-redhat-linux/3.4.5 /usr/lib/gcc/x86_64-redhat-linux/3.4.5 /usr/lib/gcc/x86_64-redhat-linux/3.4.5/../../../../lib64 /usr/lib/gcc/x86_64-redhat-linux/3.4.5/../../.. /lib/../lib64 /usr/lib/../lib64"
+compiler_lib_search_dirs="/usr/lib/gcc/x86_64-redhat-linux/4.4.7 /usr/lib/gcc/x86_64-redhat-linux/4.4.7 /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../lib64 /lib/../lib64 /usr/lib/../lib64 /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../.."
 
 # Dependencies to place before and after the objects being linked to
 # create a shared library.
-predep_objects="/usr/lib/gcc/x86_64-redhat-linux/3.4.5/../../../../lib64/crti.o /usr/lib/gcc/x86_64-redhat-linux/3.4.5/crtbeginS.o"
-postdep_objects="/usr/lib/gcc/x86_64-redhat-linux/3.4.5/crtendS.o /usr/lib/gcc/x86_64-redhat-linux/3.4.5/../../../../lib64/crtn.o"
+predep_objects="/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../lib64/crti.o /usr/lib/gcc/x86_64-redhat-linux/4.4.7/crtbeginS.o"
+postdep_objects="/usr/lib/gcc/x86_64-redhat-linux/4.4.7/crtendS.o /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../lib64/crtn.o"
 predeps=""
 postdeps="-lstdc++ -lm -lgcc_s -lc -lgcc_s"
 
 # The library search path used internally by the compiler when linking
 # a shared library.
-compiler_lib_search_path="-L/home/work/local/bin/libevent-2.0/lib -L. -L/usr/lib/gcc/x86_64-redhat-linux/3.4.5 -L/usr/lib/gcc/x86_64-redhat-linux/3.4.5 -L/usr/lib/gcc/x86_64-redhat-linux/3.4.5/../../../../lib64 -L/usr/lib/gcc/x86_64-redhat-linux/3.4.5/../../.. -L/lib/../lib64 -L/usr/lib/../lib64"
+compiler_lib_search_path="-L/usr/lib/gcc/x86_64-redhat-linux/4.4.7 -L/usr/lib/gcc/x86_64-redhat-linux/4.4.7 -L/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../.."
 
 # ### END LIBTOOL TAG CONFIG: CXX

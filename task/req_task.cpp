@@ -17,14 +17,14 @@ ReqTask::ReqTask(const std::string& task_name) {
 }
 
 ReqTask::~ReqTask() {
-	if (NULL != _task_ret) {
-		free(_task_ret);
-		_task_ret = NULL;
-	}
-	if (NULL != _task_data) {
+    if (NULL != _task_ret) {
+        free(_task_ret);
+        _task_ret = NULL;
+    }
+    if (NULL != _task_data) {
         delete (REQ_TASK_DATA*) _task_data;
-		_task_data = NULL;
-	}
+        _task_data = NULL;
+    }
 }
 
 void ReqTask::_set_task_data(void *task_data) {
@@ -33,13 +33,13 @@ void ReqTask::_set_task_data(void *task_data) {
 }
 
 int ReqTask::_run() {
-	CALL_BACK_PROC call_back_proc = SubTaskMgr::_get_instance()->_get_call_back_proc(_task_name);
+    CALL_BACK_PROC call_back_proc = SubTaskMgr::_get_instance()->_get_call_back_proc(_task_name);
     if (NULL == call_back_proc) {
-		WARN_LOG("Call Back Proc NULL!");
+        WARN_LOG("Call Back Proc NULL!");
         return 0;
     }
-	// 解析http
-	Request request;
+    // 解析http
+    Request request;
     HttpParser http;
     //char* buf = (char*) _task_data;
     REQ_TASK_DATA *req_task_data = (REQ_TASK_DATA *)_task_data;
@@ -51,13 +51,13 @@ int ReqTask::_run() {
     int fd = req_task_data->_fd;
     DEBUG_LOG("Begin To Parse Data[%s]", buf);
     http._parse(buf, request);
-	Json::Value root;
-	SubStrategyMgr::_get_instance()->_run_uri(request.url, request, root);
-	DEBUG_LOG("Strategy Return: %s", root.toStyledString().c_str());
+    Json::Value root;
+    SubStrategyMgr::_get_instance()->_run_uri(request.url, request, root);
+    DEBUG_LOG("Strategy Return: %s", root.toStyledString().c_str());
     int ret = (*call_back_proc)(_task_data, _task_ret);
     char *write_buf = new char[root.toStyledString().length() + RESP_HEAD_LEN];
     sprintf(write_buf, "HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\n%s", 
-			root.toStyledString().length(), root.toStyledString().c_str()); 
+            root.toStyledString().length(), root.toStyledString().c_str()); 
     if (req_task_data->_evt->_type == SELECT) {
         req_task_data->_evt->_event_add(fd, EVT_WRITE);
     } else if (req_task_data->_evt->_type == EPOLL) {
@@ -71,15 +71,8 @@ int ReqTask::_call_back() {
     if (NULL == _task_ret) {
         return -1;
     } 
-    // char* buf = (char*) _task_data;
-    //int v = *((int*)_task_ret);
     char *ret = (char*) _task_ret; 
-    /*解析html请求*/
-	/*Request request;
-    HttpParser http;
-    http._parse(buf, request);
-	*/
-	return 0;
+    return 0;
 }
 
 

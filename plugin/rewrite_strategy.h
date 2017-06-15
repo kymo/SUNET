@@ -19,15 +19,15 @@
 #include "http_parse.h"
 
 namespace sub_framework {
-	
+    
 class RewriteStrategy : public IStrategy {
 // wordseg , normalization, and number normalized
 public:
-	RewriteStrategy();
-	virtual ~RewriteStrategy();
+    RewriteStrategy();
+    virtual ~RewriteStrategy();
 
-	int _process(const Request& req, Json::Value& root, const int& level);
-	int _init();
+    int _process(const Request& req, Json::Value& root, const int& level);
+    int _init();
 
 };
 

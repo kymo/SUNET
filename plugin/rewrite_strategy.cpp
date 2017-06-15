@@ -10,19 +10,19 @@
 namespace sub_framework {
 
 RewriteStrategy::RewriteStrategy() {
-	_init();
+    _init();
 }
 
 RewriteStrategy::~RewriteStrategy() {
 }
 
 int RewriteStrategy::_process(const Request& req, Json::Value& root, const int& level) {
-	root["rewrite"] = "yes";
-	return SUB_OK;
+    root["rewrite"] = "yes";
+    return SUB_OK;
 }
 
-int RewriteStrategy::_init() {	
-	DEBUG_LOG("Init RewriteStrategy Okay!");
+int RewriteStrategy::_init() {    
+    DEBUG_LOG("Init RewriteStrategy Okay!");
     return SUB_OK;
 }
 

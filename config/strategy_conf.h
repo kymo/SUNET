@@ -22,54 +22,54 @@
 namespace sub_framework {
 
 typedef struct strategy_conf {
-	std::string _strategy_name;
-	int _strategy_level;
+    std::string _strategy_name;
+    int _strategy_level;
 
-	strategy_conf();
-	strategy_conf(const std::string& strategy_name,
-		const int& strategy_level) {
-		_strategy_name = strategy_name;
-		_strategy_level = strategy_level;
-	}
+    strategy_conf();
+    strategy_conf(const std::string& strategy_name,
+        const int& strategy_level) {
+        _strategy_name = strategy_name;
+        _strategy_level = strategy_level;
+    }
 
 } STRATEGYTYPE;
 
 class SubStrategyConfig {
 
 private:
-	SubStrategyConfig() {}
+    SubStrategyConfig() {}
     
-	static SubStrategyConfig* _sub_strategy_config_instance;
-	
-	std::map<std::string, std::vector<STRATEGYTYPE> > _strategy_conf_dict;
+    static SubStrategyConfig* _sub_strategy_config_instance;
+    
+    std::map<std::string, std::vector<STRATEGYTYPE> > _strategy_conf_dict;
 
 public:
     ~SubStrategyConfig() {}
 
-	const std::map<std::string, std::vector<STRATEGYTYPE> >& _get_strategytype_map() const {
-		return _strategy_conf_dict;
-	}
+    const std::map<std::string, std::vector<STRATEGYTYPE> >& _get_strategytype_map() const {
+        return _strategy_conf_dict;
+    }
 
     static SubStrategyConfig* _get_instance() {
         
-		if (NULL == _sub_strategy_config_instance) {
+        if (NULL == _sub_strategy_config_instance) {
             _sub_strategy_config_instance = new SubStrategyConfig();
         }
         
-		return _sub_strategy_config_instance;
+        return _sub_strategy_config_instance;
     
-	}
-	/*
-	 * @biref read conf file
-	 * @return 
-	 *		SUB_OK
-	 *		SUB_FAIL
-	 */
+    }
+    /*
+     * @biref read conf file
+     * @return 
+     *        SUB_OK
+     *        SUB_FAIL
+     */
     int _read_conf_file(const std::string& file_name);
 
-	
-	int _get_uri_strategies(const std::string& uri, 
-		std::vector<STRATEGYTYPE>& uri_strategy_vec);
+    
+    int _get_uri_strategies(const std::string& uri, 
+        std::vector<STRATEGYTYPE>& uri_strategy_vec);
 
 };
 

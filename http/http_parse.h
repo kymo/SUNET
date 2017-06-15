@@ -26,9 +26,9 @@ public:
     char method[32];
     char version[32];
     std::map<std::string, std::string> headers;
-	std::map<std::string, std::string> params;
-	
-	Request() {
+    std::map<std::string, std::string> params;
+    
+    Request() {
         params["q"] = "";
     }
 
@@ -51,8 +51,8 @@ public:
         return ret;
     }
 
-	~Request() {
-	}
+    ~Request() {
+    }
 };
 
 class Response {

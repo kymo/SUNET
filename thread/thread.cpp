@@ -57,7 +57,7 @@ bool SubThread::_is_stop() {
 int SubThread::_start() {
     int tid = 0;
     tid = pthread_create(&_tid, NULL, thread_proc, this);
-	DEBUG_LOG("Thread[%d] starts!", tid);
+    DEBUG_LOG("Thread[%d] starts!", tid);
     return tid;
 }
 

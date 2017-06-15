@@ -42,9 +42,9 @@ public:
             if (NULL != task) {
                 task->_run();
                 task->_call_back();
-            	delete task;
-				task = NULL;
-			}
+                delete task;
+                task = NULL;
+            }
         }
     }
     

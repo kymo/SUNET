@@ -117,15 +117,15 @@ int SubServer::_on_http_read(int clt_fd) {
         buf_left = 4096;
         ret = recv(clt_fd, recv_data->buf + recv_data->buf_len, buf_left, 0);
         DEBUG_LOG("Receive Client %d data[%d]%d:[%s]", clt_fd, strlen(recv_data->buf), recv_data->buf_len, recv_data->buf);
-		std::cout << ret << std::endl;
-		if (-1 == ret) {
+        std::cout << ret << std::endl;
+        if (-1 == ret) {
             if (errno != EAGAIN) {
-				std::cout << "not eagain" << std::endl;
+                std::cout << "not eagain" << std::endl;
                 DEBUG_LOG("Read Error !");
                 break;
             } else {
-				std::cout << "eagain" << std::endl;
-				DEBUG_LOG("EAGAIN!");
+                std::cout << "eagain" << std::endl;
+                DEBUG_LOG("EAGAIN!");
                 break;
             }
         } else if (ret == 0) {
@@ -146,7 +146,7 @@ int SubServer::_on_http_read(int clt_fd) {
         DEBUG_LOG("Add into task queue!");
         recv_data->buf[recv_data->buf_len] = '\0';
         DEBUG_LOG("Recv Buf[%d][%d] :[%s]", recv_data->buf_len, strlen(recv_data->buf), recv_data->buf);
-		std::cout << "[" << recv_data->buf << "]" << std::endl;
+        std::cout << "[" << recv_data->buf << "]" << std::endl;
         SubTask* task = new ReqTask("req_task");
         REQ_TASK_DATA* req_task_data = new REQ_TASK_DATA(clt_fd, recv_data, _event);
         task->_set_task_data((void*)(req_task_data));

@@ -31,12 +31,12 @@ int req_task_call_back(void *a, void *b) {
     char* buf = (char*) a;
     char *ret = (char*) b; 
     char *json = "hello";
-    char write_buf[128];	
-	sprintf(write_buf, "HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\n%s", strlen(json), json); 
+    char write_buf[128];    
+    sprintf(write_buf, "HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\n%s", strlen(json), json); 
     
-	strcpy(ret, write_buf);
+    strcpy(ret, write_buf);
     
-	return 1;
+    return 1;
 }
 
 int main(int argc, char** argv) {
@@ -45,12 +45,12 @@ int main(int argc, char** argv) {
         return 0;
     }
     // 配置初始化
-	SubStrategyConfig::_get_instance()->_read_conf_file("../conf/strategy.conf");
+    SubStrategyConfig::_get_instance()->_read_conf_file("../conf/strategy.conf");
     SubConfig::_get_instance()->_read_conf_file("../conf/sub.conf");
     // 日志初始化
     SubLogger::_get_instance()->_init_logger();
     // init strategies
-	SubStrategyMgr::_get_instance()->_init_strategies();
+    SubStrategyMgr::_get_instance()->_init_strategies();
     // init task_mgr
     SubTaskMgr::_get_instance()->_init();
     // 设置核心逻辑的回调函数

@@ -11,14 +11,14 @@
 namespace sub_framework {
 
 TextStrategy::TextStrategy() {
-	_init();
+    _init();
 }
 
 TextStrategy::~TextStrategy() {
 }
 
 int TextStrategy::_process(const Request& req, Json::Value& root, const int& level) {
-	root["text"] = "yes";
+    root["text"] = "yes";
     std::string q = req.get_query();
     std::vector<std::string> seg_res;
     DEBUG_LOG("Text Strategy %s", q.c_str());
@@ -44,7 +44,7 @@ int TextStrategy::_init() {
         return SUB_FAIL;
     }
     DEBUG_LOG("Init TextStrategy Okay!");
-	return SUB_OK;
+    return SUB_OK;
 }
 
 }

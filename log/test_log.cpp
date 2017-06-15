@@ -8,34 +8,34 @@
 using namespace sub_framework;
 
 class test_log_suite : public testing::Test {
-	
+    
 protected:
-	test_log_suite() {
-		sub_log = SubLogger::_get_instance();
+    test_log_suite() {
+        sub_log = SubLogger::_get_instance();
         sub_config = SubConfig::_get_instance();
     }
 
-	virtual ~test_log_suite() {
-		if (NULL != sub_log) {
-			delete sub_log;
-			sub_log = NULL;
-		}
-	}
+    virtual ~test_log_suite() {
+        if (NULL != sub_log) {
+            delete sub_log;
+            sub_log = NULL;
+        }
+    }
 
-	virtual void SetUp() {
-	}
+    virtual void SetUp() {
+    }
 
-	virtual void TearDown() {
-		
-	}
+    virtual void TearDown() {
+        
+    }
 private:
-	SubLogger* sub_log;
+    SubLogger* sub_log;
     SubConfig* sub_config;
 };
 
 void* thread_func(void*params) {
-	std::string str = "今天天气如何";
-	std::vector<std::string> strs;
+    std::string str = "今天天气如何";
+    std::vector<std::string> strs;
     char buf[1024];
     for (int i = 0; i < 1022;i ++) {
     buf[i] = 'a';}
@@ -45,23 +45,23 @@ void* thread_func(void*params) {
 }
 #define NUM 10000
 TEST_F(test_log_suite, test_conf) {
-	sub_config->_read_conf_file("../conf/sub.conf");
+    sub_config->_read_conf_file("../conf/sub.conf");
     sub_log->_init_logger();
     sub_log->_write_log(DEBUG, "tianqibucuo");
     DEBUG_LOG("this is a test!");
     DEBUG_LOG("heloo");
     DEBUG_LOG("%s", "woqu");
-	pthread_t threads[NUM];
-	for (int i = 0; i < NUM; i++) {
-		int tid = pthread_create(&threads[i], NULL, thread_func, NULL); 
-	}
-	for (int i = 0; i < NUM; i++) {
-		pthread_join(threads[i], NULL);
-	}
+    pthread_t threads[NUM];
+    for (int i = 0; i < NUM; i++) {
+        int tid = pthread_create(&threads[i], NULL, thread_func, NULL); 
+    }
+    for (int i = 0; i < NUM; i++) {
+        pthread_join(threads[i], NULL);
+    }
 
 }
 
 GTEST_API_ int main(int argc, char** argv) {
-	testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

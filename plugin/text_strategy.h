@@ -21,7 +21,7 @@
 #include "config.h"
 
 namespace sub_framework {
-	
+    
 class TextStrategy : public IStrategy {
 // wordseg , normalization, and number normalized
 
@@ -29,11 +29,11 @@ private:
     WordSeg* wordseg;
 
 public:
-	TextStrategy();
-	virtual ~TextStrategy();
+    TextStrategy();
+    virtual ~TextStrategy();
 
-	int _process(const Request& req, Json::Value& root, const int& level);
-	int _init();
+    int _process(const Request& req, Json::Value& root, const int& level);
+    int _init();
 
 };
 

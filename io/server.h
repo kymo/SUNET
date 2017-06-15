@@ -48,7 +48,7 @@ class SubServer {
 SINGLETN(Server);
 
 private:
-	struct sockaddr_in _svr_addr;
+    struct sockaddr_in _svr_addr;
     int _svr_fd;
     std::vector<int> _clt_sock_vec;
 
@@ -56,7 +56,7 @@ public:
     void _run(int port);
     void _init_sock(int port);
     void _init_evt(int evt_type);
-    static int _on_http_read(int clt_fd);	// http protocal
+    static int _on_http_read(int clt_fd);    // http protocal
     static int _on_stp_read(int clt_fd); // search transfer protocal
     static int _on_accept(int svr_fd);
     static void _set_nonblocking(int sock_fd);

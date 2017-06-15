@@ -26,8 +26,8 @@ public:
                 std::cout << "d deal with task " << task->_task_name << std::endl;
                 task->_run();
                 task->_call_back();
-				delete task;
-				task = NULL;
+                delete task;
+                task = NULL;
             }
         }
     }

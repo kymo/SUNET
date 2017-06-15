@@ -30,20 +30,20 @@ void SubConfig::_get_conf_val(const std::string& key, std::string& conf_val) {
 }
 
 int SubConfig::_read_conf_file(const std::string& file_name) {
-	std::ifstream fis(file_name.c_str());
-	if (! fis) {
-		return SUB_FAIL;
-	}
-	std::string line;
-	while (getline(fis, line)) {
+    std::ifstream fis(file_name.c_str());
+    if (! fis) {
+        return SUB_FAIL;
+    }
+    std::string line;
+    while (getline(fis, line)) {
         std::vector<std::string> split_res;
         StringUtil::split(line, ":", split_res); 
-		if (split_res.size() != 2) {
+        if (split_res.size() != 2) {
             continue;
         }
-		_conf_dict[split_res[0]] = split_res[1];
-	}
-	return SUB_OK;
+        _conf_dict[split_res[0]] = split_res[1];
+    }
+    return SUB_OK;
 }
 
 int SubConfig::_get_thread_cnt() {

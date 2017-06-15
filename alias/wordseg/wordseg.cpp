@@ -31,7 +31,7 @@ int WordSeg::split_ch_words(const std::string& word, std::vector<std::string>& c
                     (int) (word[i + 2] & 0xc0 ) == 0x80 ) {
                 cn_words.push_back(word.substr(i, 3));
                 i += 3;
-            } else {		
+            } else {        
                 i += 1;
             }
         } else if ( word[i] != ' ') {
@@ -49,7 +49,7 @@ int WordSeg::split_ch_words(const std::string& word, std::vector<std::string>& c
         } else {
             i += 1;
         }
-    }	
+    }    
     return OK;
 }
 
