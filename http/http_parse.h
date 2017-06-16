@@ -16,15 +16,19 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector>
+#include "utils.h"
+
+#define HTTP_PARSE_FAIL -1
 
 namespace sub_framework {
 
 class Request {
 
 public:
-    char url[64];
-    char method[32];
-    char version[32];
+    std::string url;
+    std::string method;
+    std::string version;
     std::map<std::string, std::string> headers;
     std::map<std::string, std::string> params;
     

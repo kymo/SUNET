@@ -14,6 +14,7 @@ namespace sub_framework {
 
 ReqTask::ReqTask(const std::string& task_name) {
     _task_name = task_name;
+    _task_ret = NULL;
 }
 
 ReqTask::~ReqTask() {
@@ -54,19 +55,16 @@ int ReqTask::_run() {
     Json::Value root;
     SubStrategyMgr::_get_instance()->_run_uri(request.url, request, root);
     DEBUG_LOG("Strategy Return: %s", root.toStyledString().c_str());
-    int ret = (*call_back_proc)(_task_data, _task_ret);
-    SUB_EPOLL_OUT_ENV* out_env = new SUB_EPOLL_OUT_ENV(fd);
-	
-	out_env->_buf += "HTTP/1.1 200 OK\r\nContent-Length: ";
-	out_env->_buf += StringUtil::num_to_str(root.toStyledString().length());
-	out_env->_buf += "\r\n\r\n";
-	out_env->_buf += root.toStyledString();
-
+    int ret;
+    // int ret = (*call_back_proc)(_task_data, _task_ret);
+    SUB_EPOLL_OUT_ENV* out_env = new SUB_EPOLL_OUT_ENV(fd, root.toStyledString());
+    std::cout << root.toStyledString().length() << std::endl;
+    DEBUG_LOG("Http Out:%s", out_env->_buf.c_str());
     if (req_task_data->_evt->_type == SELECT) {
         req_task_data->_evt->_event_add(fd, EVT_WRITE);
     } else if (req_task_data->_evt->_type == EPOLL) {
         req_task_data->_evt->_event_mod(fd, EPOLLOUT | EPOLLET, \
-                (void*)(out_env));
+            (void*)(out_env));
     }
     return ret;
 }

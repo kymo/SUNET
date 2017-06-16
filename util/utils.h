@@ -19,11 +19,12 @@ class StringUtil {
 public:
 
     template<typename T>
-    static std::string num_to_str(T& v) {
+    static std::string num_to_str(T v) {
         std::string ret = "";
         std::stringstream ss;
         ss << v;
         ss >> ret;
+        return ret;
     }
 
     static void split(const std::string& str, 

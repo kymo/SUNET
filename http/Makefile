@@ -1,7 +1,7 @@
 MACRO=DEBUGALL
 CFLAGS+=-pg -w -D$(MACRO)
 SRCPATH=.
-INCLUDEPATH=.
+INCLUDEPATH=. ../util
 TARGET=test_http
 SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 

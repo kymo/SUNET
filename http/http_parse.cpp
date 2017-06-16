@@ -73,127 +73,119 @@ void HttpParser::decode(const std::string &URL, std::string& result) {
     }  
 }  
 
-    void HttpParser::_parse(char* recv_buf, Request& request) {
-        int len = _parse_desc(recv_buf, request);
-        if (-1 == len) {
-            return ;
-        }
-        _parse_headers(recv_buf + len, request);
+void HttpParser::_parse(char* recv_buf, Request& request) {
+    int len = _parse_desc(recv_buf, request);
+    if (HTTP_PARSE_FAIL == len) {
+        return ;
     }
+    _parse_headers(recv_buf + len, request);
+}
 
-    int HttpParser::_parse_desc(char* recv_buf, Request& request) {
-        char *p = recv_buf;
-        int i = 0;
-        enum {METHOD, URL, VER} req_part = METHOD;
-        int parse_len = 0;
-        while (*p != '\r') {
-            if (*p != ' ') {
-                if (req_part == METHOD && (*p < 'A' || *p > 'Z')) {
-                    return -1;
-                }
-                parse_len ++;
-            } else if (req_part == METHOD) {
-                strncpy(request.method, recv_buf, parse_len);
-                request.method[parse_len] = '\0';
-                parse_len = 0;
-                req_part = URL;
-            } else if (req_part == URL) {
-                char* url = (char*) malloc ((parse_len + 1) * sizeof(char));
-                strncpy(url, recv_buf + strlen(request.method) + 1, parse_len);
-                url[parse_len] = '\0';
-                char*p = strtok(url, "?");
-                char*s = strtok(NULL, "?");
-                strncpy(request.url, p, strlen(p));
-                request.url[strlen(p)] = '\0';
-                char* val = NULL;
-                char* ky = NULL;
-                if (s != NULL) {
-                    char *outer_ptr=NULL;  
-                    char *inner_ptr=NULL;
-                    while ((val = strtok_r(s, "&", &outer_ptr)) != NULL) {
-                        s = val;
-                        ky = strtok_r(s, "=", &inner_ptr);
-                        val = strtok_r(NULL, "=", &inner_ptr);
-                        if (ky != NULL && val != NULL) {
-                            std::string decode_val = "";
-                            decode(std::string(val), decode_val);
-                            request.params[std::string(ky)] = decode_val; //decode(std::string(val));
-                        }
-                        s = NULL;
+int HttpParser::_parse_desc(char* recv_buf, Request& request) {
+    char *p = recv_buf;
+    int i = 0;
+    enum {METHOD, URL, VER} req_part = METHOD;
+    int parse_len = 0;
+    while (*p != '\r') {
+        if (*p != ' ') {
+            if (req_part == METHOD && (*p < 'A' || *p > 'Z')) {
+                return HTTP_PARSE_FAIL;
+            }
+            parse_len ++;
+        } else if (req_part == METHOD) {
+            request.method.assign(recv_buf, 0, parse_len);
+            parse_len = 0;
+            req_part = URL;
+        } else if (req_part == URL) {
+            std::string url_info = "";
+            url_info.assign(recv_buf, request.method.length() + 1, parse_len);
+            std::vector<std::string> url_info_splits;
+            StringUtil::split(url_info, "?", url_info_splits);
+            if (url_info_splits.size() == 0) {
+                return HTTP_PARSE_FAIL;
+            }
+            request.url = url_info_splits[0];
+            if (url_info_splits.size() > 1) {
+                std::vector<std::string> params;
+                StringUtil::split(url_info_splits[1], "&", params);
+                for (int i = 0; i < params.size(); i++) {
+                    std::vector<std::string> key_value;
+                    StringUtil::split(params[i], "=", key_value);
+                    if (key_value.size() != 2) {
+                        continue;
                     }
+                    std::string decode_val = "";
+                    decode(key_value[1], decode_val);
+                    request.params[key_value[0]] = decode_val;
                 }
-                parse_len = 0;
-                req_part = VER;
             }
-            p++;
-            i++;
+            parse_len = 0;
+            req_part = VER;
         }
-        if (req_part == URL) {
-            if (parse_len != 0) {
-                strncpy(request.url, recv_buf + strlen(request.method) + 1, parse_len);
-                request.url[parse_len] = '\0';
-                parse_len = 0;
-            } else {
-                return -1;
-            }
-        }
-        if (parse_len == 0) {
-            strcpy(request.version, "HTTP/1.1");
+        p++;
+        i++;
+    }
+    if (req_part == URL) {
+        if (parse_len != 0) {
+            request.url.assign(recv_buf, request.method.length() + 1, parse_len);
+            parse_len = 0;
         } else {
-            strncpy(request.version, recv_buf + strlen(request.method) + strlen(request.url) + 2, parse_len);
-            request.version[parse_len] = '\0';
+            return HTTP_PARSE_FAIL;
         }
-        return i + 2;
     }
+    if (parse_len == 0) {
+        request.version = "HTTP/1.1";
+    } else {
+        request.version.assign(recv_buf,
+            request.method.length() + request.url.length() + 2, parse_len);
+    }
+    return i + 2;
+}
 
-    int HttpParser::_parse_headers(char* recv_buf, Request& request) {
-        char *p = recv_buf;
-        char key[1024];
-        char value[10 * 1024];
-        int i = 0;
-        int parse_len = 0;
-        while (1) {
-            if (*p == '\r' && *(p + 1) == '\n') {
-                break;
-            }
-            while (*p != ':') {
-                p++;
-                i++;
-                parse_len++;
-            }
-
-            if (*p == ':') {
-                memset(key, 0, sizeof(key));
-                strncpy(key, recv_buf + i - parse_len, parse_len);
-                key[parse_len] = '\0';
-                parse_len = 0;
-                p++;
-                i++;
-            }
-            while (*p == ' ') {
-                p ++;
-                i ++;
-            }
-            while (*p != '\r') {
-                p++;
-                i++;
-                parse_len++;
-            }
-            if (*p == '\r') {
-                memset(value, 0, sizeof(value));
-                strncpy(value, recv_buf + i - parse_len, parse_len);
-                value[parse_len] = '\0';
-                parse_len = 0;
-                p++;
-                i++;
-            }
-            request.headers[std::string(key)] = std::string(value);
-            i++;
+int HttpParser::_parse_headers(char* recv_buf, Request& request) {
+    char *p = recv_buf;
+    std::string key = "";
+    std::string value = "";
+    int i = 0;
+    int parse_len = 0;
+    while (1) {
+        if (*p == '\r' && *(p + 1) == '\n') {
+            break;
+        }
+        while (*p != ':') {
             p++;
+            i++;
+            parse_len++;
         }
-        return i + 2;
 
+        if (*p == ':') {
+            key.assign(recv_buf, i - parse_len, parse_len);
+            parse_len = 0;
+            p++;
+            i++;
+        }
+        while (*p == ' ') {
+            p ++;
+            i ++;
+        }
+        while (*p != '\r') {
+            p++;
+            i++;
+            parse_len++;
+        }
+        if (*p == '\r') {
+            value.assign(recv_buf, i - parse_len, parse_len);
+            parse_len = 0;
+            p++;
+            i++;
+        }
+        request.headers[key] = value;
+        i++;
+        p++;
     }
+    return i + 2;
+
+}
 
 }
 

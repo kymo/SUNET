@@ -31,10 +31,6 @@ int req_task_call_back(void *a, void *b) {
     char* buf = (char*) a;
     char *ret = (char*) b; 
     char *json = "hello";
-    char write_buf[128];    
-    sprintf(write_buf, "HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\n%s", strlen(json), json); 
-    
-    strcpy(ret, write_buf);
     
     return 1;
 }
