@@ -1,5 +1,5 @@
 MACRO=DEBUGALL
-CFLAGS+=-g -w -D$(MACRO) -lpthread -O2 -pg
+CFLAGS+=-g -w -D$(MACRO) -lpthread -O2 -pg 
 SRCPATH=.
 INCLUDEPATH=.
 INCLUDEPATH+=../util \

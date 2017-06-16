@@ -55,14 +55,18 @@ int ReqTask::_run() {
     SubStrategyMgr::_get_instance()->_run_uri(request.url, request, root);
     DEBUG_LOG("Strategy Return: %s", root.toStyledString().c_str());
     int ret = (*call_back_proc)(_task_data, _task_ret);
-    char *write_buf = new char[root.toStyledString().length() + RESP_HEAD_LEN];
-    sprintf(write_buf, "HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\n%s", 
-            root.toStyledString().length(), root.toStyledString().c_str()); 
+    SUB_EPOLL_OUT_ENV* out_env = new SUB_EPOLL_OUT_ENV(fd);
+	
+	out_env->_buf += "HTTP/1.1 200 OK\r\nContent-Length: ";
+	out_env->_buf += StringUtil::num_to_str(root.toStyledString().length());
+	out_env->_buf += "\r\n\r\n";
+	out_env->_buf += root.toStyledString();
+
     if (req_task_data->_evt->_type == SELECT) {
         req_task_data->_evt->_event_add(fd, EVT_WRITE);
     } else if (req_task_data->_evt->_type == EPOLL) {
         req_task_data->_evt->_event_mod(fd, EPOLLOUT | EPOLLET, \
-                (void*)(new SUB_EPOLL_OUT_ENV(fd, write_buf)));
+                (void*)(out_env));
     }
     return ret;
 }

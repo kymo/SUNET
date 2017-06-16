@@ -40,18 +40,11 @@ enum IOTYPE {
 };
 
 typedef struct epoll_out_env {
-    char* _buf;
-    int _fd;
+	std::string _buf;
+	int _fd;
     epoll_out_env() {}
-    epoll_out_env(int fd, char* buf) {
+    epoll_out_env(int fd) {
         _fd = fd;
-        _buf = buf;
-    }
-    ~ epoll_out_env() {
-        if (NULL != _buf) {
-            delete _buf;
-            _buf = NULL;
-        }
     }
 } SUB_EPOLL_OUT_ENV;
 

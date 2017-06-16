@@ -10,12 +10,22 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <sstream>
 
 namespace sub_framework {
 
 class StringUtil {
 
 public:
+
+    template<typename T>
+    static std::string num_to_str(T& v) {
+        std::string ret = "";
+        std::stringstream ss;
+        ss << v;
+        ss >> ret;
+    }
+
     static void split(const std::string& str, 
             const std::string& delim,
             std::vector<std::string>& ret) {

@@ -120,11 +120,9 @@ int SubServer::_on_http_read(int clt_fd) {
         std::cout << ret << std::endl;
         if (-1 == ret) {
             if (errno != EAGAIN) {
-                std::cout << "not eagain" << std::endl;
                 DEBUG_LOG("Read Error !");
                 break;
             } else {
-                std::cout << "eagain" << std::endl;
                 DEBUG_LOG("EAGAIN!");
                 break;
             }
@@ -146,7 +144,6 @@ int SubServer::_on_http_read(int clt_fd) {
         DEBUG_LOG("Add into task queue!");
         recv_data->buf[recv_data->buf_len] = '\0';
         DEBUG_LOG("Recv Buf[%d][%d] :[%s]", recv_data->buf_len, strlen(recv_data->buf), recv_data->buf);
-        std::cout << "[" << recv_data->buf << "]" << std::endl;
         SubTask* task = new ReqTask("req_task");
         REQ_TASK_DATA* req_task_data = new REQ_TASK_DATA(clt_fd, recv_data, _event);
         task->_set_task_data((void*)(req_task_data));
@@ -157,7 +154,6 @@ int SubServer::_on_http_read(int clt_fd) {
     if (read_out) {
         return READ_ERROR;
     }
-    DEBUG_LOG("Read Okay!");
     return READ_OK;
 }
 
