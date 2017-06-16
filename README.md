@@ -55,5 +55,14 @@ the response data should be:
 cd io
 sh make.sh
 
+### Test
+> 5871381 fetches, 10 max parallel, 4.87325e+08 bytes, in 1000 seconds </br>
+83 mean bytes/connection </br>
+5871.38 fetches/sec, 487325 bytes/sec </br>
+msecs/connect: 0.0415055 mean, 3.225 max, 0.014 min </br>
+msecs/first-response: 1.65957 mean, 220.13 max, 0.713 min </br>
+HTTP response codes: </br>
+  code 200 -- 5871381 </br>
+
 
 
