@@ -35,8 +35,7 @@ private:
     int _task_query_size;
     pthread_mutex_t _add_mutex;
     pthread_mutex_t _get_mutex;
-    pthread_cond_t _cond;
-
+    pthread_cond_t _task_cond;
 public:
     ~SubTaskMgr();
     static SubTaskMgr* _get_instance() {

@@ -58,6 +58,8 @@ int main(int argc, char** argv) {
     // 启动服务
     SubServer*svr = SubServer::_get_instance();
     svr->_run(atoi(argv[1]));
+
+    SubThreadPool::_get_instance()->_stop();
     return 0;
 }
 
