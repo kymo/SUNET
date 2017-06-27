@@ -105,10 +105,9 @@ public:
         }
     }
 
-    void _load_index_dict(const char* file_name) {
+    int _load_index_dict(const char* file_name) {
         std::ifstream fis(file_name);
         std::string line;
-        // std::map<std::string, std::vector<reverse_index> index_vec> > maps;
         while (getline(fis, line)) {
             std::vector<std::string> split_strs;
             StringUtil::split(line, "\t", split_strs);
@@ -127,12 +126,15 @@ public:
                 reverse_index t;
                 t.doc_id = atoi(doc_infor_splits[0].c_str());
                 t.cnt = atoi(doc_infor_splits[1].c_str());
+				std::cout << "cnt " << t.cnt << std::endl;
+				std::cout << "doc id " << t.doc_id << std::endl;
                 index_vec.push_back(t);
             }
             //maps[split_strs[0]] = index_vec;
             _dicts.push_back(cn_string(split_strs[0]));
             _values.push_back(index_vec);
         }
+		return 1;
     }
 
     /*

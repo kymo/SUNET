@@ -29,7 +29,7 @@ void test_index() {
 }
 
 int main(int argc, char*argv[]) {
-	test(argv[1]);
-	// test_index();
+	//test(argv[1]);
+	test_index();
 	return 0;
 }

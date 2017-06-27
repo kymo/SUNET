@@ -9,6 +9,7 @@
 #include "strategy_mgr.h"
 #include "text_strategy.h"
 #include "rewrite_strategy.h"
+#include "search_strategy.h"
 
 namespace sub_framework {
 
@@ -20,7 +21,9 @@ IStrategy* SubStrategyMgr::_produce(const std::string& strategy_name) {
         sub_strategy = new TextStrategy();
     } else if (strategy_name == "RewriteStrategy") {
         sub_strategy = new RewriteStrategy();
-    }
+    } else if (strategy_name == "SearchStrategy") {
+		sub_strategy = new SearchStrategy();
+	}
     return sub_strategy;
 }
 
@@ -37,14 +40,16 @@ int SubStrategyMgr::_init_strategies() {
         const std::vector<STRATEGYTYPE>& strategy_type_vec = it->second;
         std::vector<STRATEGY_TYPE_MGR> strategy_vec;
         for (int i = 0; i < strategy_type_vec.size(); i++) {
-            if (sub_strategy_map.find(strategy_type_vec[i]._strategy_name) == sub_strategy_map.end()) {
+            if (sub_strategy_map.find(strategy_type_vec[i]._strategy_name) == 
+				sub_strategy_map.end()) {
                 IStrategy* strategy = _produce(strategy_type_vec[i]._strategy_name);
                 if (NULL == strategy) {
                     return SUB_FAIL;
                 }
                 sub_strategy_map[strategy_type_vec[i]._strategy_name] = strategy;
             }
-            strategy_vec.push_back(STRATEGY_TYPE_MGR(sub_strategy_map[strategy_type_vec[i]._strategy_name], 
+            strategy_vec.push_back(
+				STRATEGY_TYPE_MGR(sub_strategy_map[strategy_type_vec[i]._strategy_name], 
                 strategy_type_vec[i]._strategy_level)); 
         }
         _uri_strategies_map[uri] = strategy_vec;
@@ -53,7 +58,6 @@ int SubStrategyMgr::_init_strategies() {
 }
 
 int SubStrategyMgr::_run_uri(const std::string& uri, const Request& req, Json::Value& root) {
-
 
     if (_uri_strategies_map.find(uri) == _uri_strategies_map.end()) {
         return SUB_FAIL;

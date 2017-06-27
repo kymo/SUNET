@@ -25,9 +25,8 @@ int TextStrategy::_process(const Request& req, Json::Value& root, const int& lev
     wordseg->segment(q, seg_res);
     std::string segstr = "";
     for (int i = 0; i < seg_res.size(); i++) {
-        segstr += seg_res[i] + "_";
-    }
-    root["seg"] = segstr;
+    	root["seg"].append(seg_res[i]);
+	}
     return SUB_OK;
 }
 
