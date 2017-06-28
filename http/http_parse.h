@@ -34,12 +34,19 @@ public:
     
     Request() {
         params["q"] = "";
+		params["p"] = "0";
     }
 
     std::string get_query() const {   
         std::map<std::string, std::string>::const_iterator it = params.find("q");
         return it->second;
     }
+
+	int get_page() const {
+		std::map<std::string, std::string>::const_iterator it = 
+			params.find("p");
+		return atoi(it->second.c_str());
+	}
 
     std::string to_str() {
         std::string ret = "";

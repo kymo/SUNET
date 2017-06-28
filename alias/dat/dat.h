@@ -67,7 +67,9 @@ private:
     int *_check;
     bool *_used;
     int _size;
-
+	int _next_check_pos;
+	int _non_zero_num;
+	int _progress;
 public:
     
     DatImpl() {
@@ -78,13 +80,16 @@ public:
         memset(_base, 0, sizeof(_base));
         memset(_check, 0, sizeof(_check));
         memset(_used, false, sizeof(_check));
+		_non_zero_num = 0;
+		_progress = 0;
+		_next_check_pos = 0;
     }
 
-    void resize() {
-        std::cout << "Resize the size" << std::endl;
-        int* new_base = new int[_size * 2];
-        int* new_check = new int[_size * 2];
-        bool* new_used = new bool[_size * 2];
+    void resize(int new_size) {
+        std::cout << "Resize the size" << new_size << std::endl;
+        int* new_base = new int[new_size];
+        int* new_check = new int[new_size];
+        bool* new_used = new bool[new_size];
         memcpy(new_base, _base, _size);
         memcpy(new_check, _check, _size);
         memcpy(new_used, _used, _size);
@@ -94,7 +99,7 @@ public:
         _base = new_base;
         _check = new_check;
         _used = new_used;
-        _size *= 2;
+        _size = new_size;
     }
 
     void _load_dict(const char*file_name) {
@@ -126,8 +131,6 @@ public:
                 reverse_index t;
                 t.doc_id = atoi(doc_infor_splits[0].c_str());
                 t.cnt = atoi(doc_infor_splits[1].c_str());
-				std::cout << "cnt " << t.cnt << std::endl;
-				std::cout << "doc id " << t.doc_id << std::endl;
                 index_vec.push_back(t);
             }
             //maps[split_strs[0]] = index_vec;
@@ -209,20 +212,38 @@ public:
     */
     int _insert(const std::vector<tree_node_t>& child_nodes) {
         int begin = 0;
-        int pos = child_nodes[0]->code + 1;
+		int pos = ((child_nodes[0]->code + 1 > _next_check_pos) ? 
+				child_nodes[0]->code + 1 : _next_check_pos) - 1;
+		int first = 0;
+		int _non_zero_num = 0;
+		if (_size <= pos) {
+			std::cout << "HEHE1" << pos << std::endl;
+			resize(pos + 1);
+		}
         while (true) {
             pos ++;
+			if (_size <= pos) {
+				std::cout << "HEHE1" << std::endl;
+				resize(pos + 1);
+			}
             if (_check[pos] != 0) {
+				_non_zero_num++;
                 continue;
-            }
+            } else if (first == 0) {
+				_next_check_pos = pos;
+				first = 1;
+			}
             begin = pos - child_nodes[0]->code;
+            if (child_nodes.back()->code + begin >= _size) {
+				double l = (1.05 > 1.0 * _dicts.size() / (_progress + 1)) ? 1.05 : 1.0
+					* _dicts.size() / (_progress + 1);
+				std::cout << "HEHE" << std::endl;
+				resize((int) (_size * l));
+            }
             if (_used[begin]) {
                 continue;
             }
             bool tag = false;
-            if (child_nodes.back()->code + begin > _size) {
-                resize();
-            }
             for (int i = 0; i < child_nodes.size(); i++) {
                 if (_check[begin + child_nodes[i]->code] != 0) {
                     tag = true;
@@ -234,6 +255,9 @@ public:
             }
         }
         _used[begin] = true;
+		if (1.0 * _non_zero_num / (pos - _next_check_pos + 1) >= 0.95) {
+			_next_check_pos = pos;
+		}
         for (int i = 0; i < child_nodes.size(); i++) {
             _check[begin + child_nodes[i]->code] = begin;
         }
@@ -241,6 +265,7 @@ public:
             std::vector<tree_node_t> new_child_nodes;
             if (_fetch_child_nodes(child_nodes[i], new_child_nodes) == 0) {
                 _base[begin + child_nodes[i]->code] = - child_nodes[i]->left - 1;
+				_progress ++;
             } else {
                 int sub_h = _insert(new_child_nodes);
                 _base[begin + child_nodes[i]->code] = sub_h;

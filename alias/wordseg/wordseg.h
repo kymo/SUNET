@@ -41,11 +41,8 @@ public:
         }
         return _instance;
     }
-
     int _init_tagger(const char* model_path);
-
     int split_ch_words(const std::string& word, std::vector<std::string>& cn_words);
-
     int segment(const std::string& str, std::vector<std::string>& seg_results);
 };
 }

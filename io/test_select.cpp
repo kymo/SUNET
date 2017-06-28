@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
     SubServer*svr = SubServer::_get_instance();
     svr->_run(atoi(argv[1]));
 
-    SubThreadPool::_get_instance()->_stop();
+    // SubThreadPool::_get_instance()->_stop();
     return 0;
 }
 

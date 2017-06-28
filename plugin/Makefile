@@ -8,6 +8,7 @@ INCLUDEPATH=../util \
 		../alias/jsoncpp/include \
 		../alias/crf/CRF++-0.53 \
 		../alias/wordseg/ \
+		../alias/dat/ \
 		../log/ \
 
 LIB=-L../alias/gtest

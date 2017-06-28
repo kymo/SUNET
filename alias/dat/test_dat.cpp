@@ -6,7 +6,8 @@ void test(const char*file_name) {
 	DatImpl<int> *dat = new DatImpl<int>();
 	dat->_load_dict(file_name);
 	dat->_build();
-	while (true) {
+	std::cout << "Build Done!" << std::endl;
+	while(true) {
 		std::string line;
 		cin >> line;
 		std::cout << "SearchResult:" << dat->_search(line) << std::endl;
@@ -17,6 +18,7 @@ void test_index() {
 	DatImpl<std::vector<reverse_index> > *dat = new DatImpl<std::vector<reverse_index> >();
 	dat->_load_index_dict("index.dict");
 	dat->_build();
+	std::cout << "Build Done!" << std::endl;
 	while (true) {
 		std::string line;
 		cin >> line;
