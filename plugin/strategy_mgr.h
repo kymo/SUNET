@@ -16,6 +16,7 @@
 #include "define.h"
 #include "strategy_conf.h"
 #include "istrategy.h"
+#include "dict_mgr.h"
 
 namespace sub_framework {
 

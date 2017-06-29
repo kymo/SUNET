@@ -4,7 +4,8 @@ SRCPATH=.
 INCLUDEPATH=.
 INCLUDEPATH+=../config ../thread ../http ../io ../util ../alias/jsoncpp/include \
 		../plugin \
-		../log/
+		../log/ \
+		../alias/dat \
 TARGET=sub
 SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 

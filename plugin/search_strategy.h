@@ -30,6 +30,9 @@ private:
     static const int PAGE_RESULT_CNT = 20;
 	// DatImpl<std::vector<reverse_index> > *_dat;
 	std::map<std::string, std::vector<reverse_index> > _index_dict;
+    std::map<std::string, int> _word_freq_dict;
+    std::map<std::string, int> _word_doc_freq_dict;
+
 public:
     SearchStrategy();
     virtual ~SearchStrategy();

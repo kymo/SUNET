@@ -2,6 +2,9 @@
 * @biref a implementation of double array trie 
 */
 
+#ifndef _DAT_H_
+#define _DAT_H_
+
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -52,6 +55,7 @@ typedef struct cnstr {
 typedef struct index {
     int doc_id;
     int cnt;
+    std::vector<int> pos_vec;
 } reverse_index;
 
 typedef reverse_index* reverse_index_t;
@@ -131,6 +135,9 @@ public:
                 reverse_index t;
                 t.doc_id = atoi(doc_infor_splits[0].c_str());
                 t.cnt = atoi(doc_infor_splits[1].c_str());
+                for (int j = 2; j < doc_infor_splits.size(); j++) {
+                    t.pos_vec.push_back(atoi(doc_infor_splits[j].c_str()));
+                }
                 index_vec.push_back(t);
             }
             //maps[split_strs[0]] = index_vec;
@@ -336,3 +343,5 @@ public:
 };
 
 }
+
+#endif

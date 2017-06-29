@@ -3,7 +3,7 @@ CFLAGS+=-g -w -D$(MACRO) -lpthread -pg
 SRCPATH=.
 INCLUDEPATH=.
 INCLUDEPATH+=../config
-INCLUDEPATH+=../task ../io ../util ../plugin ../alias/jsoncpp/include ../http ../log
+INCLUDEPATH+=../task ../io ../util ../plugin ../alias/jsoncpp/include ../http ../log ../alias/dat
 TARGET=sub
 SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 

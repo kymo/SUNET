@@ -38,8 +38,6 @@ void SubEpollEvent::_event_loop() {
                 _event_accept_callback_proc(_svr_fd);
                 continue;
             } 
-            std::cout << "handler fd :" << handler_fd << std::endl;
-            
             if (_epl_evt_set[fd].events & EPOLLIN) {
                 int recv_ret = _event_read_callback_proc(handler_fd);
                 if (READ_OK != recv_ret) {

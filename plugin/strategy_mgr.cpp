@@ -10,10 +10,12 @@
 #include "text_strategy.h"
 #include "rewrite_strategy.h"
 #include "search_strategy.h"
+#include "dict_mgr.h"
 
 namespace sub_framework {
 
 SubStrategyMgr* SubStrategyMgr::_strategy_mgr_instance = NULL;
+DictMgr* DictMgr::_instance = NULL;
 
 IStrategy* SubStrategyMgr::_produce(const std::string& strategy_name) {
     IStrategy* sub_strategy = NULL;
@@ -29,6 +31,8 @@ IStrategy* SubStrategyMgr::_produce(const std::string& strategy_name) {
 
 int SubStrategyMgr::_init_strategies() {
     // init all the strategies
+    
+    DictMgr::_get_instance()->_load_dict();
     
     const STRATEGY_MAP& strategy_type_map = 
         SubStrategyConfig::_get_instance()->_get_strategytype_map();
