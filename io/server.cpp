@@ -83,11 +83,6 @@ int SubServer::_on_accept(int svr_fd) {
     int mx_sock = -1;
     while ((new_sock = accept(svr_fd, (struct sockaddr*)&_client_addr, &clit_len)) > 0) {
         _set_nonblocking(new_sock);
-        int nRecvBuf= 128 * 1024; //设置为32K
-        if (setsockopt(new_sock, SOL_SOCKET, SO_RCVBUF, (const char*)&nRecvBuf, sizeof(int)) == -1) {
-            WARN_LOG("Set Receive Buf Erro!");
-            exit(1);
-        }
         DEBUG_LOG("New Client Comes[%d]", new_sock);
         if (_event->_type == SELECT) {
             _event->_event_add(new_sock, EVT_READ);
@@ -114,16 +109,18 @@ int SubServer::_on_http_read(int clt_fd) {
     do {
         buf_index = 0;
         ret = 0;
-        buf_left = 4096;
+        buf_left = 1024;
         ret = recv(clt_fd, recv_data->buf + recv_data->buf_len, buf_left, 0);
         DEBUG_LOG("Receive Client %d data[%d]%d:[%s]", clt_fd, strlen(recv_data->buf), recv_data->buf_len, recv_data->buf);
-        std::cout << ret << std::endl;
+        std::cout << "ret val:" << ret << " " << errno << " " << EAGAIN << " " << EINTR << std::endl;
         if (-1 == ret) {
             if (errno != EAGAIN) {
                 DEBUG_LOG("Read Error !");
                 break;
             } else {
                 DEBUG_LOG("EAGAIN!");
+                
+                std::cout << "eagiain!" << std::endl;
                 break;
             }
         } else if (ret == 0) {
@@ -131,14 +128,14 @@ int SubServer::_on_http_read(int clt_fd) {
             return READ_FAIL;
         } else {
             recv_data->buf_len += ret;
+            recv_data->buf[recv_data->buf_len] = '\0';
+            std::cout << "[" << recv_data->buf << "]" << std::endl;
             if (recv_data->buf_len + buf_left >= recv_data->buf_cap) {
                 DEBUG_LOG("Receive read out !");
                 recv_data->resize();
             }
         }
-
     } while(true);
-    
     // add into task query
     if (recv_data->buf_len > 0) {
         DEBUG_LOG("Add into task queue!");
@@ -150,9 +147,6 @@ int SubServer::_on_http_read(int clt_fd) {
         SubTaskMgr::_get_instance()->_add_task(task);
         _read_buf_map.erase(it);
         return READ_OK;
-    }
-    if (read_out) {
-        return READ_ERROR;
     }
     return READ_OK;
 }

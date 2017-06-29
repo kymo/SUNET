@@ -88,9 +88,11 @@ class ClientHandler : public SubThreadHandler {
 public:
     int _thread_proc_handler(void *args) {
         Client* client = new Client();
-        std::cout << "fuck " << std::endl;
+        for (int i = 0; i < 1000; i ++) {
+       
         client->_init_svr_param("127.0.0.1", port);
         client->_connect_svr();
+        }
     }
 };
 

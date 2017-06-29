@@ -27,6 +27,7 @@ void SubEpollEvent::_event_loop() {
     while (true) {
         DEBUG_LOG("Epoll Wait!");
         int max_fd = epoll_wait(_epl_fd, _epl_evt_set, _max_evt_cnt, 1000);
+        std::cout << max_fd << std::endl;
         if (-1 == max_fd) {
             WARN_LOG("Epoll Loop Error!");
             continue;
@@ -37,6 +38,7 @@ void SubEpollEvent::_event_loop() {
                 _event_accept_callback_proc(_svr_fd);
                 continue;
             } 
+            std::cout << "handler fd :" << handler_fd << std::endl;
             
             if (_epl_evt_set[fd].events & EPOLLIN) {
                 int recv_ret = _event_read_callback_proc(handler_fd);
@@ -45,7 +47,8 @@ void SubEpollEvent::_event_loop() {
                     _event_del(handler_fd, EPOLLIN | EPOLLET);
                     _event_del(handler_fd, EPOLLOUT | EPOLLET);
                     close(handler_fd);
-                } 
+                }
+                std::cout << "Read end!" << std::endl;
             } else if (_epl_evt_set[fd].events & EPOLLOUT) {
                 SUB_EPOLL_OUT_ENV* out_env = (SUB_EPOLL_OUT_ENV*) _epl_evt_set[fd].data.ptr;
                 DEBUG_LOG("Write Back [%d]", out_env->_fd);

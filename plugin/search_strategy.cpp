@@ -29,7 +29,10 @@ int SearchStrategy::_process(const Request& req, Json::Value& root, const int& l
 		return SUB_OK;
 	}
 	Json::Value result;
-	int idx = 0;
+    std::vector<reverse_index> search_results_all;
+    // TODO cache 
+    
+    int idx = 0;
 	for (int i = 0; i < jarray.size(); i++) {	
 		// search_results = _dat->_reversed_search(jarray[i].asString());
 		std::map<std::string, std::vector<reverse_index> >::iterator it = 
@@ -37,23 +40,33 @@ int SearchStrategy::_process(const Request& req, Json::Value& root, const int& l
 		if (it == _index_dict.end()) {
 			continue;
 		}
-		const std::vector<reverse_index>& search_results = it->second; 
+		const std::vector<reverse_index>& search_results = it->second;
 		for (int j = 0; j < search_results.size(); j++) {
-			idx ++;
-			if (idx > 20) {
-				break;
-			}
-			result.append(search_results[j].doc_id);
-		}
-		if (idx > 20) {
-			break;
+            search_results_all.push_back(search_results[j]);
+			// result.append(search_results[j].doc_id);
 		}
 	}
+    int tot_cnt = search_results_all.size();
+    int page_cnt = (tot_cnt - 1) / PAGE_RESULT_CNT + 1;
+    if (page > page_cnt) {
+        page = page_cnt;
+    } 
+    std::cout << "tot count " << tot_cnt << std::endl;
+    std::cout << page_cnt << std::endl;
+    std::cout << page << std::endl;
+    int begin_record_index = page * PAGE_RESULT_CNT;
+    int end_record_index = page >= page_cnt ? tot_cnt : (1 + page) * PAGE_RESULT_CNT;
+    std::cout << begin_record_index << " " << end_record_index << std::endl;
+    for (std::vector<reverse_index>::iterator it = 
+            search_results_all.begin() + begin_record_index;
+            it != end_record_index + search_results_all.begin() 
+            && it != search_results_all.end(); it++) {
+        result.append(it->doc_id);
+    }
 	if (result.size() == 0) {
 		root["search"]["msg"] = "none";
 		return SUB_OK;
 	}
-
 	root["search"]["msg"] = "ok";
 	root["search"]["result"] = result;
 	return SUB_OK;

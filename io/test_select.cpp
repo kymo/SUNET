@@ -20,12 +20,19 @@
 #include "select.h"
 #include "event.h"
 #include <fcntl.h>
+#include <csignal>
 #include "define.h"
 #include "server.h"
 
 using namespace sub_framework;
 
 // 逻辑回调函数
+
+void sig_handler( int sig ) {
+    if ( sig == SIGINT || sig == SIGSEGV || sig == SIGTSTP) {
+        SubThreadPool::_get_instance()->_stop();
+    } 
+}
 
 int req_task_call_back(void *a, void *b) {
     char* buf = (char*) a;
@@ -40,6 +47,7 @@ int main(int argc, char** argv) {
         std::cout << "./sub port" << std::endl;
         return 0;
     }
+    signal(SIGINT, sig_handler);
     // 配置初始化
     SubStrategyConfig::_get_instance()->_read_conf_file("../conf/strategy.conf");
     SubConfig::_get_instance()->_read_conf_file("../conf/sub.conf");
@@ -56,10 +64,10 @@ int main(int argc, char** argv) {
     SubThreadPool::_get_instance()->_start();
     SubEventQueue::_get_instance()->_init();
     // 启动服务
+    //
     SubServer*svr = SubServer::_get_instance();
     svr->_run(atoi(argv[1]));
 
-    // SubThreadPool::_get_instance()->_stop();
     return 0;
 }
 

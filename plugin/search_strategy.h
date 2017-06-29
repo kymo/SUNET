@@ -22,10 +22,12 @@
 #include "dat.h"
 
 namespace sub_framework {
-   
+
+
 class SearchStrategy : public IStrategy {
 
 private:
+    static const int PAGE_RESULT_CNT = 20;
 	// DatImpl<std::vector<reverse_index> > *_dat;
 	std::map<std::string, std::vector<reverse_index> > _index_dict;
 public:

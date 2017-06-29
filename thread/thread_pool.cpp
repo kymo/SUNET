@@ -53,7 +53,6 @@ void SubThreadPool::_stop() {
     for (int i = 0; i < _threads_cnt; i++) {
         _threads[i]->_stop();
     }
-
 }
 }
 

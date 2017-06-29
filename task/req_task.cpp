@@ -42,7 +42,6 @@ int ReqTask::_run() {
     // 解析http
     Request request;
     HttpParser http;
-    //char* buf = (char*) _task_data;
     REQ_TASK_DATA *req_task_data = (REQ_TASK_DATA *)_task_data;
     if (req_task_data == NULL) {
         WARN_LOG("Req Task Data is NULL!");
@@ -58,12 +57,10 @@ int ReqTask::_run() {
     int ret;
     // int ret = (*call_back_proc)(_task_data, _task_ret);
     SUB_EPOLL_OUT_ENV* out_env = new SUB_EPOLL_OUT_ENV(fd, root.toStyledString());
-    std::cout << root.toStyledString().length() << std::endl;
-    DEBUG_LOG("Http Out:%s", out_env->_buf.c_str());
     if (req_task_data->_evt->_type == SELECT) {
         req_task_data->_evt->_event_add(fd, EVT_WRITE);
     } else if (req_task_data->_evt->_type == EPOLL) {
-        req_task_data->_evt->_event_mod(fd, EPOLLOUT | EPOLLET, \
+        req_task_data->_evt->_event_mod(fd, EPOLLOUT, \
             (void*)(out_env));
     }
     return ret;
