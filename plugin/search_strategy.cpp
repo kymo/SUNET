@@ -50,12 +50,15 @@ int SearchStrategy::_process(const Request& req, Json::Value& root, const int& l
     int page_cnt = (tot_cnt - 1) / PAGE_RESULT_CNT + 1;
     if (page > page_cnt) {
         page = page_cnt;
-    } 
+    }
+    int nxt_page = page >= page_cnt ? page_cnt : page + 1;
+    int bef_page = page > 1 ? page -1 : 1;
     std::cout << "tot count " << tot_cnt << std::endl;
     std::cout << page_cnt << std::endl;
     std::cout << page << std::endl;
-    int begin_record_index = page * PAGE_RESULT_CNT;
-    int end_record_index = page >= page_cnt ? tot_cnt : (1 + page) * PAGE_RESULT_CNT;
+
+    int begin_record_index = (page - 1) * PAGE_RESULT_CNT;
+    int end_record_index = page >= page_cnt ? tot_cnt : (page) * PAGE_RESULT_CNT;
     std::cout << begin_record_index << " " << end_record_index << std::endl;
     for (std::vector<reverse_index>::iterator it = 
             search_results_all.begin() + begin_record_index;
@@ -69,7 +72,11 @@ int SearchStrategy::_process(const Request& req, Json::Value& root, const int& l
 	}
 	root["search"]["msg"] = "ok";
 	root["search"]["result"] = result;
-	return SUB_OK;
+    root["search"]["tot_cnt"] = tot_cnt;
+	root["search"]["tot_page"] = page_cnt;
+    root["search"]["bef_page"] = bef_page;
+    root["search"]["nxt_page"] = nxt_page;
+    return SUB_OK;
 }
 
 int SearchStrategy::_init() {

@@ -34,7 +34,7 @@ public:
     
     Request() {
         params["q"] = "";
-		params["p"] = "0";
+		params["p"] = "1";
     }
 
     std::string get_query() const {   
@@ -45,6 +45,9 @@ public:
 	int get_page() const {
 		std::map<std::string, std::string>::const_iterator it = 
 			params.find("p");
+        if (it == params.end()) {
+            return 1;
+        }
 		return atoi(it->second.c_str());
 	}
 
