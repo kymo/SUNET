@@ -13,6 +13,7 @@
 #include <iostream>
 #include <string.h>
 #include <vector>
+#include <math.h>
 
 #include "istrategy.h"
 #include "define.h"
@@ -32,6 +33,7 @@ private:
 	std::map<std::string, std::vector<reverse_index> > _index_dict;
     std::map<std::string, int> _word_freq_dict;
     std::map<std::string, int> _word_doc_freq_dict;
+    std::map<int, int> _doc_length_dict;
 
 public:
     SearchStrategy();

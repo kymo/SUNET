@@ -129,7 +129,7 @@ public:
             for (int i = 0; i < index_split_strs.size(); i++) {
                 std::vector<std::string> doc_infor_splits;
                 StringUtil::split(index_split_strs[i], "\001", doc_infor_splits);
-                if (doc_infor_splits.size() != INDEX_DATA_SEP_LEN) {
+                if (doc_infor_splits.size() < INDEX_DATA_SEP_LEN + 1) {
                     continue;
                 }
                 reverse_index t;

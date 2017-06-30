@@ -27,6 +27,7 @@ private:
     std::map<std::string, std::vector<reverse_index> > _index_dict;
     std::map<std::string, int> _word_freq_dict;
     std::map<std::string, int> _word_doc_freq_dict;
+    std::map<int, int> _doc_length_dict;
 
     static DictMgr* _instance;
     DictMgr() {}
@@ -57,12 +58,32 @@ public:
     const std::map<std::string, int>& _get_word_doc_freq_dict() {
         return _word_doc_freq_dict;
     }
+    
+    const std::map<int, int>& _get_doc_length_dict() {
+        return _doc_length_dict;
+    }
 
 
     void _load_dict() {
         _load_index_dict();
         _load_word_freq_dict();
         _load_word_doc_freq_dict();
+        _load_doc_length_dict();
+    }
+    
+    void _load_doc_length_dict() {
+        std::string doc_length_file_path = "";
+        SubConfig::_get_instance()->_get_conf_val("doc_length_file", doc_length_file_path);
+        std::ifstream fis(doc_length_file_path.c_str());
+        std::string line;
+        while (getline(fis, line)) {
+            std::vector<std::string> splits;
+            StringUtil::split(line, "\t", splits);
+            if (2 != splits.size()) {
+                continue;
+            }
+            _doc_length_dict[atoi(splits[0].c_str())] = atoi(splits[1].c_str());
+        }
     }
     
     void _load_word_doc_freq_dict() {
@@ -81,9 +102,9 @@ public:
     }
 
     void _load_word_freq_dict() {
-        std::string index_file_path = "";
-        SubConfig::_get_instance()->_get_conf_val("word_freq_file", index_file_path);
-        std::ifstream fis(index_file_path.c_str());
+        std::string word_freq_file_path = "";
+        SubConfig::_get_instance()->_get_conf_val("word_freq_file", word_freq_file_path);
+        std::ifstream fis(word_freq_file_path.c_str());
         std::string line;
         while (getline(fis, line)) {
             std::vector<std::string> splits;
@@ -112,7 +133,7 @@ public:
             for (int j = 0; j < vecs.size(); j++) {
                 std::vector<std::string> data_str;
                 StringUtil::split(vecs[j], "\001", data_str);
-                if (2 != data_str.size()) {
+                if (data_str.size() < 3) {
                     continue;
                 }
                 reverse_index t;
