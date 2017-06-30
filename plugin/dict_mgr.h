@@ -67,7 +67,7 @@ public:
     void _load_dict() {
         _load_index_dict();
         _load_word_freq_dict();
-        _load_word_doc_freq_dict();
+        //_load_word_doc_freq_dict();
         _load_doc_length_dict();
     }
     
@@ -139,9 +139,9 @@ public:
                 reverse_index t;
                 t.doc_id = atoi(data_str[0].c_str());
                 t.cnt = atoi(data_str[1].c_str());
-                for (int j = 2; j < data_str.size(); j++) {
-                    t.pos_vec.push_back(atoi(data_str[j].c_str()));
-                }
+                //for (int j = 2; j < data_str.size(); j++) {
+                //    t.pos_vec.push_back(atoi(data_str[j].c_str()));
+                //}
                 index_vec.push_back(t);
             }
             _index_dict[splits[0]] = index_vec;
