@@ -27,7 +27,6 @@ void SubEpollEvent::_event_loop() {
     while (true) {
         DEBUG_LOG("Epoll Wait!");
         int max_fd = epoll_wait(_epl_fd, _epl_evt_set, _max_evt_cnt, 1000);
-        std::cout << max_fd << std::endl;
         if (-1 == max_fd) {
             WARN_LOG("Epoll Loop Error!");
             continue;
@@ -46,20 +45,22 @@ void SubEpollEvent::_event_loop() {
                     _event_del(handler_fd, EPOLLOUT | EPOLLET);
                     close(handler_fd);
                 }
-                std::cout << "Read end!" << std::endl;
             } else if (_epl_evt_set[fd].events & EPOLLOUT) {
                 SUB_EPOLL_OUT_ENV* out_env = (SUB_EPOLL_OUT_ENV*) _epl_evt_set[fd].data.ptr;
                 DEBUG_LOG("Write Back [%d]", out_env->_fd);
                 if (out_env->_buf.length() == 0) {
 					WARN_LOG("Get Write Buffer Empty!");
                     _event_mod(handler_fd, EPOLLIN | EPOLLET);
+					if (NULL != out_env) {
+						delete out_env;
+						out_env = NULL;
+					}
                     continue;
                 }
                 bool tag = false;
 				const char* write_buf = out_env->_buf.c_str();
 				int left_buf_size = out_env->_buf.length();
 				int n = left_buf_size;
-                std::cout << "Write Back" << write_buf << std::endl;
 				while (n > 0) {
 					int nwrite = send(out_env->_fd, write_buf + left_buf_size - n, n, 0);
 					if (nwrite < n) {
@@ -71,7 +72,6 @@ void SubEpollEvent::_event_loop() {
 					n -= nwrite;
 				}
                 _event_mod(out_env->_fd, EPOLLIN | EPOLLET);
-                std::cout << "Write back okay!" << std::endl;
                 DEBUG_LOG("[%d] Write Back Okay!", out_env->_fd);
                 if (out_env != NULL) {
                     delete out_env;

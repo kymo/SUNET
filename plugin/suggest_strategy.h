@@ -1,13 +1,13 @@
 /**
- * @file search_strategy.h
+ * @file suggest_strategy.h
  * @author kymowind@gmail.com
  * @date 2017/02/14 20:17:42
  * @brief abstract class of strategy 
  *  
  **/
 
-#ifndef _SEARCH_STRTEGY_H_
-#define _SEARCH_STRTEGY_H_
+#ifndef _SUGGEST_STRTEGY_H_
+#define _SUGGEST_STRTEGY_H_
 
 #include <map>
 #include <iostream>
@@ -22,23 +22,20 @@
 #include "wordseg.h"
 #include "config.h"
 #include "dat.h"
+#include "trie.h"
 
 namespace sub_framework {
 
 
-class SearchStrategy : public IStrategy {
+class SuggestStrategy : public IStrategy {
 
 private:
-    static const int PAGE_RESULT_CNT = 20;
-	// DatImpl<std::vector<reverse_index> > *_dat;
-	std::map<std::string, std::vector<reverse_index> > _index_dict;
-    std::map<std::string, int> _word_freq_dict;
-    std::map<std::string, int> _word_doc_freq_dict;
-    std::map<int, int> _doc_length_dict;
+    static const int MAX_SUGGEST_CNT = 20;
+	Trie<int>* _suggest_dict;
 
 public:
-    SearchStrategy();
-    virtual ~SearchStrategy();
+    SuggestStrategy();
+    virtual ~SuggestStrategy();
 
     int _process(const Request& req, Json::Value& root, const int& level);
     int _init();

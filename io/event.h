@@ -44,12 +44,13 @@ typedef struct epoll_out_env {
 	int _fd;
     epoll_out_env() {}
     epoll_out_env(int fd, const std::string& http_body) {
-        std::cout << http_body << std::endl;
         _fd = fd;
         int http_body_length = http_body.length();
         _buf = "";
 	    _buf += "HTTP/1.1 200 OK\r\nContent-Length: ";
         _buf += StringUtil::num_to_str(http_body_length);
+		_buf += "\r\n";
+		_buf += "Access-Control-Allow-Origin: *";
         _buf += "\r\n\r\n";
         _buf += http_body;
     }

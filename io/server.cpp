@@ -101,35 +101,31 @@ int SubServer::_on_http_read(int clt_fd) {
     int buf_index = 0;
     int buf_left = 4096;
     int read_out = 0;
-    if (_read_buf_map.find(clt_fd) == _read_buf_map.end()) {
-        _read_buf_map[clt_fd] = new RECV_DATA();
-    }
-    std::map<int, RECV_DATA*>::iterator it = _read_buf_map.find(clt_fd);
-    RECV_DATA* recv_data = it->second;
+    RECV_DATA* recv_data = new RECV_DATA();
     do {
         buf_index = 0;
         ret = 0;
         buf_left = 1024;
         ret = recv(clt_fd, recv_data->buf + recv_data->buf_len, buf_left, 0);
         DEBUG_LOG("Receive Client %d data[%d]%d:[%s]", clt_fd, strlen(recv_data->buf), recv_data->buf_len, recv_data->buf);
-        std::cout << "ret val:" << ret << " " << errno << " " << EAGAIN << " " << EINTR << std::endl;
         if (-1 == ret) {
             if (errno != EAGAIN) {
                 DEBUG_LOG("Read Error !");
                 break;
             } else {
                 DEBUG_LOG("EAGAIN!");
-                
-                std::cout << "eagiain!" << std::endl;
                 break;
             }
         } else if (ret == 0) {
             DEBUG_LOG("Client close socket!");
+			if (NULL != recv_data) {
+				delete recv_data;
+				recv_data = NULL;
+			}
             return READ_FAIL;
         } else {
             recv_data->buf_len += ret;
             recv_data->buf[recv_data->buf_len] = '\0';
-            std::cout << "[" << recv_data->buf << "]" << std::endl;
             if (recv_data->buf_len + buf_left >= recv_data->buf_cap) {
                 DEBUG_LOG("Receive read out !");
                 recv_data->resize();
@@ -145,7 +141,6 @@ int SubServer::_on_http_read(int clt_fd) {
         REQ_TASK_DATA* req_task_data = new REQ_TASK_DATA(clt_fd, recv_data, _event);
         task->_set_task_data((void*)(req_task_data));
         SubTaskMgr::_get_instance()->_add_task(task);
-        _read_buf_map.erase(it);
         return READ_OK;
     }
     return READ_OK;

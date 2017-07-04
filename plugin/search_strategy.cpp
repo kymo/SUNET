@@ -47,12 +47,9 @@ int SearchStrategy::_process(const Request& req, Json::Value& root, const int& l
         std::map<std::string, std::vector<reverse_index> >::iterator it = 
             _index_dict.find(term);
         if (it == _index_dict.end()) {
-            std::cout << "END!" << " " << term << std::endl;
             continue;
         }
-        std::cout << "YED!" << " " << term << std::endl;
         const std::vector<reverse_index>& search_results = it->second;
-        std::cout << search_results.size() << std::endl;
         int term_cnt = 0;
         if (_word_doc_freq_dict.find(term) != _word_doc_freq_dict.end()) {
             term_cnt = _word_doc_freq_dict[term];
@@ -64,7 +61,6 @@ int SearchStrategy::_process(const Request& req, Json::Value& root, const int& l
             }
             float rel = (search_results[j].cnt * 2) * 1.0 / 
                 (search_results[j].cnt + 0.25 + 0.75 * _doc_length_dict[search_results[j].doc_id] / 8.0);
-            std::cout << idf << " " << rel << " " << _doc_length_dict[search_results[j].doc_id] << std::endl;
             doc_score[search_results[j].doc_id] += idf * rel;
         }
     }
@@ -109,7 +105,7 @@ int SearchStrategy::_process(const Request& req, Json::Value& root, const int& l
 int SearchStrategy::_init() {
     // _dat = new DatImpl<std::vector<reverse_index> >();
     REFER_DICT(_index_dict);
-    REFER_DICT(_word_freq_dict);
+    // REFER_DICT(_word_freq_dict);
     REFER_DICT(_word_doc_freq_dict);
     REFER_DICT(_doc_length_dict);
     return SUB_OK;

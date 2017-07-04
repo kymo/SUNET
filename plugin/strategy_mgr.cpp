@@ -10,7 +10,9 @@
 #include "text_strategy.h"
 #include "rewrite_strategy.h"
 #include "search_strategy.h"
+#include "suggest_strategy.h"
 #include "dict_mgr.h"
+#include "trie.h"
 
 namespace sub_framework {
 
@@ -25,6 +27,8 @@ IStrategy* SubStrategyMgr::_produce(const std::string& strategy_name) {
         sub_strategy = new RewriteStrategy();
     } else if (strategy_name == "SearchStrategy") {
 		sub_strategy = new SearchStrategy();
+	} else if (strategy_name == "SuggestStrategy") {
+		sub_strategy = new SuggestStrategy();
 	}
     return sub_strategy;
 }
@@ -33,7 +37,7 @@ int SubStrategyMgr::_init_strategies() {
     // init all the strategies
     
     DictMgr::_get_instance()->_load_dict();
-    
+
     const STRATEGY_MAP& strategy_type_map = 
         SubStrategyConfig::_get_instance()->_get_strategytype_map();
 
