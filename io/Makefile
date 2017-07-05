@@ -29,6 +29,7 @@ ALIAS_OBJS=../task/task_mgr.o \
 		   ../plugin/text_strategy.o \
 		   ../plugin/rewrite_strategy.o \
 		   ../plugin/search_strategy.o \
+		   ../plugin/suggest_strategy.o \
 		   ../config/strategy_conf.o \
 		   ../alias/wordseg/wordseg.o \
 		   ../log/sub_log.o

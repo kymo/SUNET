@@ -118,10 +118,10 @@ int SubServer::_on_http_read(int clt_fd) {
             }
         } else if (ret == 0) {
             DEBUG_LOG("Client close socket!");
-			if (NULL != recv_data) {
-				delete recv_data;
-				recv_data = NULL;
-			}
+            if (NULL != recv_data) {
+                delete recv_data;
+                recv_data = NULL;
+            }
             return READ_FAIL;
         } else {
             recv_data->buf_len += ret;

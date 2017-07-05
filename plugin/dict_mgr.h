@@ -29,7 +29,7 @@ private:
     std::map<std::string, int> _word_freq_dict;
     std::map<std::string, int> _word_doc_freq_dict;
     std::map<int, int> _doc_length_dict;
-	Trie<int>* _suggest_dict;
+    Trie<int>* _suggest_dict;
     static DictMgr* _instance;
     DictMgr() {}
 
@@ -64,24 +64,24 @@ public:
         return _doc_length_dict;
     }
 
-	Trie<int>* _get_suggest_dict() {
-		return _suggest_dict;
-	}
+    Trie<int>* _get_suggest_dict() {
+        return _suggest_dict;
+    }
 
     void _load_dict() {
-		_load_index_dict();
+        _load_index_dict();
         //_load_word_freq_dict();
         _load_word_doc_freq_dict();
         _load_doc_length_dict();
-    	_load_suggest_dict();
-	}
+        _load_suggest_dict();
+    }
 
-	void _load_suggest_dict() {
-		_suggest_dict = new Trie<int>();
-		std::string suggest_file_path = "";
-		SubConfig::_get_instance()->_get_conf_val("suggest_file", suggest_file_path);
-		_suggest_dict->build(suggest_file_path.c_str());
-	}
+    void _load_suggest_dict() {
+        _suggest_dict = new Trie<int>();
+        std::string suggest_file_path = "";
+        SubConfig::_get_instance()->_get_conf_val("suggest_file", suggest_file_path);
+        _suggest_dict->build(suggest_file_path.c_str());
+    }
     
     void _load_doc_length_dict() {
         std::string doc_length_file_path = "";
@@ -151,9 +151,6 @@ public:
                 reverse_index t;
                 t.doc_id = atoi(data_str[0].c_str());
                 t.cnt = atoi(data_str[1].c_str());
-                //for (int j = 2; j < data_str.size(); j++) {
-                //    t.pos_vec.push_back(atoi(data_str[j].c_str()));
-                //}
                 index_vec.push_back(t);
             }
             _index_dict[splits[0]] = index_vec;
@@ -164,7 +161,6 @@ public:
 };
 
 }
-
 
 #endif  // DICT_MGR_H
 

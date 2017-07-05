@@ -1,5 +1,5 @@
 /**
- * @file wordseg_strategy.h
+ * @file search_strategy.cpp
  * @author kymowind@gmail.com
  * @date 2017/02/14 20:17:42
  * @brief abstract class of strategy 
